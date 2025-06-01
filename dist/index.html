@@ -120,19 +120,29 @@
     </main>
 
     <footer class="pt-20 pb-6">
-      <div class="flex flex-col items-center gap-1">
-        <div>
-          © <span id="current-year"></span> · Master08s
-        </div>
-        <div>
-          Powered by <a href="https://github.com/Master08s/looks-blog">GitHub Issues</a>
-        </div>
-      </div>
+    <div class="flex flex-col items-center gap-1">
+    <div>
+      © <span id="current-year"></span> · Master08s
+    </div>
+    <div>
+      Powered by <a href="https://github.com/Master08s/looks-blog">GitHub Issues</a>
+    </div>
+    <div id="running-days"></div>
+    </div>
     </footer>
 
     <script>
+        // 设置当前年份
       document.getElementById('current-year').textContent = new Date().getFullYear();
       
+      // 计算运行天数
+      const startDate = new Date('{{site.date}}'); // 从模板变量获取建站日期
+      const currentDate = new Date();
+      const timeDiff = currentDate - startDate;
+      const daysDiff = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+      
+      document.getElementById('running-days').textContent = `本站已运行 ${daysDiff} 天`;
+
       document.addEventListener("DOMContentLoaded", () => {
         if (typeof main !== 'undefined') {
           main.generateTOC && main.generateTOC();
