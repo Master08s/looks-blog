@@ -4,10 +4,10 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    
-    <title>分类 | Looks Blog</title>
+
+    <title>测试 | Looks Blog</title>
     <meta name="description" content="A personal blog powered by GitHub Issues" />
-    
+
     <link rel="stylesheet" href="/looks-blog/assets/dist/main.css" />
 
     <!-- Fonts -->
@@ -28,7 +28,7 @@
       href="https://fontsapi.zeoseven.com/442/main/result.css"
       onerror="this.href='https://fontsapi-storage.zeoseven.com/442/main/result.css'"
     />
-    
+
     <script src="/looks-blog/assets/dist/main.iife.js"></script>
   </head>
 
@@ -66,26 +66,42 @@
       </div>
     </header>
 
+    <!-- 分类标题 -->
+    <div class="mb-8 text-center font-serif text-2xl font-bold">
+      <span class="icon-[material-symbols--folder-outline-rounded] iconify-inline"></span>
+      <span>测试</span>
+    </div>
+
     <main class="mx-auto max-w-[480px] px-4">
-      <div class="mb-8 text-center font-serif text-2xl font-bold">
-        <span class="icon-[material-symbols--folder-outline-rounded] iconify-inline"></span>
-        分类
+      <!-- 文章列表 -->
+      <div class="flex flex-col gap-5">
+        
+        <a href="/looks-blog/posts/1.html" class="index-post-card hover:shadow-card text-black transition duration-300">
+          <div class="post mx-4 my-4 flex flex-col gap-2">
+            <!-- 标题 -->
+            <div class="textc-primary font-serif font-semibold" style="font-size: 1.2rem">测试</div>
+
+            <!-- 摘要 -->
+            <div style="font-size: 0.9rem" class="text-gray">测试</div>
+
+            <!-- 元信息 -->
+            <div class="flex items-center justify-between" style="font-size: 0.8rem">
+              <time class="text-gray">2025-06-01</time>
+              <div class="flex gap-2">
+                <span class="category" style="background-color: #aaaaaa20; color: #aaaaaa">测试</span>
+              </div>
+            </div>
+          </div>
+        </a>
+      
       </div>
 
-      <div class="flex flex-wrap gap-4">
-        
-        <span class="card-small">
-          <span class="icon-[material-symbols--folder-outline-rounded] iconify-inline"></span>
-<<<<<<< HEAD
-          <a class="text-black" href="/looks-blog/categories/ce-shi.html">
-=======
-          <a class="text-black" href="/looks-blog/categories/%E6%B5%8B%E8%AF%95.html">
->>>>>>> 2849f952bd968a9ab6906071ba19d190d09771f3
-            测试
-          </a>
-          <span>1</span>
-        </span>
-      
+      <!-- 返回分类页 -->
+      <div class="mt-12 text-center">
+        <a href="/looks-blog/categories.html" class="inline-flex items-center gap-2 text-blue-600 hover:text-blue-800 transition-colors duration-200">
+          <span class="icon-[material-symbols--arrow-back-rounded]"></span>
+          返回所有分类
+        </a>
       </div>
     </main>
 
