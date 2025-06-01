@@ -493,6 +493,7 @@ class BlogBuilder {
     html = html.replace(/\{\{site\.author\}\}/g, data.site?.author || '');
     html = html.replace(/\{\{site\.avatar\}\}/g, data.site?.avatar || '');
     html = html.replace(/\{\{site\.url\}\}/g, data.site?.url || '');
+    html = html.replace(/\{\{site\.date\}\}/g, data.site?.date || '');
 
     // Replace GitHub data
     html = html.replace(/\{\{github\.owner\}\}/g, this.github.owner || '');

@@ -127,31 +127,33 @@
     <div>
       Powered by <a href="https://github.com/Master08s/looks-blog">GitHub Issues</a>
     </div>
-    <div id="running-days"></div>
+    <div id="running-days" class="2025-06-01"></div>
     </div>
     </footer>
 
     <script>
-        // 设置当前年份
+    // 设置当前年份
       document.getElementById('current-year').textContent = new Date().getFullYear();
-      
+
       // 计算运行天数
-      const startDate = new Date('{{site.date}}'); // 从模板变量获取建站日期
+      const runningDaysElement = document.getElementById('running-days');
+      const startDateString = runningDaysElement.className; // 从class获取建站日期
+      const startDate = new Date(startDateString); // 解析日期字符串
       const currentDate = new Date();
       const timeDiff = currentDate - startDate;
       const daysDiff = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
-      
-      document.getElementById('running-days').textContent = `本站已运行 ${daysDiff} 天`;
+
+      runningDaysElement.textContent = `本站已运行 ${daysDiff} 天`;
 
       document.addEventListener("DOMContentLoaded", () => {
-        if (typeof main !== 'undefined') {
-          main.generateTOC && main.generateTOC();
-          main.scrollHighlightTOC && main.scrollHighlightTOC();
-          main.clickHighlightTOC && main.clickHighlightTOC();
-          main.wordCountAndReadTime && main.wordCountAndReadTime();
-          main.generateTimeTips && main.generateTimeTips();
-          main.addIconToLinks && main.addIconToLinks();
-        }
+          if (typeof main !== 'undefined') {
+              main.generateTOC && main.generateTOC();
+              main.scrollHighlightTOC && main.scrollHighlightTOC();
+              main.clickHighlightTOC && main.clickHighlightTOC();
+              main.wordCountAndReadTime && main.wordCountAndReadTime();
+              main.generateTimeTips && main.generateTimeTips();
+              main.addIconToLinks && main.addIconToLinks();
+          }
       });
     </script>
   </body>
