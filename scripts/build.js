@@ -476,20 +476,23 @@ class BlogBuilder {
     // Replace posts data (for index page)
     if (data.posts) {
       const postsHtml = data.posts.map(post => `
-        <article class="index-post-card hover:shadow-card text-black transition duration-300">
-          <a href="${post.url}">
-            <div class="p-4">
-              <h2 class="mb-2 font-serif text-lg font-bold">${this.escapeHtml(post.title)}</h2>
-              <p class="mb-3 text-gray-600 text-sm leading-relaxed">${this.escapeHtml(post.excerpt)}</p>
-              <div class="flex items-center justify-between text-xs">
-                <time class="text-gray">${post.created_at.toISOString().split('T')[0]}</time>
-                <div class="flex gap-1">
-                  ${post.labels.map(label => `<span class="category text-xs px-2 py-1 rounded-full" style="background-color: #${label.color}20; color: #${label.color}">${this.escapeHtml(label.name)}</span>`).join('')}
-                </div>
+        <a href="${post.url}" class="index-post-card hover:shadow-card text-black transition duration-300">
+          <div class="post mx-4 my-4 flex flex-col gap-2">
+            <!-- 标题 -->
+            <div class="textc-primary font-serif font-semibold" style="font-size: 1.2rem">${this.escapeHtml(post.title)}</div>
+
+            <!-- 摘要 -->
+            <div style="font-size: 0.9rem" class="text-gray">${this.escapeHtml(post.excerpt)}</div>
+
+            <!-- 元信息 -->
+            <div class="flex items-center justify-between" style="font-size: 0.8rem">
+              <time class="text-gray">${post.created_at.toISOString().split('T')[0]}</time>
+              <div class="flex gap-2">
+                ${post.labels.map(label => `<span class="category" style="background-color: #${label.color}20; color: #${label.color}">${this.escapeHtml(label.name)}</span>`).join('')}
               </div>
             </div>
-          </a>
-        </article>
+          </div>
+        </a>
       `).join('');
       
       html = html.replace(/\{\{posts\}\}/g, postsHtml);
