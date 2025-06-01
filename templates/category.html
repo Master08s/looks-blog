@@ -4,10 +4,10 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    
+
     <title>{{category.name}} | {{site.title}}</title>
     <meta name="description" content="{{site.description}}" />
-    
+
     <link rel="stylesheet" href="/assets/dist/main.css" />
 
     <!-- Fonts -->
@@ -28,7 +28,7 @@
       href="https://fontsapi.zeoseven.com/442/main/result.css"
       onerror="this.href='https://fontsapi-storage.zeoseven.com/442/main/result.css'"
     />
-    
+
     <script src="/assets/dist/main.iife.js"></script>
   </head>
 
@@ -66,16 +66,13 @@
       </div>
     </header>
 
-    <main class="mx-auto max-w-[480px] px-4">
-      <!-- 分类标题 -->
-      <div class="mb-8 text-center">
-        <div class="mb-4">
-          <span class="icon-[material-symbols--folder-outline-rounded] iconify-inline text-2xl"></span>
-        </div>
-        <h1 class="font-serif text-2xl font-bold text-gray-900">{{category.name}}</h1>
-        <p class="mt-2 text-sm text-gray-600">共 {{posts.length}} 篇文章</p>
-      </div>
+    <!-- 分类标题 -->
+    <div class="mb-8 text-center font-serif text-2xl font-bold">
+      <span class="icon-[material-symbols--folder-outline-rounded] iconify-inline"></span>
+      <span>{{category.name}}</span>
+    </div>
 
+    <main class="mx-auto max-w-[480px] px-4">
       <!-- 文章列表 -->
       <div class="flex flex-col gap-5">
         {{posts}}

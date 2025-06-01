@@ -354,12 +354,14 @@ class BlogBuilder {
     for (const [name, category] of this.categories) {
       const html = this.renderTemplate(templates.category || '', {
         site: this.config.site,
+        github: this.github,
         category,
         posts: category.posts,
         categories: Array.from(this.categories.values())
       });
-      
-      const fileName = encodeURIComponent(name.toLowerCase().replace(/\s+/g, '-'));
+
+      // Use the original category name as filename (encoded for URL safety)
+      const fileName = encodeURIComponent(name);
       await fs.writeFile(path.join(this.distDir, 'categories', `${fileName}.html`), html);
     }
   }
@@ -540,7 +542,7 @@ class BlogBuilder {
       const categoriesHtml = data.categories.map(category => `
         <span class="card-small">
           <span class="icon-[material-symbols--folder-outline-rounded] iconify-inline"></span>
-          <a class="text-black" href="${this.baseUrl}/categories/${encodeURIComponent(category.name.toLowerCase().replace(/\s+/g, '-'))}.html">
+          <a class="text-black" href="${this.baseUrl}/categories/${encodeURIComponent(category.name)}.html">
             ${this.escapeHtml(category.name)}
           </a>
           <span>${category.posts.length}</span>
