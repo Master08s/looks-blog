@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <title>欢迎来到 Looks Blog | Looks Blog</title>
+    <meta name="description" content="{{post.excerpt}}" />
+    
+    <link rel="stylesheet" href="/looks-blog/assets/dist/main.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css">
+
+    <!-- Fonts -->
+    <link rel="stylesheet" href="/looks-blog/assets/fonts/HarmonyOS_Sans_SC/main.css" />
+    <link rel="preconnect" href="https://fontsapi.zeoseven.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fontsapi.zeoseven.com/292/main/result.css"
+      onerror="this.href='https://fontsapi-storage.zeoseven.com/292/main/result.css'"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fontsapi.zeoseven.com/285/main/result.css"
+      onerror="this.href='https://fontsapi-storage.zeoseven.com/285/main/result.css'"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fontsapi.zeoseven.com/442/main/result.css"
+      onerror="this.href='https://fontsapi-storage.zeoseven.com/442/main/result.css'"
+    />
+    
+    <script src="/looks-blog/assets/dist/main.iife.js"></script>
+  </head>
+
+  <body>
+    <header>
+      <nav class="mb-[32px] flex border-b border-[#ddd] py-[14px] font-mono" id="navigation">
+        <a href="/looks-blog/">Looks Blog</a>
+        <div class="ml-auto flex flex-row gap-5">
+          <a href="/looks-blog/">首页</a>
+          <a href="/looks-blog/archives.html">归档</a>
+          <a href="/looks-blog/categories.html">分类</a>
+          <span> | </span>
+          <a href="/looks-blog/search.html">
+            <span class="icon-[fa-solid--search] iconify-inline"></span>
+          </a>
+        </div>
+      </nav>
+    </header>
+
+    <article>
+      <!-- 标题 -->
+      <div class="text-center font-serif text-[2rem] font-bold">欢迎来到 Looks Blog</div>
+
+      <!-- 元信息 -->
+      <div class="mt-4 mb-8 text-center text-sm text-gray-600">
+        <div class="flex items-center justify-center gap-4">
+          <time>2025-06-01</time>
+          <span>作者: Master08s</span>
+          <a href="https://github.com/Master08s/looks-blog/issues/1" target="_blank" class="text-blue-600 hover:underline">
+            在 GitHub 上查看
+          </a>
+        </div>
+        
+        <!-- 标签/分类 -->
+        <div class="mt-2 flex justify-center gap-2">
+          {{post.labels.map(label => `<span class="category" style="background-color: #${label.color}20; color: #${label.color}; border: 1px solid #${label.color}40">${label.name}</span>`).join('')}}
+        </div>
+      </div>
+
+      <section class="relative">
+        <div id="post-content"><h1>欢迎来到 Looks Blog</h1>
+<p>这是一个基于 GitHub Issues 的博客系统。</p>
+<h2>特性</h2>
+<ul>
+<li>使用 GitHub Issues 作为博客文章</li>
+<li>自动部署到 GitHub Pages</li>
+<li>支持标签分类</li>
+<li>响应式设计</li>
+</ul>
+<p>开始写作吧！</p>
+</div>
+
+        <!-- 版权许可协议 -->
+        <div class="card mt-14 px-6 py-4" id="license">
+          <div class="font-bold">欢迎来到 Looks Blog</div>
+          <div class="license-item mt-1">https://master08s.github.io/looks-blog{{post.url}}</div>
+          <div class="license-item mt-1">
+            本文采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议
+          </div>
+        </div>
+
+        <!-- 目录 -->
+        <aside class="absolute top-0 right-[-160px] hidden h-full w-[120px] md:block">
+          <nav class="sticky top-10 pl-4 font-serif text-[0.8rem]" id="toc"></nav>
+        </aside>
+      </section>
+
+
+    </article>
+
+    <footer class="pt-20 pb-6">
+      <div class="flex flex-col items-center gap-1">
+        <div>© <span id="current-year"></span> · Master08s</div>
+        <div>Powered by <a href="https://github.com/Master08s/looks-blog">GitHub Issues</a></div>
+      </div>
+    </footer>
+
+    <script>
+      document.getElementById('current-year').textContent = new Date().getFullYear();
+      
+      document.addEventListener("DOMContentLoaded", () => {
+        if (typeof main !== 'undefined') {
+          main.generateTOC && main.generateTOC();
+          main.scrollHighlightTOC && main.scrollHighlightTOC();
+          main.clickHighlightTOC && main.clickHighlightTOC();
+          main.wordCountAndReadTime && main.wordCountAndReadTime();
+          main.generateTimeTips && main.generateTimeTips();
+          main.addIconToLinks && main.addIconToLinks();
+        }
+        
+      });
+    </script>
+  </body>
+</html>

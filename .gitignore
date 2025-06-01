@@ -4,8 +4,8 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# Build output
-dist/
+# Build output (commented out - we want to commit dist for GitHub Pages)
+# dist/
 
 # Environment variables
 .env

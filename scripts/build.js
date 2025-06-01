@@ -552,12 +552,17 @@ class BlogBuilder {
   }
 
   fixAssetPaths(html) {
-    // Fix relative asset paths to include baseUrl
+    // For GitHub Pages deployment from dist directory
+    // We need to fix paths to work with the baseUrl
+
     if (!this.baseUrl) {
+      // If no baseUrl (root domain deployment), convert relative paths to absolute
+      html = html.replace(/href="\.\/assets\//g, 'href="/assets/');
+      html = html.replace(/src="\.\/assets\//g, 'src="/assets/');
       return html;
     }
 
-    // Simple approach: replace all absolute paths that start with / and don't already contain baseUrl
+    // For subdirectory deployment, fix all paths to include baseUrl
     const lines = html.split('\n');
     const fixedLines = lines.map(line => {
       // Skip lines that already contain the baseUrl to avoid double replacement
@@ -565,7 +570,11 @@ class BlogBuilder {
         return line;
       }
 
-      // Fix asset paths
+      // Fix relative asset paths to absolute with baseUrl
+      line = line.replace(/href="\.\/assets\//g, `href="${this.baseUrl}/assets/`);
+      line = line.replace(/src="\.\/assets\//g, `src="${this.baseUrl}/assets/`);
+
+      // Fix absolute asset paths
       line = line.replace(/href="\/assets\//g, `href="${this.baseUrl}/assets/`);
       line = line.replace(/src="\/assets\//g, `src="${this.baseUrl}/assets/`);
 
