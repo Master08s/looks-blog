@@ -2,7 +2,7 @@ name: Build and Deploy Blog
 
 on:
   push:
-    branches: [ main ]
+    branches: [ main, master ]
   issues:
     types: [opened, edited, closed, reopened, labeled, unlabeled]
   issue_comment:
