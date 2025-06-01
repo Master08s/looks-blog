@@ -478,13 +478,13 @@ class BlogBuilder {
       const postsHtml = data.posts.map(post => `
         <article class="index-post-card hover:shadow-card text-black transition duration-300">
           <a href="${post.url}">
-            <div class="p-6">
-              <h2 class="mb-3 font-serif text-xl font-bold">${this.escapeHtml(post.title)}</h2>
-              <p class="mb-4 text-gray-600">${this.escapeHtml(post.excerpt)}</p>
-              <div class="flex items-center justify-between text-sm">
+            <div class="p-4">
+              <h2 class="mb-2 font-serif text-lg font-bold">${this.escapeHtml(post.title)}</h2>
+              <p class="mb-3 text-gray-600 text-sm leading-relaxed">${this.escapeHtml(post.excerpt)}</p>
+              <div class="flex items-center justify-between text-xs">
                 <time class="text-gray">${post.created_at.toISOString().split('T')[0]}</time>
-                <div class="flex gap-2">
-                  ${post.labels.map(label => `<span class="category" style="background-color: #${label.color}20; color: #${label.color}">${this.escapeHtml(label.name)}</span>`).join('')}
+                <div class="flex gap-1">
+                  ${post.labels.map(label => `<span class="category text-xs px-2 py-1 rounded-full" style="background-color: #${label.color}20; color: #${label.color}">${this.escapeHtml(label.name)}</span>`).join('')}
                 </div>
               </div>
             </div>
