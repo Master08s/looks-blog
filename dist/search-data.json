@@ -1,35 +1,14 @@
 [
   {
     "id": 1,
-    "title": "欢迎来到 Looks Blog",
-    "excerpt": "欢迎来到 Looks Blog\n\n这是一个基于 GitHub Issues 的博客系统。\n\n 特性\n\n- 使用 GitHub Issues 作为博客文章\n- 自动部署到 GitHub Pages\n- 支持标签分类\n- 响应式设计\n\n开始写作吧！",
+    "title": "测试",
+    "excerpt": "测试",
     "url": "/looks-blog/posts/1.html",
     "created_at": "2025-06-01",
     "labels": [
       {
-        "name": "博客",
-        "color": "0075ca"
-      },
-      {
-        "name": "介绍",
-        "color": "7057ff"
-      }
-    ]
-  },
-  {
-    "id": 2,
-    "title": "如何使用这个博客系统",
-    "excerpt": "如何使用这个博客系统\n\n 创建文章\n\n1. 在 GitHub 仓库中创建新的 Issue\n2. 使用 Markdown 格式写作\n3. 添加标签作为分类\n4. 发布后会自动生成博客文章\n\n 管理评论\n\nIssue 的评论会自动显示为文章评论。",
-    "url": "/looks-blog/posts/2.html",
-    "created_at": "2025-05-31",
-    "labels": [
-      {
-        "name": "教程",
-        "color": "a2eeef"
-      },
-      {
-        "name": "使用指南",
-        "color": "d73a4a"
+        "name": "测试",
+        "color": "aaaaaa"
       }
     ]
   }

@@ -13,7 +13,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
   pages: write
   id-token: write
 
@@ -42,6 +42,35 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_REPOSITORY: ${{ github.repository }}
         run: npm run build
+
+      - name: Display build statistics
+        run: |
+          echo "📊 Build Statistics:"
+          echo "📁 Total files in dist: $(find dist -type f | wc -l)"
+          echo "📄 HTML files: $(find dist -name "*.html" | wc -l)"
+          echo "🎨 CSS files: $(find dist -name "*.css" | wc -l)"
+          echo "📜 JS files: $(find dist -name "*.js" | wc -l)"
+          echo "🖼️  Image files: $(find dist -name "*.png" -o -name "*.jpg" -o -name "*.jpeg" -o -name "*.gif" -o -name "*.svg" | wc -l)"
+          echo "📊 JSON files: $(find dist -name "*.json" | wc -l)"
+          echo "📦 Total dist size: $(du -sh dist | cut -f1)"
+
+      - name: Commit and push dist files
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+
+          # Add all dist files
+          git add dist/
+
+          # Check if there are any changes to commit
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+          else
+            echo "Committing dist files..."
+            git commit -m "🚀 Auto-update dist files [skip ci]"
+            git push
+            echo "✅ Dist files updated successfully"
+          fi
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
