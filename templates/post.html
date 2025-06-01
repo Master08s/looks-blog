@@ -65,7 +65,7 @@
         
         <!-- 标签/分类 -->
         <div class="mt-2 flex justify-center gap-2">
-          {{post.labels.map(label => `<span class="category" style="background-color: #${label.color}20; color: #${label.color}; border: 1px solid #${label.color}40">${label.name}</span>`).join('')}}
+          {{post.labels}}
         </div>
       </div>
 
@@ -75,7 +75,7 @@
         <!-- 版权许可协议 -->
         <div class="card mt-14 px-6 py-4" id="license">
           <div class="font-bold">{{post.title}}</div>
-          <div class="license-item mt-1">{{site.url}}{{post.url}}</div>
+          <div class="license-item mt-1">{{post.full_url}}</div>
           <div class="license-item mt-1">
             本文采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议
           </div>

@@ -512,6 +512,22 @@ class BlogBuilder {
       html = html.replace(/\{\{post\.author\}\}/g, this.escapeHtml(data.post.author) || '');
       html = html.replace(/\{\{post\.github_url\}\}/g, data.post.github_url || '');
       html = html.replace(/\{\{post\.avatar\}\}/g, data.post.avatar || '');
+      html = html.replace(/\{\{post\.url\}\}/g, data.post.url || '');
+      html = html.replace(/\{\{post\.excerpt\}\}/g, this.escapeHtml(data.post.excerpt) || '');
+      // Create full URL by combining site URL with post URL (removing duplicate baseUrl)
+      const fullUrl = data.post.url.startsWith(this.baseUrl)
+        ? `${this.config.site.url}${data.post.url}`
+        : `${this.config.site.url}${this.baseUrl}${data.post.url}`;
+      html = html.replace(/\{\{post\.full_url\}\}/g, fullUrl || '');
+
+      // Handle post labels
+      if (data.post.labels) {
+        const labelsHtml = data.post.labels.map(label =>
+          `<span class="category" style="background-color: #${label.color}20; color: #${label.color}; border: 1px solid #${label.color}40">${this.escapeHtml(label.name)}</span>`
+        ).join('');
+
+        html = html.replace(/\{\{post\.labels\}\}/g, labelsHtml);
+      }
 
 
     }

@@ -72,19 +72,54 @@
         搜索
       </div>
 
-      <div class="mb-8">
-        <input
-          type="text"
-          id="search-input"
-          placeholder="输入关键词搜索文章..."
-          class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
+      <!-- 搜索框 -->
+      <div class="mb-8 relative">
+        <div class="relative">
+          <input
+            type="text"
+            id="search-input"
+            placeholder="输入关键词搜索文章..."
+            class="w-full px-4 py-3 pl-12 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 shadow-sm"
+          />
+          <div class="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400">
+            <span class="icon-[fa-solid--search] iconify-inline"></span>
+          </div>
+          <button
+            id="clear-search"
+            class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 transition-colors duration-200 hidden"
+            title="清除搜索"
+          >
+            <span class="icon-[fa-solid--times] iconify-inline"></span>
+          </button>
+        </div>
+
+        <!-- 搜索统计 -->
+        <div id="search-stats" class="mt-2 text-sm text-gray-500 hidden">
+          找到 <span id="results-count">0</span> 篇文章
+        </div>
       </div>
 
+      <!-- 搜索建议 -->
+      <div id="search-suggestions" class="mb-6 hidden">
+        <div class="text-sm text-gray-600 mb-2">搜索建议：</div>
+        <div class="flex flex-wrap gap-2" id="suggestion-tags"></div>
+      </div>
+
+      <!-- 搜索结果 -->
       <div id="search-results" class="space-y-4">
-        <div class="text-center text-gray-500">
-          输入关键词开始搜索
+        <div class="text-center text-gray-500 py-8">
+          <div class="mb-4">
+            <span class="icon-[fa-solid--search] iconify-inline text-4xl text-gray-300"></span>
+          </div>
+          <div class="text-lg">输入关键词开始搜索</div>
+          <div class="text-sm mt-2">支持搜索标题、内容和标签</div>
         </div>
+      </div>
+
+      <!-- 加载状态 -->
+      <div id="loading" class="text-center py-8 hidden">
+        <div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
+        <div class="mt-2 text-gray-500">搜索中...</div>
       </div>
     </main>
 
@@ -101,60 +136,198 @@
 
     <script>
       document.getElementById('current-year').textContent = new Date().getFullYear();
-      
-      // 简单的客户端搜索功能
+
+      // 搜索功能
       let posts = [];
-      
+      let allTags = new Set();
+
+      const searchInput = document.getElementById('search-input');
+      const searchResults = document.getElementById('search-results');
+      const searchStats = document.getElementById('search-stats');
+      const resultsCount = document.getElementById('results-count');
+      const clearButton = document.getElementById('clear-search');
+      const loading = document.getElementById('loading');
+      const suggestions = document.getElementById('search-suggestions');
+      const suggestionTags = document.getElementById('suggestion-tags');
+
       // 加载文章数据
+      showLoading(true);
       fetch('/search-data.json')
         .then(response => response.json())
         .then(data => {
           posts = data;
+          // 收集所有标签
+          posts.forEach(post => {
+            post.labels.forEach(label => {
+              allTags.add(label.name);
+            });
+          });
+          showSuggestions();
+          showLoading(false);
         })
         .catch(error => {
           console.error('Failed to load search data:', error);
+          showLoading(false);
+          searchResults.innerHTML = '<div class="text-center text-red-500 py-8">加载搜索数据失败，请刷新页面重试</div>';
         });
-      
-      const searchInput = document.getElementById('search-input');
-      const searchResults = document.getElementById('search-results');
-      
+
+      // 搜索输入事件
+      let searchTimeout;
       searchInput.addEventListener('input', (e) => {
-        const query = e.target.value.trim().toLowerCase();
-        
+        const query = e.target.value.trim();
+
+        // 显示/隐藏清除按钮
+        clearButton.classList.toggle('hidden', query.length === 0);
+
+        // 防抖搜索
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(() => {
+          performSearch(query);
+        }, 300);
+      });
+
+      // 清除搜索
+      clearButton.addEventListener('click', () => {
+        searchInput.value = '';
+        clearButton.classList.add('hidden');
+        showDefaultState();
+      });
+
+      // 执行搜索
+      function performSearch(query) {
         if (query.length < 2) {
-          searchResults.innerHTML = '<div class="text-center text-gray-500">输入关键词开始搜索</div>';
+          showDefaultState();
           return;
         }
-        
-        const results = posts.filter(post => 
-          post.title.toLowerCase().includes(query) ||
-          post.excerpt.toLowerCase().includes(query) ||
-          post.labels.some(label => label.name.toLowerCase().includes(query))
-        );
-        
+
+        const results = posts.filter(post => {
+          const titleMatch = post.title.toLowerCase().includes(query.toLowerCase());
+          const excerptMatch = post.excerpt.toLowerCase().includes(query.toLowerCase());
+          const labelMatch = post.labels.some(label =>
+            label.name.toLowerCase().includes(query.toLowerCase())
+          );
+
+          return titleMatch || excerptMatch || labelMatch;
+        });
+
+        showResults(results, query);
+      }
+
+      // 显示搜索结果
+      function showResults(results, query) {
+        // 更新统计
+        resultsCount.textContent = results.length;
+        searchStats.classList.remove('hidden');
+        suggestions.classList.add('hidden');
+
         if (results.length === 0) {
-          searchResults.innerHTML = '<div class="text-center text-gray-500">没有找到相关文章</div>';
+          searchResults.innerHTML = `
+            <div class="text-center text-gray-500 py-8">
+              <div class="mb-4">
+                <span class="icon-[fa-solid--search-minus] iconify-inline text-4xl text-gray-300"></span>
+              </div>
+              <div class="text-lg">没有找到包含 "${query}" 的文章</div>
+              <div class="text-sm mt-2">试试其他关键词或检查拼写</div>
+            </div>
+          `;
           return;
         }
-        
-        const resultsHtml = results.map(post => `
-          <article class="index-post-card hover:shadow-card text-black transition duration-300">
-            <a href="${post.url}">
-              <div class="p-6">
-                <h2 class="mb-3 font-serif text-xl font-bold">${post.title}</h2>
-                <p class="mb-4 text-gray-600">${post.excerpt}</p>
-                <div class="flex items-center justify-between text-sm">
-                  <time class="text-gray">${post.created_at}</time>
-                  <div class="flex gap-2">
-                    ${post.labels.map(label => `<span class="category" style="background-color: #${label.color}20; color: #${label.color}">${label.name}</span>`).join('')}
+
+        const resultsHtml = results.map(post => {
+          // 高亮搜索关键词
+          const highlightedTitle = highlightText(post.title, query);
+          const highlightedExcerpt = highlightText(post.excerpt, query);
+
+          return `
+            <article class="index-post-card hover:shadow-card text-black transition duration-300 border-l-4 border-blue-500">
+              <a href="${post.url}">
+                <div class="p-6">
+                  <h2 class="mb-3 font-serif text-xl font-bold">${highlightedTitle}</h2>
+                  <p class="mb-4 text-gray-600">${highlightedExcerpt}</p>
+                  <div class="flex items-center justify-between text-sm">
+                    <time class="text-gray">${post.created_at}</time>
+                    <div class="flex gap-2">
+                      ${post.labels.map(label => {
+                        const isMatched = label.name.toLowerCase().includes(query.toLowerCase());
+                        const className = isMatched ? 'category bg-yellow-100 border-yellow-300' : 'category';
+                        return `<span class="${className}" style="background-color: #${label.color}20; color: #${label.color}">${highlightText(label.name, query)}</span>`;
+                      }).join('')}
+                    </div>
                   </div>
                 </div>
-              </div>
-            </a>
-          </article>
-        `).join('');
-        
+              </a>
+            </article>
+          `;
+        }).join('');
+
         searchResults.innerHTML = resultsHtml;
+      }
+
+      // 高亮文本
+      function highlightText(text, query) {
+        if (!query) return text;
+        const regex = new RegExp(`(${query})`, 'gi');
+        return text.replace(regex, '<mark class="bg-yellow-200 px-1 rounded">$1</mark>');
+      }
+
+      // 显示默认状态
+      function showDefaultState() {
+        searchStats.classList.add('hidden');
+        showSuggestions();
+        searchResults.innerHTML = `
+          <div class="text-center text-gray-500 py-8">
+            <div class="mb-4">
+              <span class="icon-[fa-solid--search] iconify-inline text-4xl text-gray-300"></span>
+            </div>
+            <div class="text-lg">输入关键词开始搜索</div>
+            <div class="text-sm mt-2">支持搜索标题、内容和标签</div>
+          </div>
+        `;
+      }
+
+      // 显示搜索建议
+      function showSuggestions() {
+        if (allTags.size === 0) return;
+
+        const tagArray = Array.from(allTags).slice(0, 8); // 只显示前8个标签
+        const tagsHtml = tagArray.map(tag =>
+          `<button class="suggestion-tag px-3 py-1 text-sm bg-gray-100 hover:bg-gray-200 rounded-full transition-colors duration-200" onclick="searchByTag('${tag}')">${tag}</button>`
+        ).join('');
+
+        suggestionTags.innerHTML = tagsHtml;
+        suggestions.classList.remove('hidden');
+      }
+
+      // 按标签搜索
+      function searchByTag(tag) {
+        searchInput.value = tag;
+        clearButton.classList.remove('hidden');
+        performSearch(tag);
+      }
+
+      // 显示/隐藏加载状态
+      function showLoading(show) {
+        loading.classList.toggle('hidden', !show);
+        searchResults.classList.toggle('hidden', show);
+      }
+
+      // 键盘快捷键
+      document.addEventListener('keydown', (e) => {
+        // Ctrl/Cmd + K 聚焦搜索框
+        if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+          e.preventDefault();
+          searchInput.focus();
+        }
+
+        // ESC 清除搜索
+        if (e.key === 'Escape' && document.activeElement === searchInput) {
+          searchInput.blur();
+          if (searchInput.value) {
+            searchInput.value = '';
+            clearButton.classList.add('hidden');
+            showDefaultState();
+          }
+        }
       });
     </script>
   </body>
