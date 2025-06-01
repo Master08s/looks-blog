@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="zh-CN" xmlns:th="https://www.thymeleaf.org">
+  <head
+    th:replace="~{module/head(title = ${singlePage.spec.title} + ' | ' + ${site.title})}"
+  >
+  </head>
+
+  <body>
+    <header th:replace="~{module/header}"></header>
+
+    <article>
+      <div
+        class="text-center font-serif text-[2rem] font-bold"
+        th:text="${singlePage.spec.title}"
+      ></div>
+
+      <div th:utext="${singlePage.content.content}"></div>
+
+      <div class="mt-16" th:if="${haloCommentEnabled}">
+        <halo:comment
+          group="content.halo.run"
+          kind="Post"
+          th:attr="name=${singlePage.metadata.name}"
+        />
+      </div>
+    </article>
+
+    <footer th:replace="~{module/footer}"></footer>
+  </body>
+</html>

@@ -1,0 +1,51 @@
+<!doctype html>
+<head th:fragment="head(title)">
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title th:text="${title}"></title>
+
+  <link
+    rel="stylesheet"
+    th:href="@{/assets/dist/main.css(v=${theme.spec.version})}"
+  />
+  <!-- <link -->
+  <!--   rel="stylesheet" -->
+  <!--   th:href="@{/assets/dist/main.css(v=${#strings.randomAlphanumeric(10)})}" -->
+  <!-- /> -->
+  <!-- fonts -->
+  <!-- HarmonyOS Sans SC -->
+  <link
+    rel="stylesheet"
+    th:href="@{/assets/fonts/HarmonyOS_Sans_SC/main.css(v=${theme.spec.version})}"
+  />
+  <!-- LXGW WenKai -->
+  <link rel="preconnect" href="https://fontsapi.zeoseven.com" crossorigin />
+  <link
+    rel="stylesheet"
+    href="https://fontsapi.zeoseven.com/292/main/result.css"
+    onerror="this.href='https://fontsapi-storage.zeoseven.com/292/main/result.css'"
+  />
+  <!-- Noto Serif SC -->
+  <link rel="preconnect" href="https://fontsapi.zeoseven.com" crossorigin />
+  <link
+    rel="stylesheet"
+    href="https://fontsapi.zeoseven.com/285/main/result.css"
+    onerror="this.href='https://fontsapi-storage.zeoseven.com/285/main/result.css'"
+  />
+  <!-- Maple Mono NF CN -->
+  <link rel="preconnect" href="https://fontsapi.zeoseven.com" crossorigin />
+  <link
+    rel="stylesheet"
+    href="https://fontsapi.zeoseven.com/442/main/result.css"
+    onerror="this.href='https://fontsapi-storage.zeoseven.com/442/main/result.css'"
+  />
+
+  <script
+    th:src="@{/assets/dist/main.iife.js(v=${theme.spec.version})}"
+  ></script>
+  <!-- <script
+    th:src="@{/assets/dist/main.iife.js(v=${#strings.randomAlphanumeric(10)})}"
+  ></script> -->
+</head>

@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="zh-CN" xmlns:th="https://www.thymeleaf.org">
+  <head th:replace="~{module/head(title = '分类' + ' | ' + ${site.title})}">
+  </head>
+
+  <body>
+    <header th:replace="~{module/header}"></header>
+
+    <main
+      class="flex flex-wrap gap-4"
+      th:if="${not #lists.isEmpty(categories)}"
+    >
+      <span class="card-small" th:each="category : ${categories}">
+        <span
+          class="icon-[material-symbols--folder-outline-rounded] iconify-inline"
+        ></span>
+        <a
+          class="text-black"
+          th:text="${category.spec.displayName}"
+          th:href="${category.status.permalink}"
+        ></a>
+        <span th:text="${category.postCount}"> </span>
+      </span>
+    </main>
+
+    <footer th:replace="~{module/footer}"></footer>
+  </body>
+</html>

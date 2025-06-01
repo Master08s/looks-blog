@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="zh-CN" xmlns:th="https://www.thymeleaf.org">
+  <head th:replace="~{module/head(title = ${site.title})}"> </head>
+
+  <body>
+    <header>
+      <div
+        class="mt-20 mb-20 flex flex-col items-center justify-center gap-8 sm:flex-row sm:gap-14"
+      >
+        <img
+          th:src="${theme.config.general.avatar}"
+          class="h-40 rounded-full filter-none"
+          alt="Avatar"
+        />
+
+        <div class="flex flex-col items-center gap-5 font-mono">
+          <div class="text-4xl" th:text="${site.title}"></div>
+
+          <!-- 社交媒体 -->
+          <div class="text-center">
+            <th:block th:each="item : ${theme?.config?.social?.socials}">
+              <a class="text-black" th:href="@{${item.url}}">
+                <span
+                  class="iconify-large"
+                  th:classappend="${{
+                    'bilibili': 'icon-[mingcute--bilibili-line]',
+                    'email': 'icon-[material-symbols--mail-outline-rounded]',
+                    'facebook': 'icon-[mingcute--facebook-line]',
+                    'github': 'icon-[mingcute--github-line]',
+                    'instagram': 'icon-[mdi--instagram]',
+                    'qq': 'icon-[mingcute--qq-line]',
+                    'telegram': 'icon-[ri--telegram-line]',
+                    'twitter': 'icon-[si--twitter-line]',
+                    'youtube': 'icon-[mingcute--youtube-line]',
+                    'weibo': 'icon-[icon-park-outline--weibo]',
+                    'xiaohongshu': 'icon-[simple-icons--xiaohongshu]',
+                    'zhihu': 'icon-[ri--zhihu-fill]'
+                    }[item.name]}"
+                ></span>
+              </a>
+            </th:block>
+            <!-- <a -->
+            <!--   class="icon" -->
+            <!--   th:href="@{${item?.type['url']}+${item?.input_value}}" -->
+            <!--   target="_blank" -->
+            <!--   th:attr="aria-label=${item?.type['aria-label']}" -->
+            <!-- > -->
+            <!--   <i -->
+            <!--     class="iconify-large" -->
+            <!--     th:attr="data-icon=${item?.type['icon']}" -->
+            <!--   ></i> -->
+            <!-- </a> -->
+
+            <a
+              class="text-black"
+              th:if="${theme.config.general.rss == 1}"
+              href="/rss.xml"
+            >
+              <span class="iconify-large icon-[heroicons--rss]"></span>
+            </a>
+          </div>
+
+          <!-- 导航栏 -->
+          <nav class="flex justify-center gap-3">
+            <th:block th:with="menu = ${menuFinder.getPrimary()}">
+              <th:block th:with="menuItems = ${menu.menuItems}">
+                <a
+                  class="index-nav"
+                  th:each="menuItem : ${menuItems}"
+                  th:href="@{${menuItem.status.href}}"
+                  th:text="${menuItem.status.displayName}"
+                  th:target="${menuItem.spec.target?.value}"
+                >
+                </a>
+              </th:block>
+            </th:block>
+
+            <a class="index-nav" href="javascript:SearchWidget.open()">
+              <span class="iconify icon-[fa-solid--search]"></span>
+            </a>
+          </nav>
+        </div>
+      </div>
+    </header>
+
+    <main th:fragment="postList" class="mx-auto max-w-[768px]">
+      <!-- <div class="mb-6 ml-4 text-2xl">Recent Posts</div> -->
+
+      <div class="flex flex-col gap-5">
+        <a
+          th:each="post : ${posts.items}"
+          th:href="@{${post.status.permalink}}"
+          class="index-post-card hover:shadow-card text-black transition duration-300"
+        >
+          <img
+            th:if="${!#strings.isEmpty(post.spec.cover)}"
+            th:src="${post.spec.cover}"
+            class="cover"
+          />
+
+          <div class="post mx-4 my-4 flex flex-col gap-2">
+            <!-- 标题 -->
+            <div
+              th:text="${post.spec.title}"
+              class="textc-primary font-serif font-semibold"
+              style="font-size: 1.2rem"
+            ></div>
+
+            <!-- 摘要 -->
+            <div
+              th:if="${#strings.isEmpty(post.spec.cover)}"
+              th:text="${post.status.excerpt != null and #strings.length(post.status.excerpt) > 150} ? ${#strings.substring(post.status.excerpt, 0, 150)} + '...' : ${post.status.excerpt}"
+              style="font-size: 0.9rem"
+              class="text-gray"
+            ></div>
+            <div
+              th:if="${!#strings.isEmpty(post.spec.cover)}"
+              th:text="${post.status.excerpt != null and #strings.length(post.status.excerpt) > 80} ? ${#strings.substring(post.status.excerpt, 0, 80)} + '...' : ${post.status.excerpt}"
+              style="font-size: 0.9rem"
+              class="text-gray"
+            ></div>
+
+            <!-- 元信息 -->
+            <div
+              class="flex items-center justify-between"
+              style="font-size: 0.8rem"
+            >
+              <time
+                th:text="${#dates.format(post.spec.publishTime, 'yyyy-MM-dd')}"
+                class="text-gray"
+              ></time>
+              <!-- 分类
+            <span
+              th:if="${not #lists.isEmpty(post.categories)}"
+              th:each="category : ${post.categories}"
+              class="category"
+              th:text="${category.spec.displayName}"
+            ></span> -->
+
+              <!-- Read More -->
+              <!-- <div class="h-100% flex items-center"> -->
+              <!-- <span class="textc-primary mr-0.5">Read More</span>
+            <div
+              class="i-material-symbols:arrow-right-alt-rounded textc-primary mt-0.5"
+            ></div> -->
+              <!-- </div> -->
+            </div>
+          </div>
+        </a>
+      </div>
+
+      <th:block
+        th:replace="~{module/pagination(component=${posts})}"
+      ></th:block>
+    </main>
+
+    <footer th:replace="~{module/footer}"></footer>
+  </body>
+</html>
