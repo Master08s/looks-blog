@@ -555,6 +555,12 @@ class BlogBuilder {
       html = html.replace(/\{\{archives\}\}/g, data.archives);
     }
 
+    // Replace category data (for individual category pages)
+    if (data.category) {
+      html = html.replace(/\{\{category\.name\}\}/g, this.escapeHtml(data.category.name) || '');
+      html = html.replace(/\{\{category\.color\}\}/g, data.category.color || '');
+    }
+
     return html;
   }
 

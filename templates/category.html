@@ -5,13 +5,13 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     
-    <title>分类 | Looks Blog</title>
-    <meta name="description" content="A personal blog powered by GitHub Issues" />
+    <title>{{category.name}} | {{site.title}}</title>
+    <meta name="description" content="{{site.description}}" />
     
-    <link rel="stylesheet" href="/looks-blog/assets/dist/main.css" />
+    <link rel="stylesheet" href="/assets/dist/main.css" />
 
     <!-- Fonts -->
-    <link rel="stylesheet" href="/looks-blog/assets/fonts/HarmonyOS_Sans_SC/main.css" />
+    <link rel="stylesheet" href="/assets/fonts/HarmonyOS_Sans_SC/main.css" />
     <link rel="preconnect" href="https://fontsapi.zeoseven.com" crossorigin />
     <link
       rel="stylesheet"
@@ -29,7 +29,7 @@
       onerror="this.href='https://fontsapi-storage.zeoseven.com/442/main/result.css'"
     />
     
-    <script src="/looks-blog/assets/dist/main.iife.js"></script>
+    <script src="/assets/dist/main.iife.js"></script>
   </head>
 
   <body>
@@ -38,26 +38,26 @@
         class="mt-20 mb-20 flex flex-col items-center justify-center gap-8 sm:flex-row sm:gap-14"
       >
         <img
-          src="https://github.com/Master08s.png"
+          src="{{site.avatar}}"
           class="h-40 rounded-full filter-none"
           alt="Avatar"
         />
 
         <div class="flex flex-col items-center gap-5 font-mono">
-          <div class="text-4xl">Looks Blog</div>
+          <div class="text-4xl">{{site.title}}</div>
 
           <!-- 社交媒体 -->
           <div class="text-center">
-            <a class="text-black" href="https://github.com/Master08s" target="_blank">
+            <a class="text-black" href="https://github.com/{{site.author}}" target="_blank">
               <span class="iconify-large icon-[mingcute--github-line]"></span>
             </a>
           </div>
 
           <!-- 导航栏 -->
           <nav class="flex justify-center gap-3">
-            <a class="index-nav" href="/looks-blog/">首页</a>
-            <a class="index-nav" href="/looks-blog/archives.html">归档</a>
-            <a class="index-nav" href="/looks-blog/categories.html">分类</a>
+            <a class="index-nav" href="/">首页</a>
+            <a class="index-nav" href="/archives.html">归档</a>
+            <a class="index-nav" href="/categories.html">分类</a>
             <a class="index-nav" href="/search.html">
               <span class="iconify icon-[fa-solid--search]"></span>
             </a>
@@ -67,31 +67,36 @@
     </header>
 
     <main class="mx-auto max-w-[480px] px-4">
-      <div class="mb-8 text-center font-serif text-2xl font-bold">
-        <span class="icon-[material-symbols--folder-outline-rounded] iconify-inline"></span>
-        分类
+      <!-- 分类标题 -->
+      <div class="mb-8 text-center">
+        <div class="mb-4">
+          <span class="icon-[material-symbols--folder-outline-rounded] iconify-inline text-2xl"></span>
+        </div>
+        <h1 class="font-serif text-2xl font-bold text-gray-900">{{category.name}}</h1>
+        <p class="mt-2 text-sm text-gray-600">共 {{posts.length}} 篇文章</p>
       </div>
 
-      <div class="flex flex-wrap gap-4">
-        
-        <span class="card-small">
-          <span class="icon-[material-symbols--folder-outline-rounded] iconify-inline"></span>
-          <a class="text-black" href="/looks-blog/categories/%E6%B5%8B%E8%AF%95.html">
-            测试
-          </a>
-          <span>1</span>
-        </span>
-      
+      <!-- 文章列表 -->
+      <div class="flex flex-col gap-5">
+        {{posts}}
+      </div>
+
+      <!-- 返回分类页 -->
+      <div class="mt-12 text-center">
+        <a href="/categories.html" class="inline-flex items-center gap-2 text-blue-600 hover:text-blue-800 transition-colors duration-200">
+          <span class="icon-[material-symbols--arrow-back-rounded]"></span>
+          返回所有分类
+        </a>
       </div>
     </main>
 
     <footer class="pt-20 pb-6">
       <div class="flex flex-col items-center gap-1">
         <div>
-          © <span id="current-year"></span> · Master08s
+          © <span id="current-year"></span> · {{site.author}}
         </div>
         <div>
-          Powered by <a href="https://github.com/Master08s/looks-blog">GitHub Issues</a>
+          Powered by <a href="https://github.com/{{site.author}}/{{github.repo}}">GitHub Issues</a>
         </div>
       </div>
     </footer>
