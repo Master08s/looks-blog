@@ -26,16 +26,49 @@ class BlogBuilder {
     this.distDir = path.join(__dirname, '../dist');
     this.templatesDir = path.join(__dirname, '../templates');
     this.assetsDir = path.join(__dirname, '../assets');
-    
+
     // GitHub API setup
     this.github = {
       token: process.env.GITHUB_TOKEN,
       owner: process.env.GITHUB_REPOSITORY?.split('/')[0] || this.config.github.owner,
       repo: process.env.GITHUB_REPOSITORY?.split('/')[1] || this.config.github.repo
     };
-    
+
+    // Auto-detect base URL for GitHub Pages deployment
+    this.baseUrl = this.detectBaseUrl();
+
     this.posts = [];
     this.categories = new Map();
+  }
+
+  detectBaseUrl() {
+    // Auto-detect base URL based on GitHub repository and site URL
+    const siteUrl = this.config.site.url;
+    const repoName = this.github.repo;
+
+    if (!siteUrl) {
+      return '';
+    }
+
+    try {
+      const url = new URL(siteUrl);
+      const pathname = url.pathname;
+
+      // If pathname is just '/' or empty, it's a root domain deployment
+      if (!pathname || pathname === '/') {
+        return '';
+      }
+
+      // Remove trailing slash and return the path
+      return pathname.replace(/\/$/, '');
+    } catch (error) {
+      console.warn('Failed to parse site URL, using repository name as base URL');
+      // Fallback: if repo name is not the same as username, assume it's a project page
+      if (repoName !== this.github.owner) {
+        return `/${repoName}`;
+      }
+      return '';
+    }
   }
 
   async build() {
@@ -185,10 +218,9 @@ class BlogBuilder {
         avatar: issue.user.avatar_url,
         created_at: new Date(issue.created_at),
         updated_at: new Date(issue.updated_at),
-        url: `/posts/${issue.number}.html`,
+        url: `${this.baseUrl}/posts/${issue.number}.html`,
         github_url: issue.html_url,
         labels: issue.labels || [],
-        comments: issue.issue_comments || [],
         comments_count: issue.comments
       };
       
@@ -274,10 +306,10 @@ class BlogBuilder {
           total: totalPages,
           hasNext: page < totalPages,
           hasPrev: page > 1,
-          nextUrl: page < totalPages ? (page === 1 ? '/page/2.html' : `/page/${page + 1}.html`) : null,
-          prevUrl: page > 1 ? (page === 2 ? '/' : `/page/${page - 1}.html`) : null,
-          nextLink: page < totalPages ? `<a href="${page === 1 ? '/page/2.html' : `/page/${page + 1}.html`}" class="btn">下一页</a>` : '',
-          prevLink: page > 1 ? `<a href="${page === 2 ? '/' : `/page/${page - 1}.html`}" class="btn">上一页</a>` : ''
+          nextUrl: page < totalPages ? (page === 1 ? `${this.baseUrl}/page/2.html` : `${this.baseUrl}/page/${page + 1}.html`) : null,
+          prevUrl: page > 1 ? (page === 2 ? `${this.baseUrl}/` : `${this.baseUrl}/page/${page - 1}.html`) : null,
+          nextLink: page < totalPages ? `<a href="${page === 1 ? `${this.baseUrl}/page/2.html` : `${this.baseUrl}/page/${page + 1}.html`}" class="btn">下一页</a>` : '',
+          prevLink: page > 1 ? `<a href="${page === 2 ? `${this.baseUrl}/` : `${this.baseUrl}/page/${page - 1}.html`}" class="btn">上一页</a>` : ''
         },
         categories: Array.from(this.categories.values())
       });
@@ -434,6 +466,12 @@ class BlogBuilder {
     // Replace GitHub data
     html = html.replace(/\{\{github\.owner\}\}/g, this.github.owner || '');
     html = html.replace(/\{\{github\.repo\}\}/g, this.github.repo || '');
+
+    // Replace base URL for assets and links
+    html = html.replace(/\{\{baseUrl\}\}/g, this.baseUrl || '');
+
+    // Auto-fix asset paths
+    html = this.fixAssetPaths(html);
     
     // Replace posts data (for index page)
     if (data.posts) {
@@ -475,23 +513,7 @@ class BlogBuilder {
       html = html.replace(/\{\{post\.github_url\}\}/g, data.post.github_url || '');
       html = html.replace(/\{\{post\.avatar\}\}/g, data.post.avatar || '');
 
-      // Replace comments
-      if (data.post.comments) {
-        const commentsHtml = data.post.comments.map(comment => `
-          <div class="comment mb-4 p-4 border rounded">
-            <div class="flex items-center gap-3 mb-2">
-              <img src="${comment.user.avatar_url}" alt="${this.escapeHtml(comment.user.login)}" class="w-8 h-8 rounded-full">
-              <div>
-                <strong>${this.escapeHtml(comment.user.login)}</strong>
-                <time class="text-sm text-gray-600 ml-2">${new Date(comment.created_at).toLocaleDateString()}</time>
-              </div>
-            </div>
-            <div class="comment-content">${marked(comment.body || '')}</div>
-          </div>
-        `).join('');
 
-        html = html.replace(/\{\{post\.comments\}\}/g, commentsHtml);
-      }
     }
 
     // Replace categories data
@@ -499,7 +521,7 @@ class BlogBuilder {
       const categoriesHtml = data.categories.map(category => `
         <span class="card-small">
           <span class="icon-[material-symbols--folder-outline-rounded] iconify-inline"></span>
-          <a class="text-black" href="/categories/${encodeURIComponent(category.name.toLowerCase().replace(/\s+/g, '-'))}.html">
+          <a class="text-black" href="${this.baseUrl}/categories/${encodeURIComponent(category.name.toLowerCase().replace(/\s+/g, '-'))}.html">
             ${this.escapeHtml(category.name)}
           </a>
           <span>${category.posts.length}</span>
@@ -527,6 +549,38 @@ class BlogBuilder {
       "'": '&#39;'
     };
     return text.replace(/[&<>"']/g, m => map[m]);
+  }
+
+  fixAssetPaths(html) {
+    // Fix relative asset paths to include baseUrl
+    if (!this.baseUrl) {
+      return html;
+    }
+
+    // Simple approach: replace all absolute paths that start with / and don't already contain baseUrl
+    const lines = html.split('\n');
+    const fixedLines = lines.map(line => {
+      // Skip lines that already contain the baseUrl to avoid double replacement
+      if (line.includes(this.baseUrl)) {
+        return line;
+      }
+
+      // Fix asset paths
+      line = line.replace(/href="\/assets\//g, `href="${this.baseUrl}/assets/`);
+      line = line.replace(/src="\/assets\//g, `src="${this.baseUrl}/assets/`);
+
+      // Fix navigation links
+      line = line.replace(/href="\/"/g, `href="${this.baseUrl}/"`);
+      line = line.replace(/href="\/([^"]*\.html)"/g, `href="${this.baseUrl}/$1"`);
+      line = line.replace(/href="\/([^"]*\.json)"/g, `href="${this.baseUrl}/$1"`);
+
+      // Fix search data path
+      line = line.replace(/fetch\('\/search-data\.json'\)/g, `fetch('${this.baseUrl}/search-data.json')`);
+
+      return line;
+    });
+
+    return fixedLines.join('\n');
   }
 }
 

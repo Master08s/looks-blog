@@ -10,7 +10,7 @@
     
     <link rel="stylesheet" href="/assets/dist/main.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css">
-    
+
     <!-- Fonts -->
     <link rel="stylesheet" href="/assets/fonts/HarmonyOS_Sans_SC/main.css" />
     <link rel="preconnect" href="https://fontsapi.zeoseven.com" crossorigin />
@@ -42,7 +42,7 @@
           <a href="/archives.html">归档</a>
           <a href="/categories.html">分类</a>
           <span> | </span>
-          <a href="javascript:SearchWidget.open()">
+          <a href="/search.html">
             <span class="icon-[fa-solid--search] iconify-inline"></span>
           </a>
         </div>
@@ -87,38 +87,7 @@
         </aside>
       </section>
 
-      <!-- GitHub 评论系统 -->
-      <div class="mt-16" id="comments-section">
-        <h3 class="mb-4 text-xl font-bold">评论</h3>
-        
-        <!-- 登录提示 -->
-        <div id="login-prompt" class="mb-4 p-4 bg-gray-100 rounded">
-          <p class="mb-2">要发表评论，请先登录 GitHub：</p>
-          <button id="github-login" class="btn bg-black text-white px-4 py-2 rounded">
-            <span class="icon-[mingcute--github-line] iconify-inline mr-2"></span>
-            使用 GitHub 登录
-          </button>
-        </div>
 
-        <!-- 评论表单 -->
-        <div id="comment-form" class="mb-6 hidden">
-          <textarea 
-            id="comment-text" 
-            placeholder="写下你的评论..." 
-            class="w-full p-3 border rounded resize-none"
-            rows="4"
-          ></textarea>
-          <div class="mt-2 flex justify-end gap-2">
-            <button id="cancel-comment" class="btn px-4 py-2 border rounded">取消</button>
-            <button id="submit-comment" class="btn bg-blue-600 text-white px-4 py-2 rounded">发表评论</button>
-          </div>
-        </div>
-
-        <!-- 现有评论 -->
-        <div id="comments-list">
-          {{post.comments}}
-        </div>
-      </div>
     </article>
 
     <footer class="pt-20 pb-6">
@@ -141,61 +110,7 @@
           main.addIconToLinks && main.addIconToLinks();
         }
         
-        // GitHub 评论系统
-        initGitHubComments();
       });
-
-      function initGitHubComments() {
-        const loginBtn = document.getElementById('github-login');
-        const commentForm = document.getElementById('comment-form');
-        const loginPrompt = document.getElementById('login-prompt');
-        
-        // 检查是否已登录
-        const token = localStorage.getItem('github_token');
-        if (token) {
-          showCommentForm();
-        }
-        
-        loginBtn.addEventListener('click', () => {
-          // GitHub OAuth 登录流程
-          const clientId = 'your_github_app_client_id'; // 需要配置
-          const redirectUri = window.location.origin + '/auth/callback';
-          const scope = 'public_repo';
-          
-          window.location.href = `https://github.com/login/oauth/authorize?client_id=${clientId}&redirect_uri=${redirectUri}&scope=${scope}`;
-        });
-        
-        function showCommentForm() {
-          loginPrompt.classList.add('hidden');
-          commentForm.classList.remove('hidden');
-        }
-        
-        // 提交评论
-        document.getElementById('submit-comment').addEventListener('click', async () => {
-          const commentText = document.getElementById('comment-text').value;
-          if (!commentText.trim()) return;
-          
-          try {
-            const response = await fetch(`https://api.github.com/repos/{{github.owner}}/{{github.repo}}/issues/{{post.id}}/comments`, {
-              method: 'POST',
-              headers: {
-                'Authorization': `token ${localStorage.getItem('github_token')}`,
-                'Content-Type': 'application/json'
-              },
-              body: JSON.stringify({ body: commentText })
-            });
-            
-            if (response.ok) {
-              location.reload(); // 刷新页面显示新评论
-            } else {
-              alert('评论发表失败，请重试');
-            }
-          } catch (error) {
-            console.error('Error posting comment:', error);
-            alert('评论发表失败，请重试');
-          }
-        });
-      }
     </script>
   </body>
 </html>
