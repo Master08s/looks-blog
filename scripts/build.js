@@ -5,6 +5,7 @@ const path = require('path');
 const axios = require('axios');
 const { marked } = require('marked');
 const hljs = require('highlight.js');
+const pinyinLib = require('pinyin');
 
 // Configure marked with highlight.js
 marked.setOptions({
@@ -39,6 +40,32 @@ class BlogBuilder {
 
     this.posts = [];
     this.categories = new Map();
+  }
+
+  /**
+   * Convert Chinese text to pinyin filename
+   * @param {string} text - Chinese text to convert
+   * @returns {string} - Pinyin filename
+   */
+  toPinyinFilename(text) {
+    if (!text) return '';
+
+    // Convert to pinyin
+    const pinyinArray = pinyinLib.pinyin(text, {
+      style: pinyinLib.pinyin.STYLE_NORMAL,
+      heteronym: false
+    });
+
+    // Join pinyin words with hyphens and convert to lowercase
+    const pinyinText = pinyinArray.map(item => item[0]).join('-').toLowerCase();
+
+    // Remove special characters and replace spaces with hyphens
+    const cleanText = pinyinText
+      .replace(/[^\w-]/g, '-')
+      .replace(/--+/g, '-')
+      .replace(/^-+|-+$/g, '');
+
+    return cleanText || 'category';
   }
 
   detectBaseUrl() {
@@ -360,9 +387,11 @@ class BlogBuilder {
         categories: Array.from(this.categories.values())
       });
 
-      // Use the original category name as filename (encoded for URL safety)
-      const fileName = encodeURIComponent(name);
+      // Convert category name to pinyin filename for URL safety
+      const fileName = this.toPinyinFilename(name);
       await fs.writeFile(path.join(this.distDir, 'categories', `${fileName}.html`), html);
+
+      console.log(`📁 Generated category page: ${name} -> ${fileName}.html`);
     }
   }
 
@@ -542,7 +571,7 @@ class BlogBuilder {
       const categoriesHtml = data.categories.map(category => `
         <span class="card-small">
           <span class="icon-[material-symbols--folder-outline-rounded] iconify-inline"></span>
-          <a class="text-black" href="${this.baseUrl}/categories/${encodeURIComponent(category.name)}.html">
+          <a class="text-black" href="${this.baseUrl}/categories/${this.toPinyinFilename(category.name)}.html">
             ${this.escapeHtml(category.name)}
           </a>
           <span>${category.posts.length}</span>
