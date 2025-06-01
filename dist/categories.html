@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <title>分类 | Looks Blog</title>
+    <meta name="description" content="A personal blog powered by GitHub Issues" />
+    
+    <link rel="stylesheet" href="/looks-blog/assets/dist/main.css" />
+
+    <!-- Fonts -->
+    <link rel="stylesheet" href="/looks-blog/assets/fonts/HarmonyOS_Sans_SC/main.css" />
+    <link rel="preconnect" href="https://fontsapi.zeoseven.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fontsapi.zeoseven.com/292/main/result.css"
+      onerror="this.href='https://fontsapi-storage.zeoseven.com/292/main/result.css'"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fontsapi.zeoseven.com/285/main/result.css"
+      onerror="this.href='https://fontsapi-storage.zeoseven.com/285/main/result.css'"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fontsapi.zeoseven.com/442/main/result.css"
+      onerror="this.href='https://fontsapi-storage.zeoseven.com/442/main/result.css'"
+    />
+    
+    <script src="/looks-blog/assets/dist/main.iife.js"></script>
+  </head>
+
+  <body>
+    <header>
+      <div
+        class="mt-20 mb-20 flex flex-col items-center justify-center gap-8 sm:flex-row sm:gap-14"
+      >
+        <img
+          src="https://github.com/Master08s.png"
+          class="h-40 rounded-full filter-none"
+          alt="Avatar"
+        />
+
+        <div class="flex flex-col items-center gap-5 font-mono">
+          <div class="text-4xl">Looks Blog</div>
+
+          <!-- 社交媒体 -->
+          <div class="text-center">
+            <a class="text-black" href="https://github.com/Master08s" target="_blank">
+              <span class="iconify-large icon-[mingcute--github-line]"></span>
+            </a>
+          </div>
+
+          <!-- 导航栏 -->
+          <nav class="flex justify-center gap-3">
+            <a class="index-nav" href="/looks-blog/">首页</a>
+            <a class="index-nav" href="/looks-blog/archives.html">归档</a>
+            <a class="index-nav" href="/looks-blog/categories.html">分类</a>
+            <a class="index-nav" href="/looks-blog/search.html">
+              <span class="iconify icon-[fa-solid--search]"></span>
+            </a>
+          </nav>
+        </div>
+      </div>
+    </header>
+
+    <main class="mx-auto max-w-[480px] px-4">
+      <div class="mb-8 text-center font-serif text-2xl font-bold">
+        <span class="icon-[material-symbols--folder-outline-rounded] iconify-inline"></span>
+        分类
+      </div>
+
+      <div class="flex flex-wrap gap-4">
+        
+        <span class="card-small">
+          <span class="icon-[material-symbols--folder-outline-rounded] iconify-inline"></span>
+          <a class="text-black" href="/looks-blog/categories/%E6%B5%8B%E8%AF%95.html">
+            测试
+          </a>
+          <span>1</span>
+        </span>
+      
+      </div>
+    </main>
+
+    <footer class="pt-20 pb-6">
+      <div class="flex flex-col items-center gap-1">
+        <div>
+          © <span id="current-year"></span> · Master08s
+        </div>
+        <div>
+          Powered by <a href="https://github.com/Master08s/looks-blog">GitHub Issues</a>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      document.getElementById('current-year').textContent = new Date().getFullYear();
+    </script>
+  </body>
+</html>
