@@ -18,7 +18,7 @@
   },
   "build": {
     "postsPerPage": 10,
-    "excerptLength": 200,
+    "excerptLength": 15,
     "dateFormat": "yyyy-MM-dd"
   },
   "features": {
