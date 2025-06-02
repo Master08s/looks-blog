@@ -1,0 +1,37 @@
+{
+  "site": {
+    "title": "Looks Blog",
+    "description": "A personal blog powered by GitHub Issues",
+    "url": "https://master08s.github.io/looks-blog",
+    "author": "Master08s",
+    "avatar": "https://master08s.github.io/avatar.svg",
+    "favicon": "https://master08s.github.io/avatar.svg",
+    "language": "zh-CN",
+    "date":"2025-05-31"
+  },
+  "github": {
+    "owner": "Master08s",
+    "repo": "looks-blog",
+    "token": "process.env.GITHUB_TOKEN"
+  },
+  "social": {
+    "github": "https://github.com/Master08s"
+  },
+  "build": {
+    "postsPerPage": 10,
+    "excerptLength": 15,
+    "dateFormat": "yyyy-MM-dd"
+  },
+  "features": {
+    "comments": true,
+    "search": true,
+    "categories": true,
+    "archives": true,
+    "imageProxy": true
+  },
+  "imageProxy": {
+    "enabled": true,
+    "baseUrl": "https://images.weserv.nl/?url=",
+    "description": "使用 weserv.nl 图片代理服务加速图片加载。设置 enabled 为 false 可关闭此功能"
+  }
+}

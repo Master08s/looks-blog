@@ -1,0 +1,35 @@
+{
+  "name": "looks-blog",
+  "version": "1.0.0",
+  "description": "A GitHub Issues-powered blog built with GitHub Actions and Pages",
+  "main": "scripts/build.js",
+  "scripts": {
+    "build": "node scripts/build.js",
+    "dev": "node scripts/dev-server.js",
+    "clean": "rimraf dist",
+    "prebuild": "npm run clean"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Master08s/looks-blog.git"
+  },
+  "keywords": [
+    "blog",
+    "github-issues",
+    "static-site",
+    "github-pages"
+  ],
+  "author": "Master08s",
+  "license": "MIT",
+  "dependencies": {
+    "marked": "^12.0.0",
+    "highlight.js": "^11.9.0",
+    "fs-extra": "^11.2.0",
+    "axios": "^1.6.7",
+    "pinyin": "^3.1.0"
+  },
+  "devDependencies": {
+    "rimraf": "^5.0.5",
+    "http-server": "^14.1.1"
+  }
+}
