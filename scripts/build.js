@@ -251,10 +251,6 @@ class BlogBuilder {
     console.log('🔄 Processing posts...');
 
     this.posts = this.issues.map(issue => {
-      const createdAt = new Date(issue.created_at);
-      const updatedAt = new Date(issue.updated_at);
-      const isUpdated = updatedAt.getTime() - createdAt.getTime() > 60000; // More than 1 minute difference
-
       const post = {
         id: issue.number,
         title: issue.title,
@@ -262,27 +258,12 @@ class BlogBuilder {
         excerpt: this.generateExcerpt(issue.body || ''),
         author: issue.user.login,
         avatar: issue.user.avatar_url,
-        created_at: createdAt,
-        updated_at: updatedAt,
-        created_at_iso: createdAt.toISOString(),
-        created_at_formatted: this.formatDate(createdAt),
-        updated_at_formatted: this.formatDate(updatedAt),
-        is_updated: isUpdated,
+        created_at: new Date(issue.created_at),
+        updated_at: new Date(issue.updated_at),
         url: `${this.baseUrl}/posts/${issue.number}.html`,
         github_url: issue.html_url,
         labels: issue.labels || [],
-        comments_count: issue.comments,
-        state: issue.state || 'open',
-        // GitHub Issue specific data
-        issue_data: {
-          number: issue.number,
-          state: issue.state,
-          locked: issue.locked || false,
-          assignees: issue.assignees || [],
-          milestone: issue.milestone,
-          reactions: issue.reactions || {},
-          author_association: issue.author_association
-        }
+        comments_count: issue.comments
       };
 
       // Process categories from labels
@@ -302,16 +283,6 @@ class BlogBuilder {
 
     // Sort posts by creation date (newest first)
     this.posts.sort((a, b) => b.created_at - a.created_at);
-  }
-
-  formatDate(date) {
-    return date.toLocaleDateString('zh-CN', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    });
   }
 
   generateExcerpt(content) {
@@ -606,9 +577,7 @@ class BlogBuilder {
       html = html.replace(/\{\{post\.title\}\}/g, this.escapeHtml(data.post.title) || '');
       html = html.replace(/\{\{post\.content\}\}/g, data.post.content || '');
       html = html.replace(/\{\{post\.created_at\}\}/g, data.post.created_at.toISOString().split('T')[0]);
-      html = html.replace(/\{\{post\.created_at_iso\}\}/g, data.post.created_at_iso || '');
-      html = html.replace(/\{\{post\.created_at_formatted\}\}/g, data.post.created_at_formatted || '');
-      html = html.replace(/\{\{post\.updated_at_formatted\}\}/g, data.post.updated_at_formatted || '');
+
       html = html.replace(/\{\{post\.author\}\}/g, this.escapeHtml(data.post.author) || '');
       html = html.replace(/\{\{post\.github_url\}\}/g, data.post.github_url || '');
       html = html.replace(/\{\{post\.avatar\}\}/g, data.post.avatar || '');
@@ -620,87 +589,13 @@ class BlogBuilder {
         : `${this.config.site.url}${this.baseUrl}${data.post.url}`;
       html = html.replace(/\{\{post\.full_url\}\}/g, fullUrl || '');
 
-      // Handle post labels section
-      if (data.post.labels && data.post.labels.length > 0) {
-        const labelsHtml = `
-          <div class="mt-4 pt-4 border-t border-gray-200">
-            <div class="mb-2 text-sm font-medium text-gray-700">标签</div>
-            <div class="flex flex-wrap gap-2">
-              ${data.post.labels.map(label =>
-                `<span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
-                       style="background-color: #${label.color}20; color: #${label.color}; border: 1px solid #${label.color}40">
-                  ${this.escapeHtml(label.name)}
-                </span>`
-              ).join('')}
-            </div>
-          </div>
-        `;
-        html = html.replace(/\{\{post\.labels_section\}\}/g, labelsHtml);
-
-        // Legacy labels support (for backward compatibility)
-        const legacyLabelsHtml = data.post.labels.map(label =>
+      // Handle post labels
+      if (data.post.labels) {
+        const labelsHtml = data.post.labels.map(label =>
           `<span class="category" style="background-color: #${label.color}20; color: #${label.color}; border: 1px solid #${label.color}40">${this.escapeHtml(label.name)}</span>`
         ).join('');
-        html = html.replace(/\{\{post\.labels\}\}/g, legacyLabelsHtml);
-      } else {
-        html = html.replace(/\{\{post\.labels_section\}\}/g, '');
-        html = html.replace(/\{\{post\.labels\}\}/g, '');
-      }
 
-      // Handle updated time section
-      if (data.post.is_updated) {
-        const updatedIndicator = `<span class="text-orange-600">· 已更新于 ${data.post.updated_at_formatted}</span>`;
-        html = html.replace(/\{\{post\.updated_indicator\}\}/g, updatedIndicator);
-
-        const updatedTimeSection = `
-          <div class="flex justify-between">
-            <span class="text-gray-600">更新时间:</span>
-            <time datetime="${data.post.updated_at.toISOString()}">${data.post.updated_at_formatted}</time>
-          </div>
-        `;
-        html = html.replace(/\{\{post\.updated_time_section\}\}/g, updatedTimeSection);
-      } else {
-        html = html.replace(/\{\{post\.updated_indicator\}\}/g, '');
-        html = html.replace(/\{\{post\.updated_time_section\}\}/g, '');
-      }
-
-      // Handle issue state section
-      const stateColor = data.post.state === 'open' ? 'green' : 'purple';
-      const stateText = data.post.state === 'open' ? '开放' : '已关闭';
-      const issueStateSection = `
-        <div class="flex justify-between">
-          <span class="text-gray-600">Issue 状态:</span>
-          <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-${stateColor}-100 text-${stateColor}-800">
-            ${stateText}
-          </span>
-        </div>
-      `;
-      html = html.replace(/\{\{post\.issue_state_section\}\}/g, issueStateSection);
-
-      // Handle time tips section
-      const daysSinceCreated = Math.floor((Date.now() - data.post.created_at.getTime()) / (1000 * 60 * 60 * 24));
-      if (daysSinceCreated > 30) {
-        const phrases = [
-          "时过境迁", "沧海桑田", "天翻地覆", "水流花落", "斗转星移",
-          "物是人非", "时移世易", "物换星移", "春去秋来"
-        ];
-        const randomPhrase = phrases[Math.floor(Math.random() * phrases.length)];
-        const timeTipsSection = `
-          <div class="card p-4 bg-amber-50 border-amber-200">
-            <div class="flex items-center gap-2 text-amber-800">
-              <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
-                <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
-              </svg>
-              <span class="text-sm font-medium">时间提醒</span>
-            </div>
-            <p class="mt-2 text-sm text-amber-700" id="post-time-tips-span">
-              本文发布于 ${daysSinceCreated} 天前，其中的信息可能已经${randomPhrase}
-            </p>
-          </div>
-        `;
-        html = html.replace(/\{\{post\.time_tips_section\}\}/g, timeTipsSection);
-      } else {
-        html = html.replace(/\{\{post\.time_tips_section\}\}/g, '');
+        html = html.replace(/\{\{post\.labels\}\}/g, labelsHtml);
       }
     }
 
