@@ -44,14 +44,14 @@
     "provider": "giscus",
     "giscus": {
       "repo": "Master08s/looks-blog",
-      "repoId": "",
+      "repoId": "R_kgDOO0NW3w",
       "category": "General",
-      "categoryId": "",
+      "categoryId": "DIC_kwDOO0NW384Cq7p2",
       "mapping": "pathname",
       "strict": "0",
       "reactionsEnabled": "1",
       "emitMetadata": "0",
-      "inputPosition": "bottom",
+      "inputPosition": "top",
       "theme": "preferred_color_scheme",
       "lang": "zh-CN"
     },
