@@ -2,6 +2,11 @@
 
 一个基于 GitHub Issues 的个人博客系统，使用 GitHub Actions 和 GitHub Pages 自动构建和部署。
 
+### 1. 配置
+
+首先去点击Use this template
+创建一个仓库
+
 编辑 `config.json` 文件：
 
 ```json
@@ -9,9 +14,9 @@
   "site": {
     "title": "你的博客名称",
     "description": "你的博客描述",
-    "url": "https://yourusername.github.io/your-repo-name",
+    "url": "https://yourusername.github.io/your-repo-name", //如果你使用了xxx.github.io仓库名格式,那么直接https://yourusername.github.io
     "author": "你的用户名",
-    "avatar": "https://github.com/yourusername.png",
+    "avatar": "https://github.com/yourusername.png", // 推荐使用第三方图片链接
     "language": "zh-CN"
   },
   "github": {
@@ -38,6 +43,8 @@
 3. 添加标签作为文章分类
 4. 发布 Issue，GitHub Actions 会自动构建并部署博客
 
+如果lssues中没有文章 构建出来的会没有文章首页(index.html)
+后面单独修改配置文件 去手动执行一下action就行了
 --------------------------
 
 ### 创建文章
