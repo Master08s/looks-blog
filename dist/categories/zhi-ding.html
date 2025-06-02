@@ -4,8 +4,8 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    
-    <title>Looks Blog</title>
+
+    <title>置顶 | Looks Blog</title>
     <meta name="description" content="A personal blog powered by GitHub Issues" />
 
     <!-- Favicon -->
@@ -71,7 +71,14 @@
       </div>
     </header>
 
+    <!-- 分类标题 -->
+    <div class="mb-8 text-center font-serif text-2xl font-bold">
+      <span class="icon-[material-symbols--folder-outline-rounded] iconify-inline"></span>
+      <span>置顶</span>
+    </div>
+
     <main class="mx-auto max-w-[768px]">
+      <!-- 文章列表 -->
       <div class="flex flex-col gap-5">
         
           <a href="/looks-blog/posts/2.html" class="index-post-card hover:shadow-card text-black transition duration-300">
@@ -96,96 +103,30 @@
             </div>
           </a>
         
-          <a href="/looks-blog/posts/4.html" class="index-post-card hover:shadow-card text-black transition duration-300">
-            <div class="post mx-4 my-4 flex flex-col gap-2">
-              <!-- 标题 -->
-              <div class="textc-primary font-serif font-semibold flex items-center gap-2" style="font-size: 1.2rem">
-                
-                <span>测试文章格式</span>
-              </div>
-
-              <!-- 摘要 -->
-              <div style="font-size: 0.9rem" class="text-gray">这是一个示例Markdown代...</div>
-
-              <!-- 元信息 -->
-              <div class="flex items-center justify-between" style="font-size: 0.8rem">
-                <time class="text-gray">2025-06-02</time>
-                <div class="flex gap-2">
-                  <span class="category" style="background-color: #aaaaaa20; color: #aaaaaa">测试</span>
-                </div>
-              </div>
-            </div>
-          </a>
-        
-          <a href="/looks-blog/posts/3.html" class="index-post-card hover:shadow-card text-black transition duration-300">
-            <div class="post mx-4 my-4 flex flex-col gap-2">
-              <!-- 标题 -->
-              <div class="textc-primary font-serif font-semibold flex items-center gap-2" style="font-size: 1.2rem">
-                
-                <span>前途一片黑暗?</span>
-              </div>
-
-              <!-- 摘要 -->
-              <div style="font-size: 0.9rem" class="text-gray">办法
-
-正好天黑好睡觉 睡醒再...</div>
-
-              <!-- 元信息 -->
-              <div class="flex items-center justify-between" style="font-size: 0.8rem">
-                <time class="text-gray">2025-06-01</time>
-                <div class="flex gap-2">
-                  <span class="category" style="background-color: #BEF88420; color: #BEF884">随写</span>
-                </div>
-              </div>
-            </div>
-          </a>
-        
       </div>
 
-      <!-- Pagination -->
-      <div class="mt-8 flex justify-center gap-4">
-        
-        <span class="text-gray">第 1 页 / 共 1 页</span>
-        
-      </div>
+      <!-- 返回分类页 -->
+      <!-- <div class="mt-12 text-center">
+        <a href="/looks-blog/categories.html" class="inline-flex items-center gap-2 text-blue-600 hover:text-blue-800 transition-colors duration-200">
+          <span class="icon-[material-symbols--arrow-back-rounded]"></span>
+          返回所有分类
+        </a>
+      </div> -->
     </main>
 
     <footer class="pt-20 pb-6">
-    <div class="flex flex-col items-center gap-1">
-    <div>
-      © <span id="current-year"></span> · Master08s
-    </div>
-    <div>
-      Powered by <a href="https://github.com/Master08s/looks-blog">GitHub Issues</a>
-    </div>
-    <div id="running-days" class="2025-05-31"></div>
-    </div>
+      <div class="flex flex-col items-center gap-1">
+        <div>
+          © <span id="current-year"></span> · Master08s
+        </div>
+        <div>
+          Powered by <a href="https://github.com/Master08s/looks-blog">GitHub Issues</a>
+        </div>
+      </div>
     </footer>
 
     <script>
-    // 设置当前年份
       document.getElementById('current-year').textContent = new Date().getFullYear();
-
-      // 计算运行天数
-      const runningDaysElement = document.getElementById('running-days');
-      const startDateString = runningDaysElement.className; // 从class获取建站日期
-      const startDate = new Date(startDateString); // 解析日期字符串
-      const currentDate = new Date();
-      const timeDiff = currentDate - startDate;
-      const daysDiff = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
-
-      runningDaysElement.textContent = `本站已运行 ${daysDiff} 天`;
-
-      document.addEventListener("DOMContentLoaded", () => {
-          if (typeof main !== 'undefined') {
-              main.generateTOC && main.generateTOC();
-              main.scrollHighlightTOC && main.scrollHighlightTOC();
-              main.clickHighlightTOC && main.clickHighlightTOC();
-              main.wordCountAndReadTime && main.wordCountAndReadTime();
-              main.generateTimeTips && main.generateTimeTips();
-              main.addIconToLinks && main.addIconToLinks();
-          }
-      });
     </script>
   </body>
 </html>

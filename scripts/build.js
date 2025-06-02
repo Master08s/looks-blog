@@ -139,7 +139,14 @@ class BlogBuilder {
 
   async build() {
     console.log('🚀 Starting blog build...');
-    
+
+    // 显示图片代理状态
+    if (this.config.imageProxy?.enabled) {
+      console.log(`🖼️  Image proxy enabled: ${this.config.imageProxy.baseUrl}`);
+    } else {
+      console.log('🖼️  Image proxy disabled');
+    }
+
     try {
       // Clean and create dist directory
       await fs.ensureDir(this.distDir);
@@ -333,10 +340,13 @@ class BlogBuilder {
       const updatedAt = new Date(issue.updated_at);
       const isUpdated = updatedAt.getTime() - createdAt.getTime() > 60000; // More than 1 minute difference
 
+      // 处理图片代理
+      const processedContent = this.processImageProxy(issue.body || '');
+
       const post = {
         id: issue.number,
         title: issue.title,
-        content: marked(issue.body || ''),
+        content: marked(processedContent),
         excerpt: this.generateExcerpt(issue.body || ''),
         author: issue.user.login,
         avatar: issue.user.avatar_url,
@@ -383,9 +393,52 @@ class BlogBuilder {
 
   generateExcerpt(content) {
     const plainText = content.replace(/[#*`\[\]]/g, '').trim();
-    return plainText.length > this.config.build.excerptLength 
+    return plainText.length > this.config.build.excerptLength
       ? plainText.substring(0, this.config.build.excerptLength) + '...'
       : plainText;
+  }
+
+  processImageProxy(content) {
+    // 检查是否启用图片代理
+    if (!this.config.imageProxy?.enabled) {
+      return content;
+    }
+
+    const proxyBaseUrl = this.config.imageProxy.baseUrl || 'https://images.weserv.nl/?url=';
+
+    // 处理 Markdown 图片语法: ![alt](url)
+    content = content.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, (match, alt, url) => {
+      // 跳过已经是代理链接的图片
+      if (url.includes('images.weserv.nl') || url.includes('weserv.nl')) {
+        return match;
+      }
+
+      // 只处理 http/https 链接
+      if (url.startsWith('http://') || url.startsWith('https://')) {
+        const proxiedUrl = proxyBaseUrl + url;
+        return `![${alt}](${proxiedUrl})`;
+      }
+
+      return match;
+    });
+
+    // 处理 HTML img 标签: <img src="url" />
+    content = content.replace(/<img([^>]*?)src=["']([^"']+)["']([^>]*?)>/g, (match, before, url, after) => {
+      // 跳过已经是代理链接的图片
+      if (url.includes('images.weserv.nl') || url.includes('weserv.nl')) {
+        return match;
+      }
+
+      // 只处理 http/https 链接
+      if (url.startsWith('http://') || url.startsWith('https://')) {
+        const proxiedUrl = proxyBaseUrl + url;
+        return `<img${before}src="${proxiedUrl}"${after}>`;
+      }
+
+      return match;
+    });
+
+    return content;
   }
 
   async generatePages() {
@@ -621,7 +674,7 @@ class BlogBuilder {
     if (data.posts !== undefined) {
       if (data.posts.length > 0) {
         const postsHtml = data.posts.map(post => `
-          <a href="${post.url}" class="index-post-card hover:shadow-card text-black transition duration-300 ${post.is_pinned ? 'pinned-post' : ''}">
+          <a href="${post.url}" class="index-post-card hover:shadow-card text-black transition duration-300">
             <div class="post mx-4 my-4 flex flex-col gap-2">
               <!-- 标题 -->
               <div class="textc-primary font-serif font-semibold flex items-center gap-2" style="font-size: 1.2rem">

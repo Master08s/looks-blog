@@ -26,6 +26,12 @@
     "comments": true,
     "search": true,
     "categories": true,
-    "archives": true
+    "archives": true,
+    "imageProxy": true
+  },
+  "imageProxy": {
+    "enabled": true,
+    "baseUrl": "https://images.weserv.nl/?url=",
+    "description": "使用 weserv.nl 图片代理服务加速图片加载。设置 enabled 为 false 可关闭此功能"
   }
 }
