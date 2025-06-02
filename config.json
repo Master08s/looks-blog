@@ -18,7 +18,7 @@
     "github": "https://github.com/Master08s"
   },
   "build": {
-    "postsPerPage": 3,
+    "postsPerPage": 10,
     "excerptLength": 15,
     "dateFormat": "yyyy-MM-dd"
   },
