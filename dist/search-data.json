@@ -37,18 +37,5 @@
         "color": "BEF884"
       }
     ]
-  },
-  {
-    "id": 1,
-    "title": "测试",
-    "excerpt": "测试",
-    "url": "/looks-blog/posts/1.html",
-    "created_at": "2025-06-01",
-    "labels": [
-      {
-        "name": "测试",
-        "color": "aaaaaa"
-      }
-    ]
   }
 ]

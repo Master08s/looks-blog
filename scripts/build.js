@@ -177,16 +177,16 @@ class BlogBuilder {
 
   async fetchIssues() {
     console.log('📡 Fetching issues from GitHub...');
-    
+
     const headers = {
       'Accept': 'application/vnd.github.v3+json',
       'User-Agent': 'looks-blog'
     };
-    
+
     if (this.github.token) {
       headers['Authorization'] = `token ${this.github.token}`;
     }
-    
+
     try {
       // Fetch all open issues created by the repository owner
       const response = await axios.get(
@@ -202,10 +202,13 @@ class BlogBuilder {
           }
         }
       );
-      
+
       this.issues = response.data.filter(issue => !issue.pull_request);
-      console.log(`📄 Found ${this.issues.length} issues`);
-      
+      console.log(`📄 Found ${this.issues.length} open issues`);
+
+      // Fetch pinned issues
+      await this.fetchPinnedIssues(headers);
+
       // Fetch comments for each issue
       for (const issue of this.issues) {
         if (issue.comments > 0) {
@@ -215,7 +218,10 @@ class BlogBuilder {
           issue.issue_comments = [];
         }
       }
-      
+
+      // Clean up deleted issues
+      await this.cleanupDeletedIssues();
+
     } catch (error) {
       console.error('Failed to fetch issues:', error.message);
       console.log('🔄 Using mock data for development...');
@@ -271,6 +277,54 @@ class BlogBuilder {
     }
   }
 
+  async fetchPinnedIssues(headers) {
+    try {
+      // Mark issues as pinned if they have the "pinned" or "置顶" label
+      this.issues.forEach(issue => {
+        issue.is_pinned = issue.labels.some(label =>
+          label.name.toLowerCase() === 'pinned' ||
+          label.name.toLowerCase() === '置顶'
+        );
+      });
+
+      const pinnedCount = this.issues.filter(issue => issue.is_pinned).length;
+      if (pinnedCount > 0) {
+        console.log(`📌 Found ${pinnedCount} pinned issues`);
+      }
+    } catch (error) {
+      console.warn('Could not fetch pinned issues:', error.message);
+    }
+  }
+
+  async cleanupDeletedIssues() {
+    try {
+      const postsDir = path.join(this.distDir, 'posts');
+
+      if (await fs.pathExists(postsDir)) {
+        const existingFiles = await fs.readdir(postsDir);
+        const currentIssueIds = new Set(this.issues.map(issue => `${issue.number}.html`));
+
+        // Find files that don't correspond to current issues
+        const filesToDelete = existingFiles.filter(file =>
+          file.endsWith('.html') && !currentIssueIds.has(file)
+        );
+
+        // Delete orphaned post files
+        for (const file of filesToDelete) {
+          const filePath = path.join(postsDir, file);
+          await fs.remove(filePath);
+          console.log(`🗑️  Deleted orphaned post file: ${file}`);
+        }
+
+        if (filesToDelete.length > 0) {
+          console.log(`🧹 Cleaned up ${filesToDelete.length} deleted post(s)`);
+        }
+      }
+    } catch (error) {
+      console.warn('Could not cleanup deleted issues:', error.message);
+    }
+  }
+
   processPosts() {
     console.log('🔄 Processing posts...');
 
@@ -289,6 +343,7 @@ class BlogBuilder {
         created_at: createdAt,
         updated_at: updatedAt,
         is_updated: isUpdated,
+        is_pinned: issue.is_pinned || false,
         url: `${this.baseUrl}/posts/${issue.number}.html`,
         github_url: issue.html_url,
         labels: issue.labels || [],
@@ -310,8 +365,20 @@ class BlogBuilder {
       return post;
     });
 
-    // Sort posts by creation date (newest first)
-    this.posts.sort((a, b) => b.created_at - a.created_at);
+    // Sort posts: pinned posts first, then by creation date (newest first)
+    this.posts.sort((a, b) => {
+      // If one is pinned and the other is not, pinned comes first
+      if (a.is_pinned && !b.is_pinned) return -1;
+      if (!a.is_pinned && b.is_pinned) return 1;
+
+      // If both have the same pinned status, sort by creation date (newest first)
+      return b.created_at - a.created_at;
+    });
+
+    const pinnedCount = this.posts.filter(post => post.is_pinned).length;
+    if (pinnedCount > 0) {
+      console.log(`📌 ${pinnedCount} post(s) will be displayed as pinned`);
+    }
   }
 
   generateExcerpt(content) {
@@ -554,10 +621,13 @@ class BlogBuilder {
     if (data.posts !== undefined) {
       if (data.posts.length > 0) {
         const postsHtml = data.posts.map(post => `
-          <a href="${post.url}" class="index-post-card hover:shadow-card text-black transition duration-300">
+          <a href="${post.url}" class="index-post-card hover:shadow-card text-black transition duration-300 ${post.is_pinned ? 'pinned-post' : ''}">
             <div class="post mx-4 my-4 flex flex-col gap-2">
               <!-- 标题 -->
-              <div class="textc-primary font-serif font-semibold" style="font-size: 1.2rem">${this.escapeHtml(post.title)}</div>
+              <div class="textc-primary font-serif font-semibold flex items-center gap-2" style="font-size: 1.2rem">
+                ${post.is_pinned ? '<span class="pin-icon" title="置顶文章">📌</span>' : ''}
+                <span>${this.escapeHtml(post.title)}</span>
+              </div>
 
               <!-- 摘要 -->
               <div style="font-size: 0.9rem" class="text-gray">${this.escapeHtml(post.excerpt)}</div>
