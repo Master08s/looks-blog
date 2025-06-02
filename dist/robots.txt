@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://master08s.github.io/looks-blog/sitemap.xml
