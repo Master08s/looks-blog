@@ -391,7 +391,7 @@ A: 在 `config.json` 中将 `imageProxy.enabled` 设置为 `false` 即可关闭�
 本项目采用 MIT 许可证，你可以自由使用、修改和分发。
 
 ## 贡献与支持
-
+感谢Halo的Sora模版作者
 如果这个项目对你有帮助，欢迎：
 - 给项目点个 ⭐ Star
 - 提交 Issue 反馈问题
