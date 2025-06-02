@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Looks Blog</title>
+    <link>https://master08s.github.io/looks-blog</link>
+    <description>A personal blog powered by GitHub Issues</description>
+    <language>zh-CN</language>
+    <managingEditor>Master08s</managingEditor>
+    <webMaster>Master08s</webMaster>
+    <lastBuildDate>Mon, 02 Jun 2025 08:33:45 GMT</lastBuildDate>
+    <atom:link href="https://master08s.github.io/looks-blog/rss.xml" rel="self" type="application/rss+xml"/>
+    <generator>Looks Blog</generator>
+    <item>
+      <title>七绝·感志</title>
+      <link>https://master08s.github.io/looks-blog/posts/2.html</link>
+      <description>《七绝·感志》
+空怀壮志作长吟...</description>
+      <pubDate>Sun, 01 Jun 2025 18:25:11 GMT</pubDate>
+      <guid isPermaLink="true">https://master08s.github.io/looks-blog/posts/2.html</guid>
+      <author>Master08s</author>
+      <category>随写</category>
+      <category>置顶</category>
+    </item>
+    <item>
+      <title>测试图片代理功能</title>
+      <link>https://master08s.github.io/looks-blog/posts/5.html</link>
+      <description>!Image(https://...</description>
+      <pubDate>Mon, 02 Jun 2025 05:48:36 GMT</pubDate>
+      <guid isPermaLink="true">https://master08s.github.io/looks-blog/posts/5.html</guid>
+      <author>Master08s</author>
+      <category>测试</category>
+    </item>
+    <item>
+      <title>测试文章格式</title>
+      <link>https://master08s.github.io/looks-blog/posts/4.html</link>
+      <description>这是一个示例Markdown代...</description>
+      <pubDate>Mon, 02 Jun 2025 04:55:11 GMT</pubDate>
+      <guid isPermaLink="true">https://master08s.github.io/looks-blog/posts/4.html</guid>
+      <author>Master08s</author>
+      <category>测试</category>
+    </item>
+    <item>
+      <title>前途一片黑暗?</title>
+      <link>https://master08s.github.io/looks-blog/posts/3.html</link>
+      <description>办法
+
+正好天黑好睡觉 睡醒再...</description>
+      <pubDate>Sun, 01 Jun 2025 18:56:10 GMT</pubDate>
+      <guid isPermaLink="true">https://master08s.github.io/looks-blog/posts/3.html</guid>
+      <author>Master08s</author>
+      <category>随写</category>
+    </item>
+  </channel>
+</rss>
