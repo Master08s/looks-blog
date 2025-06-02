@@ -648,8 +648,11 @@ class BlogBuilder {
   renderTemplate(template, data) {
     // Simple template rendering - replace placeholders with actual data
     // This is a basic implementation - in a real scenario, you might want to use a proper template engine
-    
+
     let html = template;
+
+    // Determine if this is a post page
+    const isPostPage = !!data.post;
     
     // Replace site data
     html = html.replace(/\{\{site\.title\}\}/g, data.site?.title || '');
@@ -796,7 +799,74 @@ class BlogBuilder {
       html = html.replace(/\{\{category\.color\}\}/g, data.category.color || '');
     }
 
+    // Process custom code injection
+    html = this.processCustomCode(html, isPostPage);
+
     return html;
+  }
+
+  processCustomCode(html, isPostPage) {
+    if (!this.config.customCode) {
+      return html;
+    }
+
+    const customCode = this.config.customCode;
+
+    // Determine which custom code to use (global + post-specific for post pages)
+    const globalCode = customCode.global || {};
+    const postCode = isPostPage ? (customCode.post || {}) : {};
+
+    // Process head custom code
+    const headCode = this.buildCustomCodeSection(globalCode.head, postCode.head);
+    if (headCode) {
+      // Insert before closing </head> tag
+      html = html.replace('</head>', `${headCode}\n</head>`);
+    }
+
+    // Process footer custom code
+    const footerCode = this.buildCustomCodeSection(globalCode.footer, postCode.footer);
+    if (footerCode) {
+      // Insert before closing </body> tag
+      html = html.replace('</body>', `${footerCode}\n</body>`);
+    }
+
+    return html;
+  }
+
+  buildCustomCodeSection(globalSection, postSection) {
+    const sections = [];
+
+    // Combine global and post-specific code
+    const allSections = [globalSection, postSection].filter(Boolean);
+
+    for (const section of allSections) {
+      if (!section) continue;
+
+      // Add CSS files
+      if (section.css && Array.isArray(section.css)) {
+        for (const cssUrl of section.css) {
+          if (cssUrl && typeof cssUrl === 'string') {
+            sections.push(`<link rel="stylesheet" href="${this.escapeHtml(cssUrl)}">`);
+          }
+        }
+      }
+
+      // Add JS files
+      if (section.js && Array.isArray(section.js)) {
+        for (const jsUrl of section.js) {
+          if (jsUrl && typeof jsUrl === 'string') {
+            sections.push(`<script src="${this.escapeHtml(jsUrl)}"></script>`);
+          }
+        }
+      }
+
+      // Add custom HTML
+      if (section.html && typeof section.html === 'string') {
+        sections.push(section.html);
+      }
+    }
+
+    return sections.length > 0 ? sections.join('\n') : '';
   }
 
   escapeHtml(text) {
