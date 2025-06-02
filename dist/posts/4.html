@@ -5,15 +5,15 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     
-    <title>{{post.title}} | {{site.title}}</title>
-    <meta name="description" content="{{post.excerpt}}" />
+    <title>测试文章格式 | Looks Blog</title>
+    <meta name="description" content="这是一个示例Markdown代..." />
 
     <!-- Favicon -->
-    <link rel="icon" type="image/x-icon" href="{{site.favicon}}" />
-    <link rel="shortcut icon" href="{{site.favicon}}" />
-    <link rel="apple-touch-icon" href="{{site.favicon}}" />
+    <link rel="icon" type="image/x-icon" href="https://master08s.github.io/avatar.svg" />
+    <link rel="shortcut icon" href="https://master08s.github.io/avatar.svg" />
+    <link rel="apple-touch-icon" href="https://master08s.github.io/avatar.svg" />
 
-    <link rel="stylesheet" href="/assets/dist/main.css" />
+    <link rel="stylesheet" href="/looks-blog/assets/dist/main.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css">
 
     <!-- Code Block Styles -->
@@ -141,7 +141,7 @@
     <script src="https://code.iconify.design/3/3.1.1/iconify.min.js"></script>
 
     <!-- Fonts -->
-    <link rel="stylesheet" href="/assets/fonts/HarmonyOS_Sans_SC/main.css" />
+    <link rel="stylesheet" href="/looks-blog/assets/fonts/HarmonyOS_Sans_SC/main.css" />
     <link rel="preconnect" href="https://fontsapi.zeoseven.com" crossorigin />
     <link
       rel="stylesheet"
@@ -159,19 +159,19 @@
       onerror="this.href='https://fontsapi-storage.zeoseven.com/442/main/result.css'"
     />
     
-    <script src="/assets/dist/main.iife.js"></script>
+    <script src="/looks-blog/assets/dist/main.iife.js"></script>
   </head>
 
   <body>
     <header>
       <nav class="mb-[32px] flex border-b border-[#ddd] py-[14px] font-mono" id="navigation">
-        <a href="/">{{site.title}}</a>
+        <a href="/looks-blog/">Looks Blog</a>
         <div class="ml-auto flex flex-row gap-5">
-          <a href="/">首页</a>
-          <a href="/archives.html">归档</a>
-          <a href="/categories.html">分类</a>
+          <a href="/looks-blog/">首页</a>
+          <a href="/looks-blog/archives.html">归档</a>
+          <a href="/looks-blog/categories.html">分类</a>
           <span> | </span>
-          <a href="/search.html">
+          <a href="/looks-blog/search.html">
             <span class="icon-[fa-solid--search] iconify-inline"></span>
           </a>
         </div>
@@ -180,24 +180,31 @@
 
     <article>
       <!-- 标题 -->
-      <div class="text-center font-serif text-[2rem] font-bold">{{post.title}}</div>
+      <div class="text-center font-serif text-[2rem] font-bold">测试文章格式</div>
 
       <!-- 文章元信息 -->
       <div class="mt-4 mb-8 flex flex-wrap justify-center gap-3 font-mono text-sm text-gray-600">
         <!-- 发布时间 -->
         <span class="flex items-center gap-1">
           <span class="icon-[bx--calendar-alt] iconify-inline"></span>
-          <time id="post-publish-time">{{post.created_at}}</time>
+          <time id="post-publish-time">2025-06-02</time>
         </span>
 
         <!-- 作者 -->
         <span class="flex items-center gap-1">
           <span class="icon-[heroicons--user-circle] iconify-inline"></span>
-          <span>{{post.author}}</span>
+          <span>Master08s</span>
         </span>
 
         <!-- 分类 -->
-        {{post.categories_meta}}
+        
+          <span class="flex items-center gap-1">
+            <span class="icon-[material-symbols--folder-outline-rounded] iconify-inline"></span>
+            <span>
+              <a href="/looks-blog/categories/ce-shi.html" class="text-blue-600 hover:underline">测试</a>
+            </span>
+          </span>
+        
 
         <!-- 字数统计 -->
         <span class="flex items-center gap-1">
@@ -214,19 +221,75 @@
         <!-- GitHub 链接 -->
         <span class="flex items-center gap-1">
           <span class="icon-[mdi--github] iconify-inline"></span>
-          <a href="{{post.github_url}}" target="_blank" class="text-blue-600 hover:underline">
+          <a href="https://github.com/Master08s/looks-blog/issues/4" target="_blank" class="text-blue-600 hover:underline">
             GitHub
           </a>
         </span>
       </div>
 
       <section class="relative">
-        <div id="post-content">{{post.content}}</div>
+        <div id="post-content"><h1 id="这是一个示例markdown代码块">这是一个示例Markdown代码块</h1><h2 id="二级标题">二级标题</h2><ul>
+<li>列表项1</li>
+<li>列表项2</li>
+<li>列表项3</li>
+</ul>
+<p><strong>加粗文本</strong> 和 <em>斜体文本</em></p>
+<p><code>行内代码</code></p>
+<blockquote>
+<p>引用内容</p>
+</blockquote>
+<p><a href="https://example.com">链接文本</a></p>
+<table>
+<thead>
+<tr>
+<th>表格</th>
+<th>示例</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>单元格1</td>
+<td>单元格2</td>
+</tr>
+</tbody></table>
+<div class="code-block-wrapper">
+    <div class="code-block-header">
+      <span class="code-block-lang">python</span>
+      <button class="code-copy-btn" onclick="copyCode(this)" title="复制代码">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+          <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+        </svg>
+      </button>
+    </div>
+    <pre><code class="language-python"><span class="hljs-comment"># Python 代码示例</span>
+<span class="hljs-keyword">def</span> <span class="hljs-title function_">hello_world</span>():
+    <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;Hello, World!&quot;</span>)
+    <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;这是一段Python代码高亮测试&quot;</span>)
+
+hello_world()</code></pre>
+  </div><div class="code-block-wrapper">
+    <div class="code-block-header">
+      <span class="code-block-lang">javascript</span>
+      <button class="code-copy-btn" onclick="copyCode(this)" title="复制代码">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+          <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+        </svg>
+      </button>
+    </div>
+    <pre><code class="language-javascript"><span class="hljs-comment">// JavaScript 代码示例</span>
+<span class="hljs-keyword">function</span> <span class="hljs-title function_">greet</span>(<span class="hljs-params"></span>) {
+    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&quot;Hello from JavaScript!&quot;</span>);
+    <span class="hljs-variable language_">console</span>.<span class="hljs-title function_">log</span>(<span class="hljs-string">&quot;这是JavaScript代码高亮测试&quot;</span>);
+}
+
+<span class="hljs-title function_">greet</span>();</code></pre>
+  </div></div>
 
         <!-- 版权许可协议 -->
         <div class="card mt-14 px-6 py-4" id="license">
-          <div class="font-bold">{{post.title}}</div>
-          <div class="license-item mt-1">{{post.full_url}}</div>
+          <div class="font-bold">测试文章格式</div>
+          <div class="license-item mt-1">https://master08s.github.io/looks-blog/looks-blog/posts/4.html</div>
           <div class="license-item mt-1">
             本文采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议
           </div>
@@ -243,8 +306,8 @@
 
     <footer class="pt-20 pb-6">
       <div class="flex flex-col items-center gap-1">
-        <div>© <span id="current-year"></span> · {{site.author}}</div>
-        <div>Powered by <a href="https://github.com/{{site.author}}/{{github.repo}}">GitHub Issues</a></div>
+        <div>© <span id="current-year"></span> · Master08s</div>
+        <div>Powered by <a href="https://github.com/Master08s/looks-blog">GitHub Issues</a></div>
       </div>
     </footer>
 

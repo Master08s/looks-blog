@@ -1,5 +1,18 @@
 [
   {
+    "id": 4,
+    "title": "测试文章格式",
+    "excerpt": "这是一个示例Markdown代...",
+    "url": "/looks-blog/posts/4.html",
+    "created_at": "2025-06-02",
+    "labels": [
+      {
+        "name": "测试",
+        "color": "aaaaaa"
+      }
+    ]
+  },
+  {
     "id": 3,
     "title": "前途一片黑暗?",
     "excerpt": "办法\n\n正好天黑好睡觉 睡醒再...",

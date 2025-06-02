@@ -22,16 +22,40 @@ renderer.heading = function(text, level) {
   return `<h${level} id="${id}">${text}</h${level}>`;
 };
 
+// Custom code block renderer with copy button
+renderer.code = function(code, infostring, escaped) {
+  const lang = (infostring || '').match(/\S*/)[0];
+  const langClass = lang ? ` class="language-${lang}"` : '';
+  const langLabel = lang || 'text';
+
+  // Highlight the code
+  let highlightedCode;
+  if (lang && hljs.getLanguage(lang)) {
+    try {
+      highlightedCode = hljs.highlight(code, { language: lang }).value;
+    } catch (err) {
+      highlightedCode = hljs.highlightAuto(code).value;
+    }
+  } else {
+    highlightedCode = hljs.highlightAuto(code).value;
+  }
+
+  return `<div class="code-block-wrapper">
+    <div class="code-block-header">
+      <span class="code-block-lang">${langLabel}</span>
+      <button class="code-copy-btn" onclick="copyCode(this)" title="复制代码">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+          <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+        </svg>
+      </button>
+    </div>
+    <pre><code${langClass}>${highlightedCode}</code></pre>
+  </div>`;
+};
+
 marked.setOptions({
   renderer: renderer,
-  highlight: function(code, lang) {
-    if (lang && hljs.getLanguage(lang)) {
-      try {
-        return hljs.highlight(code, { language: lang }).value;
-      } catch (err) {}
-    }
-    return hljs.highlightAuto(code).value;
-  },
   breaks: true,
   gfm: true
 });
@@ -594,18 +618,7 @@ class BlogBuilder {
         : `${this.config.site.url}${this.baseUrl}${data.post.url}`;
       html = html.replace(/\{\{post\.full_url\}\}/g, fullUrl || '');
 
-      // Handle updated time meta
-      if (data.post.is_updated) {
-        const updatedTimeMeta = `
-          <span class="flex items-center gap-1">
-            <span class="icon-[material-symbols--update] iconify-inline"></span>
-            <time>${data.post.updated_at.toISOString().split('T')[0]}</time>
-          </span>
-        `;
-        html = html.replace(/\{\{post\.updated_time_meta\}\}/g, updatedTimeMeta);
-      } else {
-        html = html.replace(/\{\{post\.updated_time_meta\}\}/g, '');
-      }
+
 
       // Handle categories meta
       if (data.post.labels && data.post.labels.length > 0) {
@@ -620,22 +633,8 @@ class BlogBuilder {
           </span>
         `;
         html = html.replace(/\{\{post\.categories_meta\}\}/g, categoriesMeta);
-
-        // Handle tags meta (same as categories for now)
-        const tagsMeta = `
-          <span class="flex items-center gap-1">
-            <span class="icon-[heroicons--tag] iconify-inline"></span>
-            <span>
-              ${data.post.labels.map(label =>
-                `<span class="inline-block px-2 py-1 text-xs rounded" style="background-color: #${label.color}20; color: #${label.color}">${this.escapeHtml(label.name)}</span>`
-              ).join(' ')}
-            </span>
-          </span>
-        `;
-        html = html.replace(/\{\{post\.tags_meta\}\}/g, tagsMeta);
       } else {
         html = html.replace(/\{\{post\.categories_meta\}\}/g, '');
-        html = html.replace(/\{\{post\.tags_meta\}\}/g, '');
       }
 
       // Handle post labels (legacy support)
