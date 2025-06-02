@@ -3,6 +3,8 @@ name: Build and Deploy Blog
 on:
   push:
     branches: [ main, master ]
+    paths-ignore:
+      - 'config.json'
   issues:
     types: [opened, edited, closed, reopened, labeled, unlabeled]
   issue_comment:
