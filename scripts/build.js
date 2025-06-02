@@ -7,8 +7,23 @@ const { marked } = require('marked');
 const hljs = require('highlight.js');
 const pinyinLib = require('pinyin');
 
-// Configure marked with highlight.js
+// Configure marked with highlight.js and custom renderer
+const renderer = new marked.Renderer();
+
+// Custom heading renderer to add id attributes for TOC
+renderer.heading = function(text, level) {
+  // Generate id from text (remove special characters and spaces)
+  const id = text
+    .toLowerCase()
+    .replace(/[^\w\u4e00-\u9fa5]+/g, '-') // Replace non-word chars with dash, keep Chinese
+    .replace(/^-+|-+$/g, '') // Remove leading/trailing dashes
+    .replace(/-+/g, '-'); // Replace multiple dashes with single dash
+
+  return `<h${level} id="${id}">${text}</h${level}>`;
+};
+
 marked.setOptions({
+  renderer: renderer,
   highlight: function(code, lang) {
     if (lang && hljs.getLanguage(lang)) {
       try {
