@@ -932,7 +932,7 @@ ${urls.map(url => `  <url>
     // Skip if required fields are missing
     if (!config.repo || !config.repoId || !config.categoryId) {
       return `
-        <div class="comments-section mt-12">
+        <div class="comments-section mt-12 mx-auto" style="max-width: 750px;">
           <div class="text-center text-gray-500 py-8">
             <p>💬 Giscus 评论系统配置不完整</p>
             <p class="text-sm mt-2">请在 config.json 中配置 repoId 和 categoryId</p>
@@ -947,7 +947,7 @@ ${urls.map(url => `  <url>
     }
 
     return `
-      <div class="comments-section mt-12">
+      <div class="comments-section mt-12 mx-auto" style="max-width: 750px;">
         <div class="border-t pt-8">
           <h3 class="text-xl font-bold mb-6 text-center">💬 评论</h3>
           <script src="https://giscus.app/client.js"
@@ -974,7 +974,7 @@ ${urls.map(url => `  <url>
     const config = this.config.comments.utterances;
 
     return `
-      <div class="comments-section mt-12">
+      <div class="comments-section mt-12 mx-auto" style="max-width: 750px;">
         <div class="border-t pt-8">
           <h3 class="text-xl font-bold mb-6 text-center">💬 评论</h3>
           <script src="https://utteranc.es/client.js"
@@ -996,7 +996,7 @@ ${urls.map(url => `  <url>
     // Skip if required fields are missing
     if (!config.clientID || !config.clientSecret) {
       return `
-        <div class="comments-section mt-12">
+        <div class="comments-section mt-12 mx-auto" style="max-width: 750px;">
           <div class="text-center text-gray-500 py-8">
             <p>💬 GitTalk 评论系统配置不完整</p>
             <p class="text-sm mt-2">请在 config.json 中配置 clientID 和 clientSecret</p>
@@ -1015,7 +1015,7 @@ ${urls.map(url => `  <url>
     const uniqueId = this.generateMD5(postId).substring(0, 50); // GitTalk requires ID <= 50 chars
 
     return `
-      <div class="comments-section mt-12">
+      <div class="comments-section mt-12 mx-auto" style="max-width: 750px;">
         <div class="border-t pt-8">
           <h3 class="text-xl font-bold mb-6 text-center">💬 评论</h3>
           <div id="gitalk-container"></div>
