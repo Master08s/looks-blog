@@ -316,10 +316,10 @@ class BlogBuilder {
 
   async generateIndexPage(templates) {
     console.log('🏠 Generating index page...');
-    
+
     const postsPerPage = this.config.build.postsPerPage;
-    const totalPages = Math.ceil(this.posts.length / postsPerPage);
-    
+    const totalPages = Math.max(1, Math.ceil(this.posts.length / postsPerPage)); // Ensure at least 1 page
+
     for (let page = 1; page <= totalPages; page++) {
       const startIndex = (page - 1) * postsPerPage;
       const endIndex = startIndex + postsPerPage;
@@ -506,28 +506,45 @@ class BlogBuilder {
     html = this.fixAssetPaths(html);
     
     // Replace posts data (for index page)
-    if (data.posts) {
-      const postsHtml = data.posts.map(post => `
-        <a href="${post.url}" class="index-post-card hover:shadow-card text-black transition duration-300">
-          <div class="post mx-4 my-4 flex flex-col gap-2">
-            <!-- 标题 -->
-            <div class="textc-primary font-serif font-semibold" style="font-size: 1.2rem">${this.escapeHtml(post.title)}</div>
+    if (data.posts !== undefined) {
+      if (data.posts.length > 0) {
+        const postsHtml = data.posts.map(post => `
+          <a href="${post.url}" class="index-post-card hover:shadow-card text-black transition duration-300">
+            <div class="post mx-4 my-4 flex flex-col gap-2">
+              <!-- 标题 -->
+              <div class="textc-primary font-serif font-semibold" style="font-size: 1.2rem">${this.escapeHtml(post.title)}</div>
 
-            <!-- 摘要 -->
-            <div style="font-size: 0.9rem" class="text-gray">${this.escapeHtml(post.excerpt)}</div>
+              <!-- 摘要 -->
+              <div style="font-size: 0.9rem" class="text-gray">${this.escapeHtml(post.excerpt)}</div>
 
-            <!-- 元信息 -->
-            <div class="flex items-center justify-between" style="font-size: 0.8rem">
-              <time class="text-gray">${post.created_at.toISOString().split('T')[0]}</time>
-              <div class="flex gap-2">
-                ${post.labels.map(label => `<span class="category" style="background-color: #${label.color}20; color: #${label.color}">${this.escapeHtml(label.name)}</span>`).join('')}
+              <!-- 元信息 -->
+              <div class="flex items-center justify-between" style="font-size: 0.8rem">
+                <time class="text-gray">${post.created_at.toISOString().split('T')[0]}</time>
+                <div class="flex gap-2">
+                  ${post.labels.map(label => `<span class="category" style="background-color: #${label.color}20; color: #${label.color}">${this.escapeHtml(label.name)}</span>`).join('')}
+                </div>
               </div>
             </div>
+          </a>
+        `).join('');
+
+        html = html.replace(/\{\{posts\}\}/g, postsHtml);
+      } else {
+        // Show a friendly message when there are no posts
+        const noPostsHtml = `
+          <div class="text-center py-20">
+            <div class="text-6xl mb-4">📝</div>
+            <div class="text-xl font-semibold mb-2">还没有文章</div>
+            <div class="text-gray-600 mb-4">开始在 GitHub Issues 中创建你的第一篇文章吧！</div>
+            <a href="https://github.com/${this.github.owner}/${this.github.repo}/issues/new"
+               target="_blank"
+               class="inline-block px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+              创建文章
+            </a>
           </div>
-        </a>
-      `).join('');
-      
-      html = html.replace(/\{\{posts\}\}/g, postsHtml);
+        `;
+        html = html.replace(/\{\{posts\}\}/g, noPostsHtml);
+      }
     }
     
     // Replace pagination data

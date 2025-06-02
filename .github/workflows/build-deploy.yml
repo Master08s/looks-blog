@@ -5,6 +5,7 @@ on:
     branches: [ main, master ]
     paths-ignore:
       - 'config.json'
+      - 'README.md'
   issues:
     types: [opened, edited, closed, reopened, labeled, unlabeled]
   issue_comment:
