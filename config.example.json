@@ -1,21 +1,21 @@
 {
   "site": {
-    "title": "Looks Blog",
-    "description": "A personal blog powered by GitHub Issues",
-    "url": "https://master08s.github.io/looks-blog",
-    "author": "Master08s",
-    "avatar": "https://s3-pan.778801.xyz/d//cloud/Alibaba/png/16cbb094132ae61cf1d7577336599a0e_1.png?sign=tGbmV0IjQ-6XHC4lkhnBOjyIHM8cWxeUMh0P0rJOMiw=:0",
-    "favicon": "https://s3-pan.778801.xyz/d//cloud/Alibaba/png/16cbb094132ae61cf1d7577336599a0e_1.png?sign=tGbmV0IjQ-6XHC4lkhnBOjyIHM8cWxeUMh0P0rJOMiw=:0",
+    "title": "我的博客",
+    "description": "基于 GitHub Issues 的个人博客",
+    "url": "https://username.github.io/blog-repo",
+    "author": "username",
+    "avatar": "https://github.com/username.png",
+    "favicon": "https://github.com/username.png",
     "language": "zh-CN",
-    "date":"2025-05-31"
+    "date": "2024-01-01"
   },
   "github": {
-    "owner": "Master08s",
-    "repo": "looks-blog",
+    "owner": "username",
+    "repo": "blog-repo",
     "token": "process.env.GITHUB_TOKEN"
   },
   "social": {
-    "github": "https://github.com/Master08s"
+    "github": "https://github.com/username"
   },
   "build": {
     "postsPerPage": 10,
@@ -43,10 +43,10 @@
     "enabled": true,
     "provider": "giscus",
     "giscus": {
-      "repo": "Master08s/looks-blog",
-      "repoId": "",
+      "repo": "username/blog-repo",
+      "repoId": "R_kgDOH...",
       "category": "General",
-      "categoryId": "",
+      "categoryId": "DIC_kwDOH...",
       "mapping": "pathname",
       "strict": "0",
       "reactionsEnabled": "1",
@@ -56,17 +56,17 @@
       "lang": "zh-CN"
     },
     "utterances": {
-      "repo": "Master08s/looks-blog",
+      "repo": "username/blog-repo",
       "issueTerm": "pathname",
       "label": "comment",
       "theme": "github-light"
     },
     "gitalk": {
-      "clientID": "",
-      "clientSecret": "",
-      "repo": "looks-blog",
-      "owner": "Master08s",
-      "admin": ["Master08s"],
+      "clientID": "your-github-app-client-id",
+      "clientSecret": "your-github-app-client-secret",
+      "repo": "blog-repo",
+      "owner": "username",
+      "admin": ["username"],
       "id": "pathname",
       "distractionFreeMode": false,
       "language": "zh-CN"

@@ -75,6 +75,13 @@
 - `baseUrl` - 代理服务地址，默认使用 weserv.nl
 - `description` - 功能说明
 
+**`comments` 部分 - 评论系统配置**
+- `enabled` - 是否启用评论功能（true/false）
+- `provider` - 评论系统提供商，可选值：`giscus`、`utterances`、`gitalk`、`none`
+- `giscus` - Giscus 评论系统配置（推荐）
+- `utterances` - Utterances 评论系统配置
+- `gitalk` - GitTalk 评论系统配置
+
 **重要提醒：**
 > 请确保 `owner` 和 `repo` 与你的实际仓库信息一致，否则无法正确获取 Issues 数据
 
@@ -149,6 +156,142 @@
 - 推荐使用 GitHub 的图片上传功能
 - 图片大小建议控制在 1MB 以内
 - 启用图片代理可显著提升国内访问速度
+
+---
+
+## 评论系统配置
+
+Looks Blog 支持三种主流的评论系统，你可以根据需要选择其中一种：
+
+### 🌟 Giscus（推荐）
+
+Giscus 是基于 GitHub Discussions 的评论系统，功能强大且现代化。
+
+**配置步骤：**
+
+1. **启用 GitHub Discussions**
+   - 进入你的博客仓库
+   - 点击 **Settings** → **General**
+   - 在 **Features** 部分勾选 **Discussions**
+
+2. **获取配置信息**
+   - 访问 [Giscus 官网](https://giscus.app/zh-CN)
+   - 输入你的仓库信息（如：`username/blog-repo`）
+   - 选择页面 ↔️ discussion 映射关系（推荐：`pathname`）
+   - 选择 Discussion 分类（推荐：`General`）
+   - 复制生成的配置信息
+
+3. **更新 config.json**
+   ```json
+   {
+     "comments": {
+       "enabled": true,
+       "provider": "giscus",
+       "giscus": {
+         "repo": "username/blog-repo",
+         "repoId": "R_kgDOH...",
+         "category": "General",
+         "categoryId": "DIC_kwDOH...",
+         "mapping": "pathname",
+         "strict": "0",
+         "reactionsEnabled": "1",
+         "emitMetadata": "0",
+         "inputPosition": "bottom",
+         "theme": "preferred_color_scheme",
+         "lang": "zh-CN"
+       }
+     }
+   }
+   ```
+
+### 💬 Utterances
+
+Utterances 是基于 GitHub Issues 的轻量级评论系统。
+
+**配置步骤：**
+
+1. **安装 Utterances App**
+   - 访问 [Utterances 官网](https://utteranc.es/)
+   - 点击 **Install** 安装到你的仓库
+
+2. **更新 config.json**
+   ```json
+   {
+     "comments": {
+       "enabled": true,
+       "provider": "utterances",
+       "utterances": {
+         "repo": "username/blog-repo",
+         "issueTerm": "pathname",
+         "label": "comment",
+         "theme": "github-light"
+       }
+     }
+   }
+   ```
+
+### 🔧 GitTalk
+
+GitTalk 是功能丰富的评论系统，需要创建 GitHub OAuth App。
+
+**配置步骤：**
+
+1. **创建 GitHub OAuth App**
+   - 访问 [GitHub OAuth Apps](https://github.com/settings/applications/new)
+   - 填写应用信息：
+     - **Application name**: `你的博客名称 Comments`
+     - **Homepage URL**: `https://username.github.io/blog-repo`
+     - **Authorization callback URL**: `https://username.github.io/blog-repo`
+   - 创建后获取 **Client ID** 和 **Client Secret**
+
+2. **更新 config.json**
+   ```json
+   {
+     "comments": {
+       "enabled": true,
+       "provider": "gitalk",
+       "gitalk": {
+         "clientID": "your-client-id",
+         "clientSecret": "your-client-secret",
+         "repo": "blog-repo",
+         "owner": "username",
+         "admin": ["username"],
+         "id": "pathname",
+         "distractionFreeMode": false,
+         "language": "zh-CN"
+       }
+     }
+   }
+   ```
+
+### 🚫 禁用评论
+
+如果不需要评论功能，可以完全禁用：
+
+```json
+{
+  "comments": {
+    "enabled": false,
+    "provider": "none"
+  }
+}
+```
+
+**评论系统对比：**
+
+| 特性 | Giscus | Utterances | GitTalk |
+|------|--------|------------|---------|
+| 基于 | GitHub Discussions | GitHub Issues | GitHub Issues |
+| 配置难度 | 简单 | 最简单 | 中等 |
+| 功能丰富度 | 最高 | 中等 | 高 |
+| 反应表情 | ✅ | ❌ | ✅ |
+| 回复嵌套 | ✅ | ❌ | ✅ |
+| 主题切换 | ✅ | ✅ | ✅ |
+
+**推荐选择：**
+- **新博客**：推荐使用 **Giscus**，功能最完整
+- **简单需求**：选择 **Utterances**，配置最简单
+- **高度定制**：选择 **GitTalk**，可定制性最强
 
 ---
 

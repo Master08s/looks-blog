@@ -890,7 +890,166 @@ ${urls.map(url => `  <url>
       html = html.replace(/\{\{category\.color\}\}/g, data.category.color || '');
     }
 
+    // Replace comments system
+    html = this.renderComments(html, data);
+
     return html;
+  }
+
+  renderComments(html, data) {
+    // Check if comments are enabled and we have a post (only show comments on post pages)
+    if (!this.config.comments?.enabled || !data.post) {
+      html = html.replace(/\{\{comments\}\}/g, '');
+      return html;
+    }
+
+    const provider = this.config.comments.provider;
+    let commentsHtml = '';
+
+    switch (provider) {
+      case 'giscus':
+        commentsHtml = this.renderGiscusComments(data.post);
+        break;
+      case 'utterances':
+        commentsHtml = this.renderUtterancesComments(data.post);
+        break;
+      case 'gitalk':
+        commentsHtml = this.renderGitalkComments(data.post);
+        break;
+      case 'none':
+      default:
+        commentsHtml = '';
+        break;
+    }
+
+    html = html.replace(/\{\{comments\}\}/g, commentsHtml);
+    return html;
+  }
+
+  renderGiscusComments(post) {
+    const config = this.config.comments.giscus;
+
+    // Skip if required fields are missing
+    if (!config.repo || !config.repoId || !config.categoryId) {
+      return `
+        <div class="comments-section mt-12">
+          <div class="text-center text-gray-500 py-8">
+            <p>💬 Giscus 评论系统配置不完整</p>
+            <p class="text-sm mt-2">请在 config.json 中配置 repoId 和 categoryId</p>
+            <p class="text-sm">
+              <a href="https://giscus.app/zh-CN" target="_blank" class="text-blue-600 hover:underline">
+                前往 Giscus 官网获取配置
+              </a>
+            </p>
+          </div>
+        </div>
+      `;
+    }
+
+    return `
+      <div class="comments-section mt-12">
+        <div class="border-t pt-8">
+          <h3 class="text-xl font-bold mb-6 text-center">💬 评论</h3>
+          <script src="https://giscus.app/client.js"
+                  data-repo="${config.repo}"
+                  data-repo-id="${config.repoId}"
+                  data-category="${config.category}"
+                  data-category-id="${config.categoryId}"
+                  data-mapping="${config.mapping}"
+                  data-strict="${config.strict}"
+                  data-reactions-enabled="${config.reactionsEnabled}"
+                  data-emit-metadata="${config.emitMetadata}"
+                  data-input-position="${config.inputPosition}"
+                  data-theme="${config.theme}"
+                  data-lang="${config.lang}"
+                  crossorigin="anonymous"
+                  async>
+          </script>
+        </div>
+      </div>
+    `;
+  }
+
+  renderUtterancesComments(post) {
+    const config = this.config.comments.utterances;
+
+    return `
+      <div class="comments-section mt-12">
+        <div class="border-t pt-8">
+          <h3 class="text-xl font-bold mb-6 text-center">💬 评论</h3>
+          <script src="https://utteranc.es/client.js"
+                  repo="${config.repo}"
+                  issue-term="${config.issueTerm}"
+                  label="${config.label}"
+                  theme="${config.theme}"
+                  crossorigin="anonymous"
+                  async>
+          </script>
+        </div>
+      </div>
+    `;
+  }
+
+  renderGitalkComments(post) {
+    const config = this.config.comments.gitalk;
+
+    // Skip if required fields are missing
+    if (!config.clientID || !config.clientSecret) {
+      return `
+        <div class="comments-section mt-12">
+          <div class="text-center text-gray-500 py-8">
+            <p>💬 GitTalk 评论系统配置不完整</p>
+            <p class="text-sm mt-2">请在 config.json 中配置 clientID 和 clientSecret</p>
+            <p class="text-sm">
+              <a href="https://github.com/settings/applications/new" target="_blank" class="text-blue-600 hover:underline">
+                前往 GitHub 创建 OAuth App
+              </a>
+            </p>
+          </div>
+        </div>
+      `;
+    }
+
+    // Generate unique ID for the post
+    const postId = config.id === 'pathname' ? post.url : `post-${post.id}`;
+    const uniqueId = this.generateMD5(postId).substring(0, 50); // GitTalk requires ID <= 50 chars
+
+    return `
+      <div class="comments-section mt-12">
+        <div class="border-t pt-8">
+          <h3 class="text-xl font-bold mb-6 text-center">💬 评论</h3>
+          <div id="gitalk-container"></div>
+          <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+          <script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+          <script>
+            const gitalk = new Gitalk({
+              clientID: '${config.clientID}',
+              clientSecret: '${config.clientSecret}',
+              repo: '${config.repo}',
+              owner: '${config.owner}',
+              admin: ${JSON.stringify(config.admin)},
+              id: '${uniqueId}',
+              distractionFreeMode: ${config.distractionFreeMode},
+              language: '${config.language}'
+            });
+            gitalk.render('gitalk-container');
+          </script>
+        </div>
+      </div>
+    `;
+  }
+
+  generateMD5(str) {
+    // Simple hash function for generating unique IDs
+    // This is a basic implementation - in production you might want to use a proper crypto library
+    let hash = 0;
+    if (str.length === 0) return hash.toString();
+    for (let i = 0; i < str.length; i++) {
+      const char = str.charCodeAt(i);
+      hash = ((hash << 5) - hash) + char;
+      hash = hash & hash; // Convert to 32-bit integer
+    }
+    return Math.abs(hash).toString(16);
   }
 
   escapeHtml(text) {
