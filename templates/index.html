@@ -7,11 +7,31 @@
     
     <title>{{site.title}}</title>
     <meta name="description" content="{{site.description}}" />
+    <meta name="keywords" content="{{site.keywords}}" />
+    <meta name="author" content="{{site.author}}" />
+    <meta name="language" content="{{site.language}}" />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="{{site.url}}" />
+    <meta property="og:title" content="{{site.title}}" />
+    <meta property="og:description" content="{{site.description}}" />
+    <meta property="og:image" content="{{site.avatar}}" />
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content="{{site.url}}" />
+    <meta property="twitter:title" content="{{site.title}}" />
+    <meta property="twitter:description" content="{{site.description}}" />
+    <meta property="twitter:image" content="{{site.avatar}}" />
 
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="{{site.favicon}}" />
     <link rel="shortcut icon" href="{{site.favicon}}" />
     <link rel="apple-touch-icon" href="{{site.favicon}}" />
+
+    <!-- RSS Feed -->
+    <link rel="alternate" type="application/rss+xml" title="{{site.title}} RSS Feed" href="{{baseUrl}}/rss.xml" />
 
     <link rel="stylesheet" href="./assets/dist/main.css" />
 
