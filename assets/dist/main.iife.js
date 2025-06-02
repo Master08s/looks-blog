@@ -4,16 +4,21 @@ var main = (function (a) {
   function m() {
     const e = document.getElementById("toc"),
       t = document.getElementById("post-content");
-    (t == null ? void 0 : t.querySelectorAll("h1, h2, h3, h4")).forEach((n) => {
-      const s = parseInt(n.tagName.substring(1)),
-        i = document.createElement("div");
-      i.className = "toc-item-level-" + s;
-      const c = document.createElement("a");
-      (c.href = `#${n.id}`),
-        (c.textContent = n.textContent),
-        i.appendChild(c),
-        e.appendChild(i);
-    });
+    if (t && e) {
+      const headings = t.querySelectorAll("h1, h2, h3, h4");
+      if (headings) {
+        headings.forEach((n) => {
+          const s = parseInt(n.tagName.substring(1)),
+            i = document.createElement("div");
+          i.className = "toc-item-level-" + s;
+          const c = document.createElement("a");
+          (c.href = `#${n.id}`),
+            (c.textContent = n.textContent),
+            i.appendChild(c),
+            e.appendChild(i);
+        });
+      }
+    }
   }
   function p() {
     let e = null;
@@ -156,13 +161,19 @@ var main = (function (a) {
       });
     });
   function b() {
-    const t = document.querySelector("#post-content").textContent.length;
-    (document.getElementById("post-wordcount").textContent = t),
-      (document.getElementById("post-readtime").textContent = (function () {
+    const postContent = document.querySelector("#post-content");
+    const wordCountEl = document.getElementById("post-wordcount");
+    const readTimeEl = document.getElementById("post-readtime");
+
+    if (postContent && wordCountEl && readTimeEl) {
+      const t = postContent.textContent.length;
+      wordCountEl.textContent = t;
+      readTimeEl.textContent = (function () {
         const o = Math.round(t / 350),
           n = Math.round(t / 250);
         return o == n ? `${n} min` : `${o}~${n} min`;
-      })());
+      })();
+    }
   }
   function I(e, t) {
     const o = new Date(e),
@@ -197,6 +208,36 @@ var main = (function (a) {
     document.getElementById("post-time-tips-span").textContent =
       "本文" + o + I(t, e) + " 天前，其中的信息可能已经" + n[s];
   }
+  // Console output with repository information
+  function showRepoInfo() {
+    const styles = [
+      'color: #4f46e5',
+      'font-size: 16px',
+      'font-weight: bold',
+      'text-shadow: 1px 1px 1px rgba(0,0,0,0.1)'
+    ].join(';');
+
+    const linkStyles = [
+      'color: #059669',
+      'font-size: 14px',
+      'text-decoration: underline'
+    ].join(';');
+
+    console.log('%c🚀 Looks Blog - Powered by GitHub Issues', styles);
+    console.log('%c📖 Documentation: https://github.com/Master08s/looks-blog', linkStyles);
+    console.log('%c⭐ Give us a star if you like this project!', 'color: #f59e0b; font-size: 14px;');
+    console.log('%c🛠️ Built with ❤️ by Master08s', 'color: #6b7280; font-size: 12px;');
+  }
+
+  // Show repository info when page loads
+  if (typeof window !== 'undefined') {
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', showRepoInfo);
+    } else {
+      showRepoInfo();
+    }
+  }
+
   return (
     (a.addIconToLinks = y),
     (a.clickHighlightTOC = f),
