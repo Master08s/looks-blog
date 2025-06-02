@@ -33,5 +33,10 @@
     "enabled": true,
     "baseUrl": "https://images.weserv.nl/?url=",
     "description": "使用 weserv.nl 图片代理服务加速图片加载。设置 enabled 为 false 可关闭此功能"
+  },
+  "seo": {
+    "keywords": ["博客", "GitHub Issues", "个人网站", "技术分享"],
+    "generateSitemap": true,
+    "description": "SEO 优化配置。keywords 为网站关键词数组，generateSitemap 控制是否生成 sitemap.xml"
   }
 }

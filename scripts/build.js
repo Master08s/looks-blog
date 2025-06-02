@@ -462,6 +462,11 @@ class BlogBuilder {
     // Generate search page and data
     await this.generateSearchPage(templates);
     await this.generateSearchData();
+
+    // Generate sitemap if enabled
+    if (this.config.seo?.generateSitemap) {
+      await this.generateSitemap();
+    }
   }
 
   async loadTemplates() {
@@ -645,6 +650,87 @@ class BlogBuilder {
     );
   }
 
+  async generateSitemap() {
+    console.log('🗺️  Generating sitemap...');
+
+    const siteUrl = this.config.site.url;
+    if (!siteUrl) {
+      console.warn('⚠️  Site URL not configured, skipping sitemap generation');
+      return;
+    }
+
+    // Extract base domain from siteUrl for proper URL construction
+    const url = new URL(siteUrl);
+    const baseDomain = `${url.protocol}//${url.host}`;
+
+    // Generate sitemap URLs
+    const urls = [];
+
+    // Add homepage
+    urls.push({
+      loc: siteUrl,
+      lastmod: new Date().toISOString().split('T')[0],
+      changefreq: 'daily',
+      priority: '1.0'
+    });
+
+    // Add static pages
+    const staticPages = [
+      { path: '/archives.html', priority: '0.8' },
+      { path: '/categories.html', priority: '0.8' },
+      { path: '/search.html', priority: '0.6' }
+    ];
+
+    staticPages.forEach(page => {
+      // Construct URL properly: baseDomain + baseUrl + page.path
+      const pageUrl = `${baseDomain}${this.baseUrl}${page.path}`;
+      urls.push({
+        loc: pageUrl,
+        lastmod: new Date().toISOString().split('T')[0],
+        changefreq: 'weekly',
+        priority: page.priority
+      });
+    });
+
+    // Add post pages
+    this.posts.forEach(post => {
+      // post.url already includes baseUrl, so combine with baseDomain
+      const postUrl = `${baseDomain}${post.url}`;
+      urls.push({
+        loc: postUrl,
+        lastmod: post.updated_at.toISOString().split('T')[0],
+        changefreq: 'monthly',
+        priority: '0.7'
+      });
+    });
+
+    // Add category pages
+    this.categories.forEach(category => {
+      // Construct URL properly: baseDomain + baseUrl + category path
+      const categoryUrl = `${baseDomain}${this.baseUrl}/categories/${this.toPinyinFilename(category.name)}.html`;
+      urls.push({
+        loc: categoryUrl,
+        lastmod: new Date().toISOString().split('T')[0],
+        changefreq: 'weekly',
+        priority: '0.6'
+      });
+    });
+
+    // Generate XML
+    const sitemapXml = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${urls.map(url => `  <url>
+    <loc>${url.loc}</loc>
+    <lastmod>${url.lastmod}</lastmod>
+    <changefreq>${url.changefreq}</changefreq>
+    <priority>${url.priority}</priority>
+  </url>`).join('\n')}
+</urlset>`;
+
+    await fs.writeFile(path.join(this.distDir, 'sitemap.xml'), sitemapXml);
+    console.log(`✅ Generated sitemap with ${urls.length} URLs`);
+  }
+
   renderTemplate(template, data) {
     // Simple template rendering - replace placeholders with actual data
     // This is a basic implementation - in a real scenario, you might want to use a proper template engine
@@ -659,6 +745,14 @@ class BlogBuilder {
     html = html.replace(/\{\{site\.url\}\}/g, data.site?.url || '');
     html = html.replace(/\{\{site\.date\}\}/g, data.site?.date || '');
     html = html.replace(/\{\{site\.favicon\}\}/g, data.site?.favicon || '');
+
+    // Replace SEO keywords
+    if (this.config.seo?.keywords && this.config.seo.keywords.length > 0) {
+      const keywords = this.config.seo.keywords.join(', ');
+      html = html.replace(/\{\{seo\.keywords\}\}/g, keywords);
+    } else {
+      html = html.replace(/\{\{seo\.keywords\}\}/g, '');
+    }
 
     // Replace GitHub data
     html = html.replace(/\{\{github\.owner\}\}/g, this.github.owner || '');
@@ -735,10 +829,10 @@ class BlogBuilder {
       html = html.replace(/\{\{post\.avatar\}\}/g, data.post.avatar || '');
       html = html.replace(/\{\{post\.url\}\}/g, data.post.url || '');
       html = html.replace(/\{\{post\.excerpt\}\}/g, this.escapeHtml(data.post.excerpt) || '');
-      // Create full URL by combining site URL with post URL (removing duplicate baseUrl)
-      const fullUrl = data.post.url.startsWith(this.baseUrl)
-        ? `${this.config.site.url}${data.post.url}`
-        : `${this.config.site.url}${this.baseUrl}${data.post.url}`;
+      // Create full URL by combining base domain with post URL
+      const url = new URL(this.config.site.url);
+      const baseDomain = `${url.protocol}//${url.host}`;
+      const fullUrl = `${baseDomain}${data.post.url}`;
       html = html.replace(/\{\{post\.full_url\}\}/g, fullUrl || '');
 
 
