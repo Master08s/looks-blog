@@ -7,36 +7,11 @@
     
     <title>{{post.title}} | {{site.title}}</title>
     <meta name="description" content="{{post.excerpt}}" />
-    <meta name="keywords" content="{{site.keywords}}" />
-    <meta name="author" content="{{post.author}}" />
-    <meta name="language" content="{{site.language}}" />
-
-    <!-- Open Graph / Facebook -->
-    <meta property="og:type" content="article" />
-    <meta property="og:url" content="{{post.full_url}}" />
-    <meta property="og:title" content="{{post.title}}" />
-    <meta property="og:description" content="{{post.excerpt}}" />
-    <meta property="og:image" content="{{post.avatar}}" />
-    <meta property="article:author" content="{{post.author}}" />
-    <meta property="article:published_time" content="{{post.created_at}}" />
-
-    <!-- Twitter -->
-    <meta property="twitter:card" content="summary_large_image" />
-    <meta property="twitter:url" content="{{post.full_url}}" />
-    <meta property="twitter:title" content="{{post.title}}" />
-    <meta property="twitter:description" content="{{post.excerpt}}" />
-    <meta property="twitter:image" content="{{post.avatar}}" />
 
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="{{site.favicon}}" />
     <link rel="shortcut icon" href="{{site.favicon}}" />
     <link rel="apple-touch-icon" href="{{site.favicon}}" />
-
-    <!-- RSS Feed -->
-    <link rel="alternate" type="application/rss+xml" title="{{site.title}} RSS Feed" href="{{baseUrl}}/rss.xml" />
-
-    <!-- Canonical URL -->
-    <link rel="canonical" href="{{post.full_url}}" />
 
     <link rel="stylesheet" href="/assets/dist/main.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css">

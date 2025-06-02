@@ -139,7 +139,6 @@ class BlogBuilder {
 
   async build() {
     console.log('🚀 Starting blog build...');
-    console.log(`🔧 Base URL: "${this.baseUrl}"`);
 
     // 显示图片代理状态
     if (this.config.imageProxy?.enabled) {
@@ -164,10 +163,7 @@ class BlogBuilder {
       
       // Generate pages
       await this.generatePages();
-
-      // Generate SEO files
-      await this.generateSEOFiles();
-
+      
       console.log('✅ Blog build completed successfully!');
       console.log(`📝 Generated ${this.posts.length} posts`);
       console.log(`🏷️  Found ${this.categories.size} categories`);
@@ -359,17 +355,10 @@ class BlogBuilder {
         is_updated: isUpdated,
         is_pinned: issue.is_pinned || false,
         url: `${this.baseUrl}/posts/${issue.number}.html`,
-        full_url: `${this.config.site.url}/posts/${issue.number}.html`,
         github_url: issue.html_url,
         labels: issue.labels || [],
         comments_count: issue.comments
       };
-
-      // Debug: log the first post URL
-      if (issue.number === this.issues[0].number) {
-        console.log(`🔍 First post URL: "${post.url}"`);
-        console.log(`🔍 First post full_url: "${post.full_url}"`);
-      }
 
       // Process categories from labels
       post.labels.forEach(label => {
@@ -656,167 +645,11 @@ class BlogBuilder {
     );
   }
 
-  async generateSEOFiles() {
-    console.log('🔍 Generating SEO files...');
-
-    // Generate sitemap if enabled
-    if (this.config.build?.generateSitemap) {
-      await this.generateSitemap();
-    }
-
-    // Generate RSS feed if enabled
-    if (this.config.build?.generateRss) {
-      await this.generateRSSFeed();
-    }
-
-    // Generate robots.txt
-    await this.generateRobotsTxt();
-  }
-
-  async generateSitemap() {
-    console.log('🗺️  Generating sitemap.xml...');
-
-    const siteUrl = this.config.site.url || '';
-    const now = new Date().toISOString();
-
-    // Generate sitemap entries
-    const urls = [];
-
-    // Add homepage
-    urls.push({
-      loc: siteUrl,
-      lastmod: now,
-      changefreq: 'daily',
-      priority: '1.0'
-    });
-
-    // Add posts
-    this.posts.forEach(post => {
-      // post.url is like "/looks-blog/posts/5.html"
-      // siteUrl is like "https://master08s.github.io/looks-blog"
-      // We need to remove the baseUrl part from post.url to avoid duplication
-      const postPath = post.url.replace(this.baseUrl, '');
-      urls.push({
-        loc: `${siteUrl}${postPath}`,
-        lastmod: post.updated_at.toISOString(),
-        changefreq: 'weekly',
-        priority: '0.8'
-      });
-    });
-
-    // Add category pages
-    this.categories.forEach(category => {
-      const categoryUrl = `${siteUrl}/categories/${this.toPinyinFilename(category.name)}.html`;
-      urls.push({
-        loc: categoryUrl,
-        lastmod: now,
-        changefreq: 'weekly',
-        priority: '0.6'
-      });
-    });
-
-    // Add other pages
-    const otherPages = ['archives.html', 'categories.html', 'search.html'];
-    otherPages.forEach(page => {
-      urls.push({
-        loc: `${siteUrl}/${page}`,
-        lastmod: now,
-        changefreq: 'monthly',
-        priority: '0.5'
-      });
-    });
-
-    // Generate XML
-    const sitemapXml = `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${urls.map(url => `  <url>
-    <loc>${this.escapeXml(url.loc)}</loc>
-    <lastmod>${url.lastmod}</lastmod>
-    <changefreq>${url.changefreq}</changefreq>
-    <priority>${url.priority}</priority>
-  </url>`).join('\n')}
-</urlset>`;
-
-    await fs.writeFile(path.join(this.distDir, 'sitemap.xml'), sitemapXml);
-    console.log('✅ Generated sitemap.xml');
-  }
-
-  async generateRSSFeed() {
-    console.log('📡 Generating RSS feed...');
-
-    const siteUrl = this.config.site.url || '';
-    const siteTitle = this.config.site.title || 'Blog';
-    const siteDescription = this.config.site.description || 'A blog powered by GitHub Issues';
-    const siteAuthor = this.config.site.author || 'Author';
-
-    // Get latest posts (limit to 20)
-    const latestPosts = this.posts.slice(0, 20);
-
-    const rssXml = `<?xml version="1.0" encoding="UTF-8"?>
-<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
-  <channel>
-    <title>${this.escapeXml(siteTitle)}</title>
-    <link>${this.escapeXml(siteUrl)}</link>
-    <description>${this.escapeXml(siteDescription)}</description>
-    <language>${this.config.site.language || 'zh-CN'}</language>
-    <managingEditor>${this.escapeXml(siteAuthor)}</managingEditor>
-    <webMaster>${this.escapeXml(siteAuthor)}</webMaster>
-    <lastBuildDate>${new Date().toUTCString()}</lastBuildDate>
-    <atom:link href="${this.escapeXml(siteUrl)}/rss.xml" rel="self" type="application/rss+xml"/>
-    <generator>Looks Blog</generator>
-${latestPosts.map(post => {
-      // Remove baseUrl from post.url to avoid duplication
-      const postPath = post.url.replace(this.baseUrl, '');
-      const postUrl = `${siteUrl}${postPath}`;
-      return `    <item>
-      <title>${this.escapeXml(post.title)}</title>
-      <link>${this.escapeXml(postUrl)}</link>
-      <description>${this.escapeXml(post.excerpt)}</description>
-      <pubDate>${post.created_at.toUTCString()}</pubDate>
-      <guid isPermaLink="true">${this.escapeXml(postUrl)}</guid>
-      <author>${this.escapeXml(post.author)}</author>
-${post.labels.map(label => `      <category>${this.escapeXml(label.name)}</category>`).join('\n')}
-    </item>`;
-    }).join('\n')}
-  </channel>
-</rss>`;
-
-    await fs.writeFile(path.join(this.distDir, 'rss.xml'), rssXml);
-    console.log('✅ Generated rss.xml');
-  }
-
-  async generateRobotsTxt() {
-    console.log('🤖 Generating robots.txt...');
-
-    const siteUrl = this.config.site.url || '';
-    const sitemapUrl = `${siteUrl}/sitemap.xml`;
-    const robotsTxt = `User-agent: *
-Allow: /
-
-Sitemap: ${sitemapUrl}`;
-
-    await fs.writeFile(path.join(this.distDir, 'robots.txt'), robotsTxt);
-    console.log('✅ Generated robots.txt');
-  }
-
-  escapeXml(text) {
-    if (!text) return '';
-    return text
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;')
-      .replace(/'/g, '&#39;');
-  }
-
   renderTemplate(template, data) {
     // Simple template rendering - replace placeholders with actual data
     // This is a basic implementation - in a real scenario, you might want to use a proper template engine
-
+    
     let html = template;
-
-    // Determine if this is a post page
-    const isPostPage = !!data.post;
     
     // Replace site data
     html = html.replace(/\{\{site\.title\}\}/g, data.site?.title || '');
@@ -826,25 +659,6 @@ Sitemap: ${sitemapUrl}`;
     html = html.replace(/\{\{site\.url\}\}/g, data.site?.url || '');
     html = html.replace(/\{\{site\.date\}\}/g, data.site?.date || '');
     html = html.replace(/\{\{site\.favicon\}\}/g, data.site?.favicon || '');
-    html = html.replace(/\{\{site\.language\}\}/g, data.site?.language || 'zh-CN');
-    html = html.replace(/\{\{site\.copyright\}\}/g, data.site?.copyright || '');
-
-    // Handle SEO keywords
-    if (data.site?.keywords && Array.isArray(data.site.keywords)) {
-      const keywordsContent = data.site.keywords.join(', ');
-      html = html.replace(/\{\{site\.keywords\}\}/g, this.escapeHtml(keywordsContent));
-    } else {
-      html = html.replace(/\{\{site\.keywords\}\}/g, '');
-    }
-
-    // Handle analytics codes
-    if (data.site?.analytics) {
-      html = html.replace(/\{\{site\.analytics\.google\}\}/g, data.site.analytics.google || '');
-      html = html.replace(/\{\{site\.analytics\.baidu\}\}/g, data.site.analytics.baidu || '');
-    } else {
-      html = html.replace(/\{\{site\.analytics\.google\}\}/g, '');
-      html = html.replace(/\{\{site\.analytics\.baidu\}\}/g, '');
-    }
 
     // Replace GitHub data
     html = html.replace(/\{\{github\.owner\}\}/g, this.github.owner || '');
@@ -921,8 +735,11 @@ Sitemap: ${sitemapUrl}`;
       html = html.replace(/\{\{post\.avatar\}\}/g, data.post.avatar || '');
       html = html.replace(/\{\{post\.url\}\}/g, data.post.url || '');
       html = html.replace(/\{\{post\.excerpt\}\}/g, this.escapeHtml(data.post.excerpt) || '');
-      // Use the full_url that was already calculated in post creation
-      html = html.replace(/\{\{post\.full_url\}\}/g, data.post.full_url || '');
+      // Create full URL by combining site URL with post URL (removing duplicate baseUrl)
+      const fullUrl = data.post.url.startsWith(this.baseUrl)
+        ? `${this.config.site.url}${data.post.url}`
+        : `${this.config.site.url}${this.baseUrl}${data.post.url}`;
+      html = html.replace(/\{\{post\.full_url\}\}/g, fullUrl || '');
 
 
 
@@ -979,74 +796,7 @@ Sitemap: ${sitemapUrl}`;
       html = html.replace(/\{\{category\.color\}\}/g, data.category.color || '');
     }
 
-    // Process custom code injection
-    html = this.processCustomCode(html, isPostPage);
-
     return html;
-  }
-
-  processCustomCode(html, isPostPage) {
-    if (!this.config.customCode) {
-      return html;
-    }
-
-    const customCode = this.config.customCode;
-
-    // Determine which custom code to use (global + post-specific for post pages)
-    const globalCode = customCode.global || {};
-    const postCode = isPostPage ? (customCode.post || {}) : {};
-
-    // Process head custom code
-    const headCode = this.buildCustomCodeSection(globalCode.head, postCode.head);
-    if (headCode) {
-      // Insert before closing </head> tag
-      html = html.replace('</head>', `${headCode}\n</head>`);
-    }
-
-    // Process footer custom code
-    const footerCode = this.buildCustomCodeSection(globalCode.footer, postCode.footer);
-    if (footerCode) {
-      // Insert before closing </body> tag
-      html = html.replace('</body>', `${footerCode}\n</body>`);
-    }
-
-    return html;
-  }
-
-  buildCustomCodeSection(globalSection, postSection) {
-    const sections = [];
-
-    // Combine global and post-specific code
-    const allSections = [globalSection, postSection].filter(Boolean);
-
-    for (const section of allSections) {
-      if (!section) continue;
-
-      // Add CSS files
-      if (section.css && Array.isArray(section.css)) {
-        for (const cssUrl of section.css) {
-          if (cssUrl && typeof cssUrl === 'string') {
-            sections.push(`<link rel="stylesheet" href="${this.escapeHtml(cssUrl)}">`);
-          }
-        }
-      }
-
-      // Add JS files
-      if (section.js && Array.isArray(section.js)) {
-        for (const jsUrl of section.js) {
-          if (jsUrl && typeof jsUrl === 'string') {
-            sections.push(`<script src="${this.escapeHtml(jsUrl)}"></script>`);
-          }
-        }
-      }
-
-      // Add custom HTML
-      if (section.html && typeof section.html === 'string') {
-        sections.push(section.html);
-      }
-    }
-
-    return sections.length > 0 ? sections.join('\n') : '';
   }
 
   escapeHtml(text) {
