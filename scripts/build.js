@@ -494,6 +494,7 @@ class BlogBuilder {
     html = html.replace(/\{\{site\.avatar\}\}/g, data.site?.avatar || '');
     html = html.replace(/\{\{site\.url\}\}/g, data.site?.url || '');
     html = html.replace(/\{\{site\.date\}\}/g, data.site?.date || '');
+    html = html.replace(/\{\{site\.favicon\}\}/g, data.site?.favicon || '');
 
     // Replace GitHub data
     html = html.replace(/\{\{github\.owner\}\}/g, this.github.owner || '');
