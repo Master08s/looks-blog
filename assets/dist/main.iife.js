@@ -2,53 +2,109 @@ var main = (function (a) {
   "use strict";
   var l = typeof document < "u" ? document.currentScript : null;
   function m() {
-    const e = document.getElementById("toc"),
-      t = document.getElementById("post-content");
-    if (t && e) {
-      const headings = t.querySelectorAll("h1, h2, h3, h4");
-      if (headings) {
-        headings.forEach((n) => {
-          const s = parseInt(n.tagName.substring(1)),
-            i = document.createElement("div");
-          i.className = "toc-item-level-" + s;
-          const c = document.createElement("a");
-          (c.href = `#${n.id}`),
-            (c.textContent = n.textContent),
-            i.appendChild(c),
-            e.appendChild(i);
-        });
+    try {
+      const tocElement = document.getElementById("toc");
+      const postContent = document.getElementById("post-content");
+
+      if (!tocElement || !postContent) {
+        return;
       }
+
+      const headings = postContent.querySelectorAll("h1, h2, h3, h4");
+      if (!headings || headings.length === 0) {
+        return;
+      }
+
+      headings.forEach((heading) => {
+        if (!heading || !heading.tagName || !heading.id) {
+          return;
+        }
+
+        const level = parseInt(heading.tagName.substring(1));
+        const tocItem = document.createElement("div");
+        tocItem.className = "toc-item-level-" + level;
+
+        const link = document.createElement("a");
+        link.href = `#${heading.id}`;
+        link.textContent = heading.textContent || '';
+
+        tocItem.appendChild(link);
+        tocElement.appendChild(tocItem);
+      });
+    } catch (error) {
+      console.warn('TOC generation failed:', error);
     }
   }
   function p() {
-    let e = null;
-    const t = new IntersectionObserver((n) => {
-      n.forEach((s) => {
-        const i = s.target.getAttribute("id"),
-          c = document.querySelector(`#toc a[href="#${i}"]`);
-        s.isIntersecting &&
-          e !== i &&
-          (e &&
-            document
-              .querySelector(`#toc a[href="#${e}"]`)
-              .parentElement.classList.remove("active"),
-          c.parentElement.classList.add("active"),
-          (e = i));
-      });
-    }, {});
-    document
-      .querySelectorAll("#post-content h1, h2, h3, h4")
-      .forEach((n) => t.observe(n));
+    try {
+      let currentId = null;
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          const id = entry.target.getAttribute("id");
+          const tocLink = document.querySelector(`#toc a[href="#${id}"]`);
+
+          if (entry.isIntersecting && currentId !== id && tocLink) {
+            // Remove active class from previous item
+            if (currentId) {
+              const prevLink = document.querySelector(`#toc a[href="#${currentId}"]`);
+              if (prevLink && prevLink.parentElement) {
+                prevLink.parentElement.classList.remove("active");
+              }
+            }
+
+            // Add active class to current item
+            if (tocLink.parentElement) {
+              tocLink.parentElement.classList.add("active");
+              currentId = id;
+            }
+          }
+        });
+      }, {});
+
+      const headings = document.querySelectorAll("#post-content h1, h2, h3, h4");
+      if (headings) {
+        headings.forEach((heading) => {
+          if (heading) {
+            observer.observe(heading);
+          }
+        });
+      }
+    } catch (error) {
+      console.warn('TOC scroll highlighting failed:', error);
+    }
   }
   function f() {
-    document.querySelectorAll("#toc a").forEach((e) => {
-      e.addEventListener("click", function () {
-        document.querySelectorAll("#toc .active").forEach((t) => {
-          t.classList.remove("active");
-        }),
-          e.parentElement.classList.add("active");
+    try {
+      const tocLinks = document.querySelectorAll("#toc a");
+      if (!tocLinks) {
+        return;
+      }
+
+      tocLinks.forEach((link) => {
+        if (!link) {
+          return;
+        }
+
+        link.addEventListener("click", function () {
+          // Remove active class from all items
+          const activeItems = document.querySelectorAll("#toc .active");
+          if (activeItems) {
+            activeItems.forEach((item) => {
+              if (item && item.classList) {
+                item.classList.remove("active");
+              }
+            });
+          }
+
+          // Add active class to clicked item
+          if (link.parentElement && link.parentElement.classList) {
+            link.parentElement.classList.add("active");
+          }
+        });
       });
-    });
+    } catch (error) {
+      console.warn('TOC click highlighting failed:', error);
+    }
   }
   function h() {
     const e = document.getElementById("upvote-button"),
@@ -161,18 +217,30 @@ var main = (function (a) {
       });
     });
   function b() {
-    const postContent = document.querySelector("#post-content");
-    const wordCountEl = document.getElementById("post-wordcount");
-    const readTimeEl = document.getElementById("post-readtime");
+    try {
+      const postContent = document.querySelector("#post-content");
+      const wordCountEl = document.getElementById("post-wordcount");
+      const readTimeEl = document.getElementById("post-readtime");
 
-    if (postContent && wordCountEl && readTimeEl) {
-      const t = postContent.textContent.length;
-      wordCountEl.textContent = t;
-      readTimeEl.textContent = (function () {
-        const o = Math.round(t / 350),
-          n = Math.round(t / 250);
-        return o == n ? `${n} min` : `${o}~${n} min`;
-      })();
+      if (!postContent || !wordCountEl || !readTimeEl) {
+        return;
+      }
+
+      const textContent = postContent.textContent || '';
+      const wordCount = textContent.length;
+
+      if (wordCountEl) {
+        wordCountEl.textContent = wordCount.toString();
+      }
+
+      if (readTimeEl) {
+        const fastRead = Math.round(wordCount / 350);
+        const slowRead = Math.round(wordCount / 250);
+        const readTime = fastRead === slowRead ? `${slowRead} min` : `${fastRead}~${slowRead} min`;
+        readTimeEl.textContent = readTime;
+      }
+    } catch (error) {
+      console.warn('Word count calculation failed:', error);
     }
   }
   function I(e, t) {
@@ -184,16 +252,30 @@ var main = (function (a) {
     return Math.floor(c / (1e3 * 60 * 60 * 24));
   }
   function C() {
-    const e = Date.now(),
-      t =
-        document.getElementById("post-update-time") === null
-          ? document.getElementById("post-publish-time").textContent
-          : document.getElementById("post-update-time").textContent,
-      o =
-        document.getElementById("post-update-time") === null
-          ? "发布于 "
-          : "更新于 ",
-      n = [
+    try {
+      const now = Date.now();
+      const updateTimeEl = document.getElementById("post-update-time");
+      const publishTimeEl = document.getElementById("post-publish-time");
+      const timeTipsEl = document.getElementById("post-time-tips-span");
+
+      if (!timeTipsEl) {
+        return;
+      }
+
+      let timeText = "";
+      let prefix = "";
+
+      if (updateTimeEl && updateTimeEl.textContent) {
+        timeText = updateTimeEl.textContent;
+        prefix = "更新于 ";
+      } else if (publishTimeEl && publishTimeEl.textContent) {
+        timeText = publishTimeEl.textContent;
+        prefix = "发布于 ";
+      } else {
+        return;
+      }
+
+      const phrases = [
         "时过境迁",
         "沧海桑田",
         "天翻地覆",
@@ -203,10 +285,15 @@ var main = (function (a) {
         "时移世易",
         "物换星移",
         "春去秋来",
-      ],
-      s = Math.floor(Math.random() * n.length);
-    document.getElementById("post-time-tips-span").textContent =
-      "本文" + o + I(t, e) + " 天前，其中的信息可能已经" + n[s];
+      ];
+
+      const randomIndex = Math.floor(Math.random() * phrases.length);
+      const daysDiff = I(timeText, now);
+
+      timeTipsEl.textContent = `本文${prefix}${daysDiff} 天前，其中的信息可能已经${phrases[randomIndex]}`;
+    } catch (error) {
+      console.warn('Time tips generation failed:', error);
+    }
   }
   // Console output with repository information
   function showRepoInfo() {
