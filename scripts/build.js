@@ -251,6 +251,10 @@ class BlogBuilder {
     console.log('🔄 Processing posts...');
 
     this.posts = this.issues.map(issue => {
+      const createdAt = new Date(issue.created_at);
+      const updatedAt = new Date(issue.updated_at);
+      const isUpdated = updatedAt.getTime() - createdAt.getTime() > 60000; // More than 1 minute difference
+
       const post = {
         id: issue.number,
         title: issue.title,
@@ -258,8 +262,9 @@ class BlogBuilder {
         excerpt: this.generateExcerpt(issue.body || ''),
         author: issue.user.login,
         avatar: issue.user.avatar_url,
-        created_at: new Date(issue.created_at),
-        updated_at: new Date(issue.updated_at),
+        created_at: createdAt,
+        updated_at: updatedAt,
+        is_updated: isUpdated,
         url: `${this.baseUrl}/posts/${issue.number}.html`,
         github_url: issue.html_url,
         labels: issue.labels || [],
@@ -589,7 +594,51 @@ class BlogBuilder {
         : `${this.config.site.url}${this.baseUrl}${data.post.url}`;
       html = html.replace(/\{\{post\.full_url\}\}/g, fullUrl || '');
 
-      // Handle post labels
+      // Handle updated time meta
+      if (data.post.is_updated) {
+        const updatedTimeMeta = `
+          <span class="flex items-center gap-1">
+            <span class="icon-[material-symbols--update] iconify-inline"></span>
+            <time>${data.post.updated_at.toISOString().split('T')[0]}</time>
+          </span>
+        `;
+        html = html.replace(/\{\{post\.updated_time_meta\}\}/g, updatedTimeMeta);
+      } else {
+        html = html.replace(/\{\{post\.updated_time_meta\}\}/g, '');
+      }
+
+      // Handle categories meta
+      if (data.post.labels && data.post.labels.length > 0) {
+        const categoriesMeta = `
+          <span class="flex items-center gap-1">
+            <span class="icon-[material-symbols--folder-outline-rounded] iconify-inline"></span>
+            <span>
+              ${data.post.labels.map(label =>
+                `<a href="${this.baseUrl}/categories/${this.toPinyinFilename(label.name)}.html" class="text-blue-600 hover:underline">${this.escapeHtml(label.name)}</a>`
+              ).join(', ')}
+            </span>
+          </span>
+        `;
+        html = html.replace(/\{\{post\.categories_meta\}\}/g, categoriesMeta);
+
+        // Handle tags meta (same as categories for now)
+        const tagsMeta = `
+          <span class="flex items-center gap-1">
+            <span class="icon-[heroicons--tag] iconify-inline"></span>
+            <span>
+              ${data.post.labels.map(label =>
+                `<span class="inline-block px-2 py-1 text-xs rounded" style="background-color: #${label.color}20; color: #${label.color}">${this.escapeHtml(label.name)}</span>`
+              ).join(' ')}
+            </span>
+          </span>
+        `;
+        html = html.replace(/\{\{post\.tags_meta\}\}/g, tagsMeta);
+      } else {
+        html = html.replace(/\{\{post\.categories_meta\}\}/g, '');
+        html = html.replace(/\{\{post\.tags_meta\}\}/g, '');
+      }
+
+      // Handle post labels (legacy support)
       if (data.post.labels) {
         const labelsHtml = data.post.labels.map(label =>
           `<span class="category" style="background-color: #${label.color}20; color: #${label.color}; border: 1px solid #${label.color}40">${this.escapeHtml(label.name)}</span>`
