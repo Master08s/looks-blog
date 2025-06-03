@@ -1,0 +1,140 @@
+name: Build and Deploy Blog
+
+on:
+  push:
+    branches: [ main, master ]
+    paths-ignore:
+      - 'config.json'
+      - 'README.md'
+      - '.github/**'
+      - 'docs/**'
+      - '*.md'
+  issues:
+    types: [opened, edited, closed, reopened, labeled, unlabeled]
+  issue_comment:
+    types: [created, edited, deleted]
+  schedule:
+    # Rebuild daily at 2 AM UTC to catch any updates
+    - cron: '0 2 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Check if this is an initial commit
+        id: check_initial
+        run: |
+          # Check if this is the first commit (Initial commit) and triggered by push event
+          COMMIT_COUNT=$(git rev-list --count HEAD)
+          COMMIT_MESSAGE=$(git log -1 --pretty=%B)
+          TRIGGER_EVENT="${{ github.event_name }}"
+
+          echo "Commit count: $COMMIT_COUNT"
+          echo "Commit message: $COMMIT_MESSAGE"
+          echo "Trigger event: $TRIGGER_EVENT"
+
+          # Skip build only if this is an initial commit AND triggered by push event (not manual)
+          if [ "$TRIGGER_EVENT" = "push" ] && [ "$COMMIT_COUNT" -eq 1 ] && [[ "$COMMIT_MESSAGE" == *"Initial commit"* ]]; then
+            echo "This is an initial commit from template triggered by push. Skipping build."
+            echo "skip_build=true" >> $GITHUB_OUTPUT
+          elif [ "$TRIGGER_EVENT" = "push" ] && [ "$COMMIT_COUNT" -eq 1 ] && [[ "$COMMIT_MESSAGE" == *"initial commit"* ]]; then
+            echo "This is an initial commit from template triggered by push. Skipping build."
+            echo "skip_build=true" >> $GITHUB_OUTPUT
+          else
+            echo "This is a regular commit or manual trigger. Proceeding with build."
+            echo "skip_build=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Skip build notification
+        if: steps.check_initial.outputs.skip_build == 'true'
+        run: |
+          echo "🚫 Build skipped: This appears to be an initial commit from a template."
+          echo "💡 To build your blog:"
+          echo "   1. Create your first Issue to write a blog post"
+          echo "   2. Or manually trigger this workflow from the Actions tab"
+          echo "   3. Or push a new commit with actual content changes"
+
+      - name: Setup Node.js
+        if: steps.check_initial.outputs.skip_build != 'true'
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        if: steps.check_initial.outputs.skip_build != 'true'
+        run: npm ci
+
+      - name: Build blog
+        if: steps.check_initial.outputs.skip_build != 'true'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: npm run build
+
+      - name: Display build statistics
+        if: steps.check_initial.outputs.skip_build != 'true'
+        run: |
+          echo "📊 Build Statistics:"
+          echo "📁 Total files in dist: $(find dist -type f | wc -l)"
+          echo "📄 HTML files: $(find dist -name "*.html" | wc -l)"
+          echo "🎨 CSS files: $(find dist -name "*.css" | wc -l)"
+          echo "📜 JS files: $(find dist -name "*.js" | wc -l)"
+          echo "🖼️  Image files: $(find dist -name "*.png" -o -name "*.jpg" -o -name "*.jpeg" -o -name "*.gif" -o -name "*.svg" | wc -l)"
+          echo "📊 JSON files: $(find dist -name "*.json" | wc -l)"
+          echo "📦 Total dist size: $(du -sh dist | cut -f1)"
+
+      - name: Commit and push dist files
+        if: steps.check_initial.outputs.skip_build != 'true'
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+
+          # Add all dist files
+          git add dist/
+
+          # Check if there are any changes to commit
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+          else
+            echo "Committing dist files..."
+            git commit -m "🚀 Auto-update dist files [skip ci]"
+            git push
+            echo "✅ Dist files updated successfully"
+          fi
+
+      - name: Setup Pages
+        if: steps.check_initial.outputs.skip_build != 'true'
+        uses: actions/configure-pages@v4
+
+      - name: Upload artifact
+        if: steps.check_initial.outputs.skip_build != 'true'
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: './dist'
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    # Only deploy if build job completed successfully and didn't skip
+    if: needs.build.result == 'success'
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

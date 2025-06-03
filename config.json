@@ -1,0 +1,76 @@
+{
+  "site": {
+    "title": "Looks Blog",
+    "description": "A personal blog powered by GitHub Issues",
+    "url": "https://master08s.github.io/looks-blog",
+    "author": "Master08s",
+    "avatar": "https://images.weserv.nl/?url=https://raw.githubusercontent.com/Master08s/img/main/img/202506021808074.png",
+    "favicon": "https://images.weserv.nl/?url=https://raw.githubusercontent.com/Master08s/img/main/img/202506021808074.png",
+    "language": "zh-CN",
+    "date":"2025-05-31"
+  },
+  "github": {
+    "owner": "Master08s",
+    "repo": "looks-blog",
+    "token": "process.env.GITHUB_TOKEN"
+  },
+  "social": {
+    "github": "https://github.com/Master08s"
+  },
+  "build": {
+    "postsPerPage": 10,
+    "excerptLength": 15,
+    "dateFormat": "yyyy-MM-dd"
+  },
+  "features": {
+    "comments": true,
+    "search": true,
+    "categories": true,
+    "archives": true,
+    "imageProxy": true
+  },
+  "imageProxy": {
+    "enabled": true,
+    "baseUrl": "https://images.weserv.nl/?url=",
+    "description": "使用 weserv.nl 图片代理服务加速图片加载。设置 enabled 为 false 可关闭此功能"
+  },
+  "seo": {
+    "keywords": ["博客", "GitHub Issues", "个人网站", "技术分享"],
+    "generateSitemap": true,
+    "description": "SEO 优化配置。keywords 为网站关键词数组，generateSitemap 控制是否生成 sitemap.xml"
+  },
+  "comments": {
+    "enabled": true,
+    "provider": "giscus",
+    "giscus": {
+      "repo": "Master08s/looks-blog",
+      "repoId": "R_kgDOO0NW3w",
+      "category": "General",
+      "categoryId": "DIC_kwDOO0NW384Cq7p2",
+      "mapping": "pathname",
+      "strict": "0",
+      "reactionsEnabled": "1",
+      "emitMetadata": "0",
+      "inputPosition": "top",
+      "theme": "preferred_color_scheme",
+      "lang": "zh-CN"
+    },
+    "utterances": {
+      "repo": "Master08s/looks-blog",
+      "issueTerm": "pathname",
+      "label": "comment",
+      "theme": "github-light"
+    },
+    "gitalk": {
+      "clientID": "",
+      "clientSecret": "",
+      "repo": "looks-blog",
+      "owner": "Master08s",
+      "admin": ["Master08s"],
+      "id": "pathname",
+      "distractionFreeMode": false,
+      "language": "zh-CN"
+    },
+    "description": "评论系统配置。provider 可选值：giscus, utterances, gitalk, none。enabled 为 false 时禁用所有评论功能"
+  }
+}

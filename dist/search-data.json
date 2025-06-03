@@ -1,0 +1,71 @@
+[
+  {
+    "id": 2,
+    "title": "七绝·感志",
+    "excerpt": "《七绝·感志》\n空怀壮志作长吟...",
+    "url": "/looks-blog/posts/2.html",
+    "created_at": "2025-06-01",
+    "labels": [
+      {
+        "name": "随写",
+        "color": "BEF884"
+      },
+      {
+        "name": "置顶",
+        "color": "fef2c0"
+      }
+    ]
+  },
+  {
+    "id": 6,
+    "title": "测试action自动化",
+    "excerpt": "测试测试",
+    "url": "/looks-blog/posts/6.html",
+    "created_at": "2025-06-02",
+    "labels": [
+      {
+        "name": "测试",
+        "color": "aaaaaa"
+      }
+    ]
+  },
+  {
+    "id": 5,
+    "title": "测试图片代理功能",
+    "excerpt": "!Image(https://...",
+    "url": "/looks-blog/posts/5.html",
+    "created_at": "2025-06-02",
+    "labels": [
+      {
+        "name": "测试",
+        "color": "aaaaaa"
+      }
+    ]
+  },
+  {
+    "id": 4,
+    "title": "测试文章格式",
+    "excerpt": "这是一个示例Markdown代...",
+    "url": "/looks-blog/posts/4.html",
+    "created_at": "2025-06-02",
+    "labels": [
+      {
+        "name": "测试",
+        "color": "aaaaaa"
+      }
+    ]
+  },
+  {
+    "id": 3,
+    "title": "前途一片黑暗?",
+    "excerpt": "办法\n\n正好天黑好睡觉 睡醒再...",
+    "url": "/looks-blog/posts/3.html",
+    "created_at": "2025-06-01",
+    "labels": [
+      {
+        "name": "随写",
+        "color": "BEF884"
+      }
+    ]
+  }
+]

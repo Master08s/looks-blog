@@ -1,0 +1,298 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <title>{{post.title}} | {{site.title}}</title>
+    <meta name="description" content="{{post.excerpt}}" />
+    <meta name="keywords" content="{{seo.keywords}}" />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="{{site.favicon}}" />
+    <link rel="shortcut icon" href="{{site.favicon}}" />
+    <link rel="apple-touch-icon" href="{{site.favicon}}" />
+
+    <link rel="stylesheet" href="/assets/dist/main.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css">
+
+    <!-- Code Block Styles -->
+    <style>
+      .code-block-wrapper {
+        margin: 1.5rem 0;
+        border-radius: 8px;
+        overflow: hidden;
+        border: 1px solid #e1e4e8;
+        background: #f6f8fa;
+        display: block;
+        width: fit-content;
+        min-width: 300px;
+        max-width: 600px;
+      }
+
+      .code-block-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px 16px;
+        background: #f1f3f4;
+        border-bottom: 1px solid #e1e4e8;
+        font-size: 12px;
+        white-space: nowrap;
+      }
+
+      .code-block-lang {
+        color: #586069;
+        font-weight: 600;
+        text-transform: uppercase;
+        font-family: var(--font-mono);
+      }
+
+      .code-copy-btn {
+        display: flex;
+        align-items: center;
+        padding: 4px 8px;
+        background: transparent;
+        border: 1px solid #d1d5da;
+        border-radius: 4px;
+        color: #586069;
+        cursor: pointer;
+        transition: all 0.2s;
+        font-size: 12px;
+        flex-shrink: 0;
+      }
+
+      .code-copy-btn:hover {
+        background: #e1e4e8;
+        border-color: #c6cbd1;
+      }
+
+      .code-copy-btn.copied {
+        background: #28a745;
+        border-color: #28a745;
+        color: white;
+      }
+
+      .code-block-wrapper pre {
+        margin: 0;
+        padding: 16px;
+        background: #fff;
+        overflow-x: auto;
+        font-family: var(--font-mono);
+        font-size: 14px;
+        line-height: 1.45;
+        white-space: pre-wrap;
+        word-wrap: break-word;
+        max-width: calc(100vw - 120px);
+      }
+
+      .code-block-wrapper code {
+        background: transparent;
+        padding: 0;
+        border-radius: 0;
+        font-family: inherit;
+        font-size: inherit;
+        white-space: pre-wrap;
+        word-wrap: break-word;
+      }
+
+      /* 响应式调整 */
+      @media (max-width: 768px) {
+        .code-block-wrapper {
+          min-width: 280px;
+          max-width: 400px;
+        }
+
+        .code-block-wrapper pre {
+          max-width: 400px;
+          font-size: 13px;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .code-block-wrapper {
+          min-width: 260px;
+          max-width: 300px;
+        }
+
+        .code-block-wrapper pre {
+          max-width: 300px;
+          font-size: 12px;
+          padding: 12px;
+        }
+
+        .code-block-header {
+          padding: 6px 12px;
+        }
+      }
+
+      /* 修复行内代码样式 */
+      :not(pre) > code {
+        background: #f3f4f6;
+        padding: 2px 6px;
+        border-radius: 4px;
+        font-family: var(--font-mono);
+        font-size: 0.875em;
+        color: #e11d48;
+      }
+    </style>
+
+    <!-- Iconify Icons -->
+    <script src="https://code.iconify.design/3/3.1.1/iconify.min.js"></script>
+
+    <!-- Fonts -->
+    <link rel="stylesheet" href="/assets/fonts/HarmonyOS_Sans_SC/main.css" />
+    <link rel="preconnect" href="https://fontsapi.zeoseven.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fontsapi.zeoseven.com/292/main/result.css"
+      onerror="this.href='https://fontsapi-storage.zeoseven.com/292/main/result.css'"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fontsapi.zeoseven.com/285/main/result.css"
+      onerror="this.href='https://fontsapi-storage.zeoseven.com/285/main/result.css'"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fontsapi.zeoseven.com/442/main/result.css"
+      onerror="this.href='https://fontsapi-storage.zeoseven.com/442/main/result.css'"
+    />
+    
+    <script src="/assets/dist/main.iife.js"></script>
+  </head>
+
+  <body>
+    <header>
+      <nav class="mb-[32px] flex border-b border-[#ddd] py-[14px] font-mono" id="navigation">
+        <a href="/">{{site.title}}</a>
+        <div class="ml-auto flex flex-row gap-5">
+          <a href="/">首页</a>
+          <a href="/archives.html">归档</a>
+          <a href="/categories.html">分类</a>
+          <span> | </span>
+          <a href="/search.html">
+            <span class="icon-[fa-solid--search] iconify-inline"></span>
+          </a>
+        </div>
+      </nav>
+    </header>
+
+    <article>
+      <!-- 标题 -->
+      <div class="text-center font-serif text-[2rem] font-bold">{{post.title}}</div>
+
+      <!-- 文章元信息 -->
+      <div class="mt-4 mb-8 flex flex-wrap justify-center gap-3 font-mono text-sm text-gray-600">
+        <!-- 发布时间 -->
+        <span class="flex items-center gap-1">
+          <span class="icon-[bx--calendar-alt] iconify-inline"></span>
+          <time id="post-publish-time">{{post.created_at}}</time>
+        </span>
+
+        <!-- 作者 -->
+        <span class="flex items-center gap-1">
+          <span class="icon-[heroicons--user-circle] iconify-inline"></span>
+          <span>{{post.author}}</span>
+        </span>
+
+        <!-- 分类 -->
+        {{post.categories_meta}}
+
+        <!-- 字数统计 -->
+        <span class="flex items-center gap-1">
+          <span class="icon-[icon-park-outline--word] iconify-inline"></span>
+          <span id="post-wordcount">0</span>
+        </span>
+
+        <!-- 预计阅读时间 -->
+        <span class="flex items-center gap-1">
+          <span class="icon-[mingcute--time-line] iconify-inline"></span>
+          <span id="post-readtime">1 min</span>
+        </span>
+
+        <!-- GitHub 链接 -->
+        <span class="flex items-center gap-1">
+          <span class="icon-[mdi--github] iconify-inline"></span>
+          <a href="{{post.github_url}}" target="_blank" class="text-blue-600 hover:underline">
+            GitHub
+          </a>
+        </span>
+      </div>
+
+      <section class="relative">
+        <div id="post-content">{{post.content}}</div>
+
+        <!-- 版权许可协议 -->
+        <div class="card mt-14 px-6 py-4" id="license">
+          <div class="font-bold">{{post.title}}</div>
+          <div class="license-item mt-1">{{post.full_url}}</div>
+          <div class="license-item mt-1">
+            本文采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议
+          </div>
+        </div>
+
+        <!-- 目录 -->
+        <aside class="absolute top-0 right-[-160px] hidden h-full w-[120px] md:block">
+          <nav class="sticky top-10 pl-4 font-serif text-[0.8rem]" id="toc"></nav>
+        </aside>
+      </section>
+
+
+    </article>
+
+    <!-- 评论系统 -->
+    {{comments}}
+
+    <footer class="pt-20 pb-6">
+      <div class="flex flex-col items-center gap-1">
+        <div>© <span id="current-year"></span> · {{site.author}}</div>
+        <div>Powered by <a href="https://github.com/{{site.author}}/{{github.repo}}">GitHub Issues</a></div>
+      </div>
+    </footer>
+
+    <script>
+      document.getElementById('current-year').textContent = new Date().getFullYear();
+
+      // 复制代码功能
+      function copyCode(button) {
+        const codeBlock = button.closest('.code-block-wrapper').querySelector('code');
+        const text = codeBlock.textContent;
+
+        navigator.clipboard.writeText(text).then(() => {
+          // 显示复制成功状态
+          const originalContent = button.innerHTML;
+          button.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20,6 9,17 4,12"></polyline></svg>';
+          button.classList.add('copied');
+
+          // 2秒后恢复原状
+          setTimeout(() => {
+            button.innerHTML = originalContent;
+            button.classList.remove('copied');
+          }, 2000);
+        }).catch(err => {
+          console.error('复制失败:', err);
+          // 降级方案：选中文本
+          const range = document.createRange();
+          range.selectNodeContents(codeBlock);
+          const selection = window.getSelection();
+          selection.removeAllRanges();
+          selection.addRange(range);
+        });
+      }
+
+      document.addEventListener("DOMContentLoaded", () => {
+        if (typeof main !== 'undefined') {
+          main.generateTOC && main.generateTOC();
+          main.scrollHighlightTOC && main.scrollHighlightTOC();
+          main.clickHighlightTOC && main.clickHighlightTOC();
+          main.wordCountAndReadTime && main.wordCountAndReadTime();
+          main.generateTimeTips && main.generateTimeTips();
+          main.addIconToLinks && main.addIconToLinks();
+        }
+
+      });
+    </script>
+  </body>
+</html>

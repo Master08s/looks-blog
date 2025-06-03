@@ -1,0 +1,76 @@
+{
+  "site": {
+    "title": "我的博客",
+    "description": "基于 GitHub Issues 的个人博客",
+    "url": "https://username.github.io/blog-repo",
+    "author": "username",
+    "avatar": "https://github.com/username.png",
+    "favicon": "https://github.com/username.png",
+    "language": "zh-CN",
+    "date": "2024-01-01"
+  },
+  "github": {
+    "owner": "username",
+    "repo": "blog-repo",
+    "token": "process.env.GITHUB_TOKEN"
+  },
+  "social": {
+    "github": "https://github.com/username"
+  },
+  "build": {
+    "postsPerPage": 10,
+    "excerptLength": 15,
+    "dateFormat": "yyyy-MM-dd"
+  },
+  "features": {
+    "comments": true,
+    "search": true,
+    "categories": true,
+    "archives": true,
+    "imageProxy": true
+  },
+  "imageProxy": {
+    "enabled": true,
+    "baseUrl": "https://images.weserv.nl/?url=",
+    "description": "使用 weserv.nl 图片代理服务加速图片加载。设置 enabled 为 false 可关闭此功能"
+  },
+  "seo": {
+    "keywords": ["博客", "GitHub Issues", "个人网站", "技术分享"],
+    "generateSitemap": true,
+    "description": "SEO 优化配置。keywords 为网站关键词数组，generateSitemap 控制是否生成 sitemap.xml"
+  },
+  "comments": {
+    "enabled": true,
+    "provider": "giscus",
+    "giscus": {
+      "repo": "username/blog-repo",
+      "repoId": "R_kgDOH...",
+      "category": "General",
+      "categoryId": "DIC_kwDOH...",
+      "mapping": "pathname",
+      "strict": "0",
+      "reactionsEnabled": "1",
+      "emitMetadata": "0",
+      "inputPosition": "bottom",
+      "theme": "preferred_color_scheme",
+      "lang": "zh-CN"
+    },
+    "utterances": {
+      "repo": "username/blog-repo",
+      "issueTerm": "pathname",
+      "label": "comment",
+      "theme": "github-light"
+    },
+    "gitalk": {
+      "clientID": "your-github-app-client-id",
+      "clientSecret": "your-github-app-client-secret",
+      "repo": "blog-repo",
+      "owner": "username",
+      "admin": ["username"],
+      "id": "pathname",
+      "distractionFreeMode": false,
+      "language": "zh-CN"
+    },
+    "description": "评论系统配置。provider 可选值：giscus, utterances, gitalk, none。enabled 为 false 时禁用所有评论功能"
+  }
+}

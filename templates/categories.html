@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <title>分类 | {{site.title}}</title>
+    <meta name="description" content="{{site.description}}" />
+    <meta name="keywords" content="{{seo.keywords}}" />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="{{site.favicon}}" />
+    <link rel="shortcut icon" href="{{site.favicon}}" />
+    <link rel="apple-touch-icon" href="{{site.favicon}}" />
+
+    <link rel="stylesheet" href="/assets/dist/main.css" />
+
+    <!-- Fonts -->
+    <link rel="stylesheet" href="/assets/fonts/HarmonyOS_Sans_SC/main.css" />
+    <link rel="preconnect" href="https://fontsapi.zeoseven.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fontsapi.zeoseven.com/292/main/result.css"
+      onerror="this.href='https://fontsapi-storage.zeoseven.com/292/main/result.css'"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fontsapi.zeoseven.com/285/main/result.css"
+      onerror="this.href='https://fontsapi-storage.zeoseven.com/285/main/result.css'"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fontsapi.zeoseven.com/442/main/result.css"
+      onerror="this.href='https://fontsapi-storage.zeoseven.com/442/main/result.css'"
+    />
+    
+    <script src="/assets/dist/main.iife.js"></script>
+  </head>
+
+  <body>
+    <header>
+      <div
+        class="mt-20 mb-20 flex flex-col items-center justify-center gap-8 sm:flex-row sm:gap-14"
+      >
+        <img
+          src="{{site.avatar}}"
+          class="h-40 rounded-full filter-none"
+          alt="Avatar"
+        />
+
+        <div class="flex flex-col items-center gap-5 font-mono">
+          <div class="text-4xl">{{site.title}}</div>
+
+          <!-- 社交媒体 -->
+          <div class="text-center">
+            <a class="text-black" href="https://github.com/{{site.author}}" target="_blank">
+              <span class="iconify-large icon-[mingcute--github-line]"></span>
+            </a>
+          </div>
+
+          <!-- 导航栏 -->
+          <nav class="flex justify-center gap-3">
+            <a class="index-nav" href="/">首页</a>
+            <a class="index-nav" href="/archives.html">归档</a>
+            <a class="index-nav" href="/categories.html">分类</a>
+            <a class="index-nav" href="/search.html">
+              <span class="iconify icon-[fa-solid--search]"></span>
+            </a>
+          </nav>
+        </div>
+      </div>
+    </header>
+
+    <main class="mx-auto max-w-[480px] px-4">
+      <div class="mb-8 text-center font-serif text-2xl font-bold">
+        <span class="icon-[material-symbols--folder-outline-rounded] iconify-inline"></span>
+        分类
+      </div>
+
+      <div class="flex flex-wrap gap-4">
+        {{categories}}
+      </div>
+    </main>
+
+    <footer class="pt-20 pb-6">
+      <div class="flex flex-col items-center gap-1">
+        <div>
+          © <span id="current-year"></span> · {{site.author}}
+        </div>
+        <div>
+          Powered by <a href="https://github.com/{{site.author}}/{{github.repo}}">GitHub Issues</a>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      document.getElementById('current-year').textContent = new Date().getFullYear();
+    </script>
+  </body>
+</html>
