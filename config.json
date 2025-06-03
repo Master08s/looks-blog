@@ -72,5 +72,33 @@
       "language": "zh-CN"
     },
     "description": "评论系统配置。provider 可选值：giscus, utterances, gitalk, none。enabled 为 false 时禁用所有评论功能"
+  },
+  "pages": {
+    "about": {
+      "enabled": true,
+      "title": "关于我",
+      "content": "这里是关于页面的内容，你可以在这里介绍自己、分享经历或展示作品。\n\n## 个人简介\n\n在这里写下你的个人介绍...\n\n## 技能专长\n\n- 技能1\n- 技能2\n- 技能3\n\n## 联系方式\n\n- 邮箱：your-email@example.com\n- GitHub：https://github.com/yourusername",
+      "description": "关于页面配置。enabled 控制是否生成关于页面，content 支持 Markdown 格式"
+    },
+    "friends": {
+      "enabled": true,
+      "title": "友情链接",
+      "subtitle": "这里收录了一些优秀的博客和网站",
+      "links": [
+        {
+          "name": "GitHub",
+          "url": "https://github.com",
+          "description": "全球最大的代码托管平台",
+          "avatar": "https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png"
+        },
+        {
+          "name": "示例博客",
+          "url": "https://example.com",
+          "description": "这是一个示例友链",
+          "avatar": "https://via.placeholder.com/64x64"
+        }
+      ],
+      "description": "友链页面配置。enabled 控制是否生成友链页面，links 数组包含友链信息"
+    }
   }
 }

@@ -463,6 +463,16 @@ class BlogBuilder {
     await this.generateSearchPage(templates);
     await this.generateSearchData();
 
+    // Generate about page if enabled
+    if (this.config.pages?.about?.enabled) {
+      await this.generateAboutPage(templates);
+    }
+
+    // Generate friends page if enabled
+    if (this.config.pages?.friends?.enabled) {
+      await this.generateFriendsPage(templates);
+    }
+
     // Generate sitemap if enabled
     if (this.config.seo?.generateSitemap) {
       await this.generateSitemap();
@@ -471,7 +481,7 @@ class BlogBuilder {
 
   async loadTemplates() {
     const templates = {};
-    const templateFiles = ['index.html', 'post.html', 'category.html', 'categories.html', 'archives.html', 'search.html'];
+    const templateFiles = ['index.html', 'post.html', 'category.html', 'categories.html', 'archives.html', 'search.html', 'about.html', 'friends.html'];
 
     for (const file of templateFiles) {
       const filePath = path.join(this.templatesDir, file);
@@ -650,6 +660,68 @@ class BlogBuilder {
     );
   }
 
+  async generateAboutPage(templates) {
+    console.log('👤 Generating about page...');
+
+    const aboutConfig = this.config.pages.about;
+
+    // Process markdown content
+    const aboutContent = marked(aboutConfig.content || '');
+
+    const html = this.renderTemplate(templates.about || '', {
+      site: this.config.site,
+      social: this.config.social,
+      about: {
+        title: aboutConfig.title,
+        content: aboutContent
+      },
+      stats: {
+        posts: this.posts.length,
+        categories: this.categories.size
+      }
+    });
+
+    await fs.writeFile(path.join(this.distDir, 'about.html'), html);
+  }
+
+  async generateFriendsPage(templates) {
+    console.log('🔗 Generating friends page...');
+
+    const friendsConfig = this.config.pages.friends;
+
+    // Generate friends links HTML
+    const friendsLinksHtml = friendsConfig.links.map(link => `
+      <div class="bg-white rounded-lg shadow-sm p-6 hover:shadow-md transition-shadow">
+        <div class="flex items-center space-x-4">
+          <img src="${link.avatar}" alt="${this.escapeHtml(link.name)}" class="w-16 h-16 rounded-full border-2 border-gray-200">
+          <div class="flex-1">
+            <h3 class="text-lg font-semibold text-gray-900 mb-1">
+              <a href="${link.url}" target="_blank" class="hover:text-blue-600 transition-colors">
+                ${this.escapeHtml(link.name)}
+              </a>
+            </h3>
+            <p class="text-gray-600 text-sm">${this.escapeHtml(link.description)}</p>
+            <a href="${link.url}" target="_blank" class="text-blue-600 hover:underline text-sm mt-1 inline-block">
+              访问网站 →
+            </a>
+          </div>
+        </div>
+      </div>
+    `).join('');
+
+    const html = this.renderTemplate(templates.friends || '', {
+      site: this.config.site,
+      social: this.config.social,
+      friends: {
+        title: friendsConfig.title,
+        subtitle: friendsConfig.subtitle,
+        links: friendsLinksHtml
+      }
+    });
+
+    await fs.writeFile(path.join(this.distDir, 'friends.html'), html);
+  }
+
   async generateSitemap() {
     console.log('🗺️  Generating sitemap...');
 
@@ -680,6 +752,16 @@ class BlogBuilder {
       { path: '/categories.html', priority: '0.8' },
       { path: '/search.html', priority: '0.6' }
     ];
+
+    // Add about page if enabled
+    if (this.config.pages?.about?.enabled) {
+      staticPages.push({ path: '/about.html', priority: '0.8' });
+    }
+
+    // Add friends page if enabled
+    if (this.config.pages?.friends?.enabled) {
+      staticPages.push({ path: '/friends.html', priority: '0.7' });
+    }
 
     staticPages.forEach(page => {
       // Construct URL properly: baseDomain + baseUrl + page.path
@@ -890,8 +972,35 @@ ${urls.map(url => `  <url>
       html = html.replace(/\{\{category\.color\}\}/g, data.category.color || '');
     }
 
+    // Replace about page data
+    if (data.about) {
+      html = html.replace(/\{\{about\.title\}\}/g, this.escapeHtml(data.about.title) || '');
+      html = html.replace(/\{\{about\.content\}\}/g, data.about.content || '');
+    }
+
+    // Replace friends page data
+    if (data.friends) {
+      html = html.replace(/\{\{friends\.title\}\}/g, this.escapeHtml(data.friends.title) || '');
+      html = html.replace(/\{\{friends\.subtitle\}\}/g, this.escapeHtml(data.friends.subtitle) || '');
+      html = html.replace(/\{\{friends\.links\}\}/g, data.friends.links || '');
+    }
+
+    // Replace stats data
+    if (data.stats) {
+      html = html.replace(/\{\{stats\.posts\}\}/g, data.stats.posts || '0');
+      html = html.replace(/\{\{stats\.categories\}\}/g, data.stats.categories || '0');
+    }
+
+    // Replace social data
+    if (data.social) {
+      html = html.replace(/\{\{social\.github\}\}/g, data.social.github || '');
+    }
+
     // Replace comments system
     html = this.renderComments(html, data);
+
+    // Replace navigation menu
+    html = this.renderNavigation(html, data);
 
     return html;
   }
@@ -923,6 +1032,34 @@ ${urls.map(url => `  <url>
     }
 
     html = html.replace(/\{\{comments\}\}/g, commentsHtml);
+    return html;
+  }
+
+  renderNavigation(html, data) {
+    // Generate navigation menu based on enabled pages
+    let navItems = [];
+
+    // Always include basic navigation
+    navItems.push('<a class="index-nav" href="/">首页</a>');
+    navItems.push('<a class="index-nav" href="/archives.html">归档</a>');
+    navItems.push('<a class="index-nav" href="/categories.html">分类</a>');
+
+    // Add about page if enabled
+    if (this.config.pages?.about?.enabled) {
+      navItems.push('<a class="index-nav" href="/about.html">关于</a>');
+    }
+
+    // Add friends page if enabled
+    if (this.config.pages?.friends?.enabled) {
+      navItems.push('<a class="index-nav" href="/friends.html">友链</a>');
+    }
+
+    // Always include search
+    navItems.push('<a class="index-nav" href="/search.html"><span class="iconify icon-[fa-solid--search]"></span></a>');
+
+    const navigationHtml = navItems.join('\n            ');
+    html = html.replace(/\{\{navigation\}\}/g, navigationHtml);
+
     return html;
   }
 
