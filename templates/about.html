@@ -23,25 +23,31 @@
 
   <body>
     <!-- Header with same style as homepage -->
-    <div class="index-header">
-      <div class="index-header-content">
-        <!-- Avatar -->
-        <div class="index-avatar">
-          <img src="{{site.avatar}}" alt="{{site.author}}" />
-        </div>
+    <header>
+      <div class="mt-20 mb-20 flex flex-col items-center justify-center gap-8 sm:flex-row sm:gap-14">
+        <img
+          src="{{site.avatar}}"
+          class="h-40 rounded-full filter-none"
+          alt="{{site.author}}的头像"
+        />
 
-        <!-- Site Info -->
-        <div class="index-info">
-          <h1 class="index-title">{{site.title}}</h1>
-          <p class="index-description">{{site.description}}</p>
-        </div>
+        <div class="flex flex-col items-center gap-5 font-mono">
+          <div class="text-4xl">{{site.title}}</div>
 
-        <!-- Navigation -->
-        <nav class="index-nav-container">
-          {{navigation}}
-        </nav>
+          <!-- 社交媒体 -->
+          <div class="text-center">
+            <a class="text-black" href="{{social.github}}" target="_blank" rel="noopener noreferrer" aria-label="访问{{site.author}}的GitHub主页">
+              <span class="iconify-large icon-[mingcute--github-line]"></span>
+            </a>
+          </div>
+
+          <!-- 导航栏 -->
+          <nav class="flex justify-center gap-3">
+            {{navigation}}
+          </nav>
+        </div>
       </div>
-    </div>
+    </header>
 
     <!-- Main Content with same style as homepage -->
     <main class="mx-auto max-w-[768px]">
