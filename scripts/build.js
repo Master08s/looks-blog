@@ -468,11 +468,6 @@ class BlogBuilder {
       await this.generateAboutPage(templates);
     }
 
-    // Generate friends page if enabled
-    if (this.config.pages?.friends?.enabled) {
-      await this.generateFriendsPage(templates);
-    }
-
     // Generate sitemap if enabled
     if (this.config.seo?.generateSitemap) {
       await this.generateSitemap();
@@ -481,7 +476,7 @@ class BlogBuilder {
 
   async loadTemplates() {
     const templates = {};
-    const templateFiles = ['index.html', 'post.html', 'category.html', 'categories.html', 'archives.html', 'search.html', 'about.html', 'friends.html'];
+    const templateFiles = ['index.html', 'post.html', 'category.html', 'categories.html', 'archives.html', 'search.html', 'about.html'];
 
     for (const file of templateFiles) {
       const filePath = path.join(this.templatesDir, file);
@@ -689,43 +684,7 @@ class BlogBuilder {
     await fs.writeFile(path.join(this.distDir, 'about.html'), html);
   }
 
-  async generateFriendsPage(templates) {
-    console.log('🔗 Generating friends page...');
 
-    const friendsConfig = this.config.pages.friends;
-
-    // Generate friends links HTML
-    const friendsLinksHtml = friendsConfig.links.map(link => `
-      <div class="bg-white rounded-lg shadow-sm p-6 hover:shadow-md transition-shadow">
-        <div class="flex items-center space-x-4">
-          <img src="${link.avatar}" alt="${this.escapeHtml(link.name)}" class="w-16 h-16 rounded-full border-2 border-gray-200">
-          <div class="flex-1">
-            <h3 class="text-lg font-semibold text-gray-900 mb-1">
-              <a href="${link.url}" target="_blank" class="hover:text-blue-600 transition-colors">
-                ${this.escapeHtml(link.name)}
-              </a>
-            </h3>
-            <p class="text-gray-600 text-sm">${this.escapeHtml(link.description)}</p>
-            <a href="${link.url}" target="_blank" class="text-blue-600 hover:underline text-sm mt-1 inline-block">
-              访问网站 →
-            </a>
-          </div>
-        </div>
-      </div>
-    `).join('');
-
-    const html = this.renderTemplate(templates.friends || '', {
-      site: this.config.site,
-      social: this.config.social,
-      friends: {
-        title: friendsConfig.title,
-        subtitle: friendsConfig.subtitle,
-        links: friendsLinksHtml
-      }
-    });
-
-    await fs.writeFile(path.join(this.distDir, 'friends.html'), html);
-  }
 
   async generateSitemap() {
     console.log('🗺️  Generating sitemap...');
@@ -761,11 +720,6 @@ class BlogBuilder {
     // Add about page if enabled
     if (this.config.pages?.about?.enabled) {
       staticPages.push({ path: '/about.html', priority: '0.8' });
-    }
-
-    // Add friends page if enabled
-    if (this.config.pages?.friends?.enabled) {
-      staticPages.push({ path: '/friends.html', priority: '0.7' });
     }
 
     staticPages.forEach(page => {
@@ -983,13 +937,6 @@ ${urls.map(url => `  <url>
       html = html.replace(/\{\{about\.content\}\}/g, data.about.content || '');
     }
 
-    // Replace friends page data
-    if (data.friends) {
-      html = html.replace(/\{\{friends\.title\}\}/g, this.escapeHtml(data.friends.title) || '');
-      html = html.replace(/\{\{friends\.subtitle\}\}/g, this.escapeHtml(data.friends.subtitle) || '');
-      html = html.replace(/\{\{friends\.links\}\}/g, data.friends.links || '');
-    }
-
     // Replace stats data
     if (data.stats) {
       html = html.replace(/\{\{stats\.posts\}\}/g, data.stats.posts || '0');
@@ -1059,11 +1006,6 @@ ${urls.map(url => `  <url>
       navItems.push(`<a class="index-nav" href="${this.baseUrl}/about.html">关于</a>`);
     }
 
-    // Add friends page if enabled
-    if (this.config.pages?.friends?.enabled) {
-      navItems.push(`<a class="index-nav" href="${this.baseUrl}/friends.html">友链</a>`);
-    }
-
     // Always include search
     navItems.push(`<a class="index-nav" href="${this.baseUrl}/search.html"><span class="iconify icon-[fa-solid--search]"></span></a>`);
 
@@ -1085,11 +1027,6 @@ ${urls.map(url => `  <url>
     // Add about page if enabled
     if (this.config.pages?.about?.enabled) {
       navItems.push(`<a href="${this.baseUrl}/about.html">关于</a>`);
-    }
-
-    // Add friends page if enabled
-    if (this.config.pages?.friends?.enabled) {
-      navItems.push(`<a href="${this.baseUrl}/friends.html">友链</a>`);
     }
 
     const postNavigationHtml = navItems.join('\n          ');
@@ -1117,15 +1054,7 @@ ${urls.map(url => `  <url>
       navItems.push(`<a href="${this.baseUrl}/about.html" class="${aboutClass}">关于</a>`);
     }
 
-    // Add friends page if enabled
-    if (this.config.pages?.friends?.enabled) {
-      // Determine if current page is friends page
-      const isFriendsPage = data.friends ? true : false;
-      const friendsClass = isFriendsPage ?
-        "text-blue-600 font-medium" :
-        "text-gray-600 hover:text-blue-600 transition-colors";
-      navItems.push(`<a href="${this.baseUrl}/friends.html" class="${friendsClass}">友链</a>`);
-    }
+
 
     // Always include search
     navItems.push(`<a href="${this.baseUrl}/search.html" class="text-gray-600 hover:text-blue-600 transition-colors">搜索</a>`);
@@ -1168,11 +1097,6 @@ ${urls.map(url => `  <url>
       seoData.title = `${data.about.title} | ${this.config.site.title}`;
       seoData.description = `了解更多关于${this.config.site.author}的信息`;
       seoData.url = `${this.config.site.url}/about.html`;
-    } else if (data.friends) {
-      // Friends page
-      seoData.title = `${data.friends.title} | ${this.config.site.title}`;
-      seoData.description = data.friends.subtitle || '友情链接页面';
-      seoData.url = `${this.config.site.url}/friends.html`;
     } else if (data.category) {
       // Category page
       seoData.title = `${data.category.name} | ${this.config.site.title}`;

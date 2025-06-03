@@ -10,31 +10,38 @@
 
     {{seo.openGraph}}
     {{seo.twitterCard}}
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://code.iconify.design/3/3.1.1/iconify.min.js"></script>
-    <link rel="stylesheet" href="{{baseUrl}}/assets/css/style.css" />
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="{{baseUrl}}/assets/dist/main.css" />
+
+    <!-- Fonts -->
+    <link rel="stylesheet" href="{{baseUrl}}/assets/fonts/HarmonyOS_Sans_SC/main.css" />
+
+    <!-- Iconify -->
+    <script src="https://code.iconify.design/iconify-icon/2.1.0/iconify-icon.min.js"></script>
   </head>
-  <body class="bg-gray-50 text-gray-900 font-sans">
-    <!-- 导航栏 -->
-    <nav class="bg-white shadow-sm border-b">
-      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex justify-between items-center h-16">
-          <div class="flex items-center space-x-8">
-            <a href="{{baseUrl}}/" class="text-xl font-bold text-gray-900 hover:text-blue-600 transition-colors">
-              {{site.title}}
-            </a>
-            <div class="hidden md:flex space-x-6">
-              {{styledNavigation}}
-            </div>
-          </div>
-          <div class="flex items-center space-x-4">
-            <a href="{{social.github}}" target="_blank" rel="noopener noreferrer" aria-label="访问GitHub主页" class="text-gray-600 hover:text-blue-600 transition-colors">
-              <iconify-icon icon="bx:bxl-github" class="text-xl"></iconify-icon>
-            </a>
-          </div>
+
+  <body>
+    <!-- Header with same style as homepage -->
+    <div class="index-header">
+      <div class="index-header-content">
+        <!-- Avatar -->
+        <div class="index-avatar">
+          <img src="{{site.avatar}}" alt="{{site.author}}" />
         </div>
+
+        <!-- Site Info -->
+        <div class="index-info">
+          <h1 class="index-title">{{site.title}}</h1>
+          <p class="index-description">{{site.description}}</p>
+        </div>
+
+        <!-- Navigation -->
+        <nav class="index-nav-container">
+          {{navigation}}
+        </nav>
       </div>
-    </nav>
+    </div>
 
     <!-- 主要内容 -->
     <main class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
