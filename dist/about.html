@@ -7,6 +7,26 @@
     <title>关于我 | Looks Blog</title>
     <meta name="description" content="A personal blog powered by GitHub Issues" />
     <meta name="keywords" content="博客, GitHub Issues, 个人网站, 技术分享" />
+
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content="关于我 | Looks Blog" />
+    <meta property="og:description" content="了解更多关于Master08s的信息" />
+    <meta property="og:image" content="https://images.weserv.nl/?url=https://raw.githubusercontent.com/Master08s/img/main/img/202506021808074.png" />
+    <meta property="og:url" content="https://master08s.github.io/looks-blog/about.html" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Looks Blog" />
+    
+    
+    
+    
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="关于我 | Looks Blog" />
+    <meta name="twitter:description" content="了解更多关于Master08s的信息" />
+    <meta name="twitter:image" content="https://images.weserv.nl/?url=https://raw.githubusercontent.com/Master08s/img/main/img/202506021808074.png" />
+    
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://code.iconify.design/3/3.1.1/iconify.min.js"></script>
     <link rel="stylesheet" href="/looks-blog/assets/css/style.css" />
@@ -17,20 +37,20 @@
       <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between items-center h-16">
           <div class="flex items-center space-x-8">
-            <a href="./" class="text-xl font-bold text-gray-900 hover:text-blue-600 transition-colors">
+            <a href="/looks-blog/" class="text-xl font-bold text-gray-900 hover:text-blue-600 transition-colors">
               Looks Blog
             </a>
             <div class="hidden md:flex space-x-6">
-              <a href="./" class="text-gray-600 hover:text-blue-600 transition-colors">首页</a>
-              <a href="./archives.html" class="text-gray-600 hover:text-blue-600 transition-colors">归档</a>
-              <a href="./categories.html" class="text-gray-600 hover:text-blue-600 transition-colors">分类</a>
-              <a href="./about.html" class="text-blue-600 font-medium">关于</a>
-              <a href="./friends.html" class="text-gray-600 hover:text-blue-600 transition-colors">友链</a>
-              <a href="./search.html" class="text-gray-600 hover:text-blue-600 transition-colors">搜索</a>
+              <a href="/looks-blog/" class="text-gray-600 hover:text-blue-600 transition-colors">首页</a>
+              <a href="/looks-blog/archives.html" class="text-gray-600 hover:text-blue-600 transition-colors">归档</a>
+              <a href="/looks-blog/categories.html" class="text-gray-600 hover:text-blue-600 transition-colors">分类</a>
+              <a href="/looks-blog/about.html" class="text-blue-600 font-medium">关于</a>
+              <a href="/looks-blog/friends.html" class="text-gray-600 hover:text-blue-600 transition-colors">友链</a>
+              <a href="/looks-blog/search.html" class="text-gray-600 hover:text-blue-600 transition-colors">搜索</a>
             </div>
           </div>
           <div class="flex items-center space-x-4">
-            <a href="https://github.com/Master08s" target="_blank" class="text-gray-600 hover:text-blue-600 transition-colors">
+            <a href="https://github.com/Master08s" target="_blank" rel="noopener noreferrer" aria-label="访问GitHub主页" class="text-gray-600 hover:text-blue-600 transition-colors">
               <iconify-icon icon="bx:bxl-github" class="text-xl"></iconify-icon>
             </a>
           </div>
@@ -76,7 +96,7 @@
             <h2 class="text-2xl font-bold text-gray-900 mb-2">Master08s</h2>
             <p class="text-gray-600 mb-4">A personal blog powered by GitHub Issues</p>
             <div class="flex justify-center md:justify-start space-x-4">
-              <a href="https://github.com/Master08s" target="_blank" class="inline-flex items-center px-4 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors">
+              <a href="https://github.com/Master08s" target="_blank" rel="noopener noreferrer" aria-label="访问GitHub主页" class="inline-flex items-center px-4 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors">
                 <iconify-icon icon="bx:bxl-github" class="mr-2"></iconify-icon>
                 GitHub
               </a>
@@ -107,9 +127,9 @@
         <div class="text-center text-gray-600">
           <p>&copy; 2025-05-31 Master08s. All rights reserved.</p>
           <p class="mt-2 text-sm">
-            Powered by 
-            <a href="https://github.com/Master08s/looks-blog" target="_blank" class="text-blue-600 hover:underline">
-              Looks Blog
+            Powered by
+            <a href="https://github.com/Master08s/looks-blog" target="_blank" rel="noopener noreferrer" aria-label="访问Looks博客项目" class="text-blue-600 hover:underline">
+              Looks
             </a>
           </p>
         </div>
@@ -117,5 +137,31 @@
     </footer>
 
     <script src="/looks-blog/assets/js/main.js"></script>
+    
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  "headline": "关于我 | Looks Blog",
+  "description": "了解更多关于Master08s的信息",
+  "image": "https://images.weserv.nl/?url=https://raw.githubusercontent.com/Master08s/img/main/img/202506021808074.png",
+  "url": "https://master08s.github.io/looks-blog/about.html",
+  "author": {
+    "@type": "Person",
+    "name": "Master08s",
+    "url": "https://github.com/Master08s"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Looks Blog",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://images.weserv.nl/?url=https://raw.githubusercontent.com/Master08s/img/main/img/202506021808074.png"
+    }
+  }
+}
+    </script>
+    
   </body>
 </html>

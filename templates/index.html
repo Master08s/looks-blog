@@ -9,15 +9,18 @@
     <meta name="description" content="{{site.description}}" />
     <meta name="keywords" content="{{seo.keywords}}" />
 
+    {{seo.openGraph}}
+    {{seo.twitterCard}}
+
     <!-- Favicon -->
     <link rel="icon" type="image/x-icon" href="{{site.favicon}}" />
     <link rel="shortcut icon" href="{{site.favicon}}" />
     <link rel="apple-touch-icon" href="{{site.favicon}}" />
 
-    <link rel="stylesheet" href="./assets/dist/main.css" />
+    <link rel="stylesheet" href="{{baseUrl}}/assets/dist/main.css" />
 
     <!-- Fonts -->
-    <link rel="stylesheet" href="./assets/fonts/HarmonyOS_Sans_SC/main.css" />
+    <link rel="stylesheet" href="{{baseUrl}}/assets/fonts/HarmonyOS_Sans_SC/main.css" />
     <link rel="preconnect" href="https://fontsapi.zeoseven.com" crossorigin />
     <link
       rel="stylesheet"
@@ -35,7 +38,7 @@
       onerror="this.href='https://fontsapi-storage.zeoseven.com/442/main/result.css'"
     />
 
-    <script src="./assets/dist/main.iife.js"></script>
+    <script src="{{baseUrl}}/assets/dist/main.iife.js"></script>
   </head>
 
   <body>
@@ -46,7 +49,7 @@
         <img
           src="{{site.avatar}}"
           class="h-40 rounded-full filter-none"
-          alt="Avatar"
+          alt="{{site.author}}的头像"
         />
 
         <div class="flex flex-col items-center gap-5 font-mono">
@@ -54,7 +57,7 @@
 
           <!-- 社交媒体 -->
           <div class="text-center">
-            <a class="text-black" href="https://github.com/{{site.author}}" target="_blank">
+            <a class="text-black" href="https://github.com/{{site.author}}" target="_blank" rel="noopener noreferrer" aria-label="访问{{site.author}}的GitHub主页">
               <span class="iconify-large icon-[mingcute--github-line]"></span>
             </a>
           </div>
@@ -86,9 +89,9 @@
       © <span id="current-year"></span> · {{site.author}}
     </div>
     <div>
-      Powered by <a href="https://github.com/{{site.author}}/{{github.repo}}">GitHub Issues</a>
+      Powered by <a href="https://github.com/Master08s/looks-blog">Looks</a>
     </div>
-    <div id="running-days" class="{{site.date}}"></div>
+    <div id="running-days" data-start-date="{{site.date}}"></div>
     </div>
     </footer>
 
@@ -98,7 +101,7 @@
 
       // 计算运行天数
       const runningDaysElement = document.getElementById('running-days');
-      const startDateString = runningDaysElement.className; // 从class获取建站日期
+      const startDateString = runningDaysElement.dataset.startDate; // 从data属性获取建站日期
       const startDate = new Date(startDateString); // 解析日期字符串
       const currentDate = new Date();
       const timeDiff = currentDate - startDate;
@@ -117,5 +120,7 @@
           }
       });
     </script>
+
+    {{seo.structuredData}}
   </body>
 </html>

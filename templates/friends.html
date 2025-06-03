@@ -7,9 +7,12 @@
     <title>{{friends.title}} | {{site.title}}</title>
     <meta name="description" content="{{site.description}}" />
     <meta name="keywords" content="{{seo.keywords}}" />
+
+    {{seo.openGraph}}
+    {{seo.twitterCard}}
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://code.iconify.design/3/3.1.1/iconify.min.js"></script>
-    <link rel="stylesheet" href="./assets/css/style.css" />
+    <link rel="stylesheet" href="{{baseUrl}}/assets/css/style.css" />
   </head>
   <body class="bg-gray-50 text-gray-900 font-sans">
     <!-- 导航栏 -->
@@ -17,20 +20,15 @@
       <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between items-center h-16">
           <div class="flex items-center space-x-8">
-            <a href="./" class="text-xl font-bold text-gray-900 hover:text-blue-600 transition-colors">
+            <a href="{{baseUrl}}/" class="text-xl font-bold text-gray-900 hover:text-blue-600 transition-colors">
               {{site.title}}
             </a>
             <div class="hidden md:flex space-x-6">
-              <a href="./" class="text-gray-600 hover:text-blue-600 transition-colors">首页</a>
-              <a href="./archives.html" class="text-gray-600 hover:text-blue-600 transition-colors">归档</a>
-              <a href="./categories.html" class="text-gray-600 hover:text-blue-600 transition-colors">分类</a>
-              <a href="./about.html" class="text-gray-600 hover:text-blue-600 transition-colors">关于</a>
-              <a href="./friends.html" class="text-blue-600 font-medium">友链</a>
-              <a href="./search.html" class="text-gray-600 hover:text-blue-600 transition-colors">搜索</a>
+              {{styledNavigation}}
             </div>
           </div>
           <div class="flex items-center space-x-4">
-            <a href="{{social.github}}" target="_blank" class="text-gray-600 hover:text-blue-600 transition-colors">
+            <a href="{{social.github}}" target="_blank" rel="noopener noreferrer" aria-label="访问GitHub主页" class="text-gray-600 hover:text-blue-600 transition-colors">
               <iconify-icon icon="bx:bxl-github" class="text-xl"></iconify-icon>
             </a>
           </div>
@@ -93,7 +91,7 @@
               如需申请友链，请通过以下方式联系我：
             </p>
             <div class="flex justify-center space-x-4">
-              <a href="{{social.github}}" target="_blank" class="inline-flex items-center px-4 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors">
+              <a href="{{social.github}}" target="_blank" rel="noopener noreferrer" aria-label="通过GitHub Issues申请友链" class="inline-flex items-center px-4 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors">
                 <iconify-icon icon="bx:bxl-github" class="mr-2"></iconify-icon>
                 GitHub Issues
               </a>
@@ -108,15 +106,16 @@
         <div class="text-center text-gray-600">
           <p>&copy; {{site.date}} {{site.author}}. All rights reserved.</p>
           <p class="mt-2 text-sm">
-            Powered by 
-            <a href="https://github.com/Master08s/looks-blog" target="_blank" class="text-blue-600 hover:underline">
-              Looks Blog
+            Powered by
+            <a href="https://github.com/Master08s/looks-blog" target="_blank" rel="noopener noreferrer" aria-label="访问Looks博客项目" class="text-blue-600 hover:underline">
+              Looks
             </a>
           </p>
         </div>
       </div>
     </footer>
 
-    <script src="./assets/js/main.js"></script>
+    <script src="{{baseUrl}}/assets/js/main.js"></script>
+    {{seo.structuredData}}
   </body>
 </html>

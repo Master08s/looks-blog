@@ -633,7 +633,12 @@ class BlogBuilder {
 
     const html = this.renderTemplate(templates.search || '', {
       site: this.config.site,
-      github: this.github
+      github: this.github,
+      search: {
+        title: '搜索',
+        description: `在${this.config.site.title}中搜索文章、标签和内容`
+      },
+      seo: this.config.seo
     });
 
     await fs.writeFile(path.join(this.distDir, 'search.html'), html);
@@ -836,12 +841,12 @@ ${urls.map(url => `  <url>
       html = html.replace(/\{\{seo\.keywords\}\}/g, '');
     }
 
+    // Replace baseUrl
+    html = html.replace(/\{\{baseUrl\}\}/g, this.baseUrl || '');
+
     // Replace GitHub data
     html = html.replace(/\{\{github\.owner\}\}/g, this.github.owner || '');
     html = html.replace(/\{\{github\.repo\}\}/g, this.github.repo || '');
-
-    // Replace base URL for assets and links
-    html = html.replace(/\{\{baseUrl\}\}/g, this.baseUrl || '');
 
     // Auto-fix asset paths
     html = this.fixAssetPaths(html);
@@ -996,11 +1001,16 @@ ${urls.map(url => `  <url>
       html = html.replace(/\{\{social\.github\}\}/g, data.social.github || '');
     }
 
+    // Replace SEO metadata
+    html = this.renderSEOMetadata(html, data);
+
     // Replace comments system
     html = this.renderComments(html, data);
 
     // Replace navigation menu
     html = this.renderNavigation(html, data);
+    html = this.renderPostNavigation(html, data);
+    html = this.renderStyledNavigation(html, data);
 
     return html;
   }
@@ -1040,25 +1050,204 @@ ${urls.map(url => `  <url>
     let navItems = [];
 
     // Always include basic navigation
-    navItems.push('<a class="index-nav" href="/">首页</a>');
-    navItems.push('<a class="index-nav" href="/archives.html">归档</a>');
-    navItems.push('<a class="index-nav" href="/categories.html">分类</a>');
+    navItems.push(`<a class="index-nav" href="${this.baseUrl}/">首页</a>`);
+    navItems.push(`<a class="index-nav" href="${this.baseUrl}/archives.html">归档</a>`);
+    navItems.push(`<a class="index-nav" href="${this.baseUrl}/categories.html">分类</a>`);
 
     // Add about page if enabled
     if (this.config.pages?.about?.enabled) {
-      navItems.push('<a class="index-nav" href="/about.html">关于</a>');
+      navItems.push(`<a class="index-nav" href="${this.baseUrl}/about.html">关于</a>`);
     }
 
     // Add friends page if enabled
     if (this.config.pages?.friends?.enabled) {
-      navItems.push('<a class="index-nav" href="/friends.html">友链</a>');
+      navItems.push(`<a class="index-nav" href="${this.baseUrl}/friends.html">友链</a>`);
     }
 
     // Always include search
-    navItems.push('<a class="index-nav" href="/search.html"><span class="iconify icon-[fa-solid--search]"></span></a>');
+    navItems.push(`<a class="index-nav" href="${this.baseUrl}/search.html"><span class="iconify icon-[fa-solid--search]"></span></a>`);
 
     const navigationHtml = navItems.join('\n            ');
     html = html.replace(/\{\{navigation\}\}/g, navigationHtml);
+
+    return html;
+  }
+
+  renderPostNavigation(html, data) {
+    // Generate navigation menu for post pages (different style)
+    let navItems = [];
+
+    // Always include basic navigation
+    navItems.push(`<a href="${this.baseUrl}/">首页</a>`);
+    navItems.push(`<a href="${this.baseUrl}/archives.html">归档</a>`);
+    navItems.push(`<a href="${this.baseUrl}/categories.html">分类</a>`);
+
+    // Add about page if enabled
+    if (this.config.pages?.about?.enabled) {
+      navItems.push(`<a href="${this.baseUrl}/about.html">关于</a>`);
+    }
+
+    // Add friends page if enabled
+    if (this.config.pages?.friends?.enabled) {
+      navItems.push(`<a href="${this.baseUrl}/friends.html">友链</a>`);
+    }
+
+    const postNavigationHtml = navItems.join('\n          ');
+    html = html.replace(/\{\{postNavigation\}\}/g, postNavigationHtml);
+
+    return html;
+  }
+
+  renderStyledNavigation(html, data) {
+    // Generate styled navigation menu for about/friends pages (Tailwind CSS style)
+    let navItems = [];
+
+    // Always include basic navigation
+    navItems.push(`<a href="${this.baseUrl}/" class="text-gray-600 hover:text-blue-600 transition-colors">首页</a>`);
+    navItems.push(`<a href="${this.baseUrl}/archives.html" class="text-gray-600 hover:text-blue-600 transition-colors">归档</a>`);
+    navItems.push(`<a href="${this.baseUrl}/categories.html" class="text-gray-600 hover:text-blue-600 transition-colors">分类</a>`);
+
+    // Add about page if enabled
+    if (this.config.pages?.about?.enabled) {
+      // Determine if current page is about page
+      const isAboutPage = data.about ? true : false;
+      const aboutClass = isAboutPage ?
+        "text-blue-600 font-medium" :
+        "text-gray-600 hover:text-blue-600 transition-colors";
+      navItems.push(`<a href="${this.baseUrl}/about.html" class="${aboutClass}">关于</a>`);
+    }
+
+    // Add friends page if enabled
+    if (this.config.pages?.friends?.enabled) {
+      // Determine if current page is friends page
+      const isFriendsPage = data.friends ? true : false;
+      const friendsClass = isFriendsPage ?
+        "text-blue-600 font-medium" :
+        "text-gray-600 hover:text-blue-600 transition-colors";
+      navItems.push(`<a href="${this.baseUrl}/friends.html" class="${friendsClass}">友链</a>`);
+    }
+
+    // Always include search
+    navItems.push(`<a href="${this.baseUrl}/search.html" class="text-gray-600 hover:text-blue-600 transition-colors">搜索</a>`);
+
+    const styledNavigationHtml = navItems.join('\n              ');
+    html = html.replace(/\{\{styledNavigation\}\}/g, styledNavigationHtml);
+
+    return html;
+  }
+
+  renderSEOMetadata(html, data) {
+    // Generate SEO metadata based on page type
+    let seoData = {
+      title: this.config.site.title,
+      description: this.config.site.description,
+      image: this.config.site.avatar,
+      url: this.config.site.url,
+      type: 'website',
+      author: this.config.site.author,
+      publishedTime: null,
+      modifiedTime: null,
+      tags: []
+    };
+
+    // Override with page-specific data
+    if (data.post) {
+      // Article page
+      seoData.title = `${data.post.title} | ${this.config.site.title}`;
+      seoData.description = data.post.excerpt || this.config.site.description;
+      seoData.type = 'article';
+      // Generate full URL for the post
+      const url = new URL(this.config.site.url);
+      const baseDomain = `${url.protocol}//${url.host}`;
+      seoData.url = `${baseDomain}${data.post.url}`;
+      seoData.publishedTime = data.post.created_at.toISOString();
+      seoData.modifiedTime = data.post.updated_at ? data.post.updated_at.toISOString() : data.post.created_at.toISOString();
+      seoData.tags = data.post.labels ? data.post.labels.map(label => label.name) : [];
+    } else if (data.about) {
+      // About page
+      seoData.title = `${data.about.title} | ${this.config.site.title}`;
+      seoData.description = `了解更多关于${this.config.site.author}的信息`;
+      seoData.url = `${this.config.site.url}/about.html`;
+    } else if (data.friends) {
+      // Friends page
+      seoData.title = `${data.friends.title} | ${this.config.site.title}`;
+      seoData.description = data.friends.subtitle || '友情链接页面';
+      seoData.url = `${this.config.site.url}/friends.html`;
+    } else if (data.category) {
+      // Category page
+      seoData.title = `${data.category.name} | ${this.config.site.title}`;
+      seoData.description = `查看${data.category.name}分类下的所有文章`;
+      seoData.url = `${this.config.site.url}/categories/${this.toPinyinFilename(data.category.name)}.html`;
+    } else if (data.search) {
+      // Search page
+      seoData.title = `搜索 | ${this.config.site.title}`;
+      seoData.description = `在${this.config.site.title}中搜索文章、标签和内容`;
+      seoData.url = `${this.config.site.url}/search.html`;
+    }
+
+    // Generate Open Graph metadata
+    const openGraphMeta = `
+    <!-- Open Graph -->
+    <meta property="og:title" content="${this.escapeHtml(seoData.title)}" />
+    <meta property="og:description" content="${this.escapeHtml(seoData.description)}" />
+    <meta property="og:image" content="${seoData.image}" />
+    <meta property="og:url" content="${seoData.url}" />
+    <meta property="og:type" content="${seoData.type}" />
+    <meta property="og:site_name" content="${this.escapeHtml(this.config.site.title)}" />
+    ${seoData.publishedTime ? `<meta property="article:published_time" content="${seoData.publishedTime}" />` : ''}
+    ${seoData.modifiedTime ? `<meta property="article:modified_time" content="${seoData.modifiedTime}" />` : ''}
+    ${seoData.tags.map(tag => `<meta property="article:tag" content="${this.escapeHtml(tag)}" />`).join('\n    ')}
+    `;
+
+    // Generate Twitter Card metadata
+    const twitterCardMeta = `
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="${this.escapeHtml(seoData.title)}" />
+    <meta name="twitter:description" content="${this.escapeHtml(seoData.description)}" />
+    <meta name="twitter:image" content="${seoData.image}" />
+    `;
+
+    // Generate JSON-LD structured data
+    let jsonLdData = {
+      "@context": "https://schema.org",
+      "@type": seoData.type === 'article' ? 'Article' : 'WebPage',
+      "headline": seoData.title,
+      "description": seoData.description,
+      "image": seoData.image,
+      "url": seoData.url,
+      "author": {
+        "@type": "Person",
+        "name": seoData.author,
+        "url": `https://github.com/${this.config.site.author}`
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": this.config.site.title,
+        "logo": {
+          "@type": "ImageObject",
+          "url": seoData.image
+        }
+      }
+    };
+
+    if (seoData.type === 'article') {
+      jsonLdData.datePublished = seoData.publishedTime;
+      jsonLdData.dateModified = seoData.modifiedTime;
+      jsonLdData.keywords = seoData.tags.join(', ');
+    }
+
+    const structuredDataMeta = `
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    ${JSON.stringify(jsonLdData, null, 2)}
+    </script>
+    `;
+
+    // Replace placeholders
+    html = html.replace(/\{\{seo\.openGraph\}\}/g, openGraphMeta);
+    html = html.replace(/\{\{seo\.twitterCard\}\}/g, twitterCardMeta);
+    html = html.replace(/\{\{seo\.structuredData\}\}/g, structuredDataMeta);
 
     return html;
   }
