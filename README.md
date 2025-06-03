@@ -60,6 +60,7 @@
 - `url` - 博客访问地址
   - 如果仓库名是 `username.github.io`，填写：`https://username.github.io`
   - 如果仓库名是其他名称，填写：`https://username.github.io/仓库名`
+  - 如果是自定义域名,填写: `https://xxxx.xx`
 - `author` - 你的 GitHub 用户名，用于版权信息和链接
 - `avatar` - 头像图片链接，建议使用 GitHub 头像：`https://github.com/用户名.png`
 - `favicon` - 网站图标链接，显示在浏览器标签页和书签中
