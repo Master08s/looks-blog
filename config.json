@@ -40,13 +40,13 @@
     "description": "SEO 优化配置。keywords 为网站关键词数组，generateSitemap 控制是否生成 sitemap.xml"
   },
   "comments": {
-    "enabled": true,
+    "enabled": false,
     "provider": "giscus",
     "giscus": {
       "repo": "Master08s/looks-blog",
-      "repoId": "R_kgDOO0NW3w",
+      "repoId": "",
       "category": "General",
-      "categoryId": "DIC_kwDOO0NW384Cq7p2",
+      "categoryId": "",
       "mapping": "pathname",
       "strict": "0",
       "reactionsEnabled": "1",
