@@ -40,7 +40,7 @@
     "description": "SEO 优化配置。keywords 为网站关键词数组，generateSitemap 控制是否生成 sitemap.xml"
   },
   "comments": {
-    "enabled": false,
+    "enabled": true,
     "provider": "giscus",
     "giscus": {
       "repo": "Master08s/looks-blog",
