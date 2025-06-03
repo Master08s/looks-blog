@@ -43,74 +43,65 @@
       </div>
     </div>
 
-    <!-- 主要内容 -->
-    <main class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      <!-- 页面标题 -->
-      <div class="text-center mb-12">
-        <h1 class="text-4xl font-bold text-gray-900 mb-4">{{about.title}}</h1>
-        <div class="w-24 h-1 bg-blue-600 mx-auto rounded-full"></div>
+    <!-- Main Content with same style as homepage -->
+    <main class="mx-auto max-w-[768px]">
+      <!-- Page Title -->
+      <div class="mb-8 text-center font-serif text-2xl font-bold">
+        <span class="icon-[material-symbols--person-outline] iconify-inline"></span>
+        {{about.title}}
       </div>
 
-      <!-- 关于内容 -->
-      <article class="prose prose-lg max-w-none mx-auto">
-        <div class="bg-white rounded-lg shadow-sm p-8 md:p-12">
-          <div class="about-content">
-            {{about.content}}
-          </div>
-        </div>
-      </article>
-
-      <!-- 个人信息卡片 -->
-      <div class="mt-12 bg-white rounded-lg shadow-sm p-8">
-        <div class="flex flex-col md:flex-row items-center md:items-start space-y-6 md:space-y-0 md:space-x-8">
-          <div class="flex-shrink-0">
-            <img src="{{site.avatar}}" alt="{{site.author}}" class="w-32 h-32 rounded-full border-4 border-blue-100">
-          </div>
-          <div class="flex-1 text-center md:text-left">
-            <h2 class="text-2xl font-bold text-gray-900 mb-2">{{site.author}}</h2>
-            <p class="text-gray-600 mb-4">{{site.description}}</p>
-            <div class="flex justify-center md:justify-start space-x-4">
-              <a href="{{social.github}}" target="_blank" rel="noopener noreferrer" aria-label="访问GitHub主页" class="inline-flex items-center px-4 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors">
-                <iconify-icon icon="bx:bxl-github" class="mr-2"></iconify-icon>
-                GitHub
-              </a>
-            </div>
-          </div>
+      <!-- About Content Card -->
+      <div class="about-content-card mb-8">
+        <div class="about-content">
+          {{about.content}}
         </div>
       </div>
 
-      <!-- 统计信息 -->
-      <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div class="bg-white rounded-lg shadow-sm p-6 text-center">
-          <div class="text-3xl font-bold text-blue-600 mb-2">{{stats.posts}}</div>
-          <div class="text-gray-600">文章数量</div>
+      <!-- Stats Cards -->
+      <div class="stats-grid mb-8">
+        <div class="stat-card">
+          <div class="stat-number">{{stats.posts}}</div>
+          <div class="stat-label">文章数量</div>
         </div>
-        <div class="bg-white rounded-lg shadow-sm p-6 text-center">
-          <div class="text-3xl font-bold text-green-600 mb-2">{{stats.categories}}</div>
-          <div class="text-gray-600">分类数量</div>
+        <div class="stat-card">
+          <div class="stat-number">{{stats.categories}}</div>
+          <div class="stat-label">分类数量</div>
         </div>
-        <div class="bg-white rounded-lg shadow-sm p-6 text-center">
-          <div class="text-3xl font-bold text-purple-600 mb-2">{{site.date}}</div>
-          <div class="text-gray-600">建站时间</div>
+        <div class="stat-card">
+          <div class="stat-number">{{site.date}}</div>
+          <div class="stat-label">建站时间</div>
+        </div>
+      </div>
+
+      <!-- Contact Section -->
+      <div class="contact-section">
+        <div class="contact-title">联系方式</div>
+        <div class="contact-links">
+          <a href="{{social.github}}" target="_blank" rel="noopener noreferrer" class="contact-link">
+            <span class="iconify-large icon-[mingcute--github-line]"></span>
+            <span>GitHub</span>
+          </a>
         </div>
       </div>
     </main>
 
+    <!-- Footer with same style as other pages -->
     <footer class="pt-20 pb-6">
-      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="text-center text-gray-600">
-          <p>&copy; {{site.date}} {{site.author}}. All rights reserved.</p>
-          <p class="mt-2 text-sm">
-            Powered by
-            <a href="https://github.com/Master08s/looks-blog" target="_blank" rel="noopener noreferrer" aria-label="访问Looks博客项目" class="text-blue-600 hover:underline">
-              Looks
-            </a>
-          </p>
+      <div class="flex flex-col items-center gap-1">
+        <div>
+          © <span id="current-year"></span> · {{site.author}}
+        </div>
+        <div>
+          Powered by <a href="https://github.com/Master08s/looks-blog">Looks</a>
         </div>
       </div>
     </footer>
 
-    <script src="{{baseUrl}}/assets/js/main.js"></script>
+    <script>
+      document.getElementById('current-year').textContent = new Date().getFullYear();
+    </script>
+
     {{seo.structuredData}}
   </body>
 </html>
