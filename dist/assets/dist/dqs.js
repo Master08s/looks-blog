@@ -101,7 +101,7 @@
         z-index: 999; display: flex; flex-direction: column; gap: 10px;
         font-family: 'HarmonyOS Sans SC', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       }
-      @media (max-width: 768px) { .${TRIGGER_CONTAINER_CLASS} { display: none !important; } }
+      /* REMOVED: @media (max-width: 768px) { .${TRIGGER_CONTAINER_CLASS} { display: none !important; } } */
       
       #${TRIGGER_BUTTON_ID} {
         width: 40px; height: 40px; background: rgba(255, 255, 255, 0.8);
@@ -132,8 +132,6 @@
       #${TRIGGER_BUTTON_ID}:hover::before { opacity: 1; transform: translateY(-50%) translateX(-5px); }
 
       /* Quote Card Styles (prefixed) */
-      #${SIDEBAR_ID} .dqsb-quote-card { /* ... (rest of the quote card styles, prefixed with dqsb- if needed for specificity) ... */ }
-      /* ... (Include all other necessary styles, ensure they are specific enough or use the #SIDEBAR_ID prefix) ... */
       #${SIDEBAR_ID} .dqsb-quote-card { background: #ffffff; border: 1px solid rgba(0,0,0,0.04); border-radius: 16px; padding: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.02), 0 4px 12px rgba(0,0,0,0.02); margin-bottom: 20px; transition: all 0.3s ease; overflow: hidden; position: relative; }
       #${SIDEBAR_ID} .dqsb-quote-card:hover { box-shadow: 0 4px 8px rgba(0,0,0,0.04), 0 8px 20px rgba(0,0,0,0.03); }
       #${SIDEBAR_ID} .dqsb-quote-card.dqsb-with-image { background-size: cover; background-position: center; color: white; border: none; }
@@ -168,14 +166,81 @@
       #${SIDEBAR_ID} .dqsb-error-message { font-size: 13px; margin-bottom: 16px; opacity: 0.8; color: #6b7280; }
       #${SIDEBAR_ID} .dqsb-retry-btn { background: #fee2e2; border: 1px solid #fecaca; color: #dc2626; padding: 8px 16px; border-radius: 8px; cursor: pointer; font-size: 12px; font-weight: 500; transition: all 0.2s ease; }
       #${SIDEBAR_ID} .dqsb-retry-btn:hover { background: #fecaca; transform: translateY(-1px); }
+
+      /* General Mobile / Tablet Adjustments (up to 768px) */
+      @media (max-width: 768px) {
+        /* Trigger container and button as FAB */
+        .${TRIGGER_CONTAINER_CLASS} {
+          top: auto; /* Override desktop top */
+          transform: none; /* Reset transform */
+          bottom: 24px; /* Position at bottom */
+          right: 24px;  /* Position at right */
+        }
+        #${TRIGGER_BUTTON_ID} {
+          width: 56px; /* Larger for touch */
+          height: 56px;
+          border-radius: 50%; /* Circular FAB */
+          font-size: 24px; /* Larger icon */
+          box-shadow: 0 6px 16px rgba(0,0,0,0.12); /* More prominent shadow */
+          border: none; /* Remove specific border for FAB */
+        }
+        #${TRIGGER_BUTTON_ID}:hover {
+          transform: none; /* Disable hover transform for touch */
+          background: rgba(255,255,255,0.9); /* Adjust hover for mobile if needed */
+        }
+        #${TRIGGER_BUTTON_ID}.dqsb-active {
+          transform: none; /* Reset active transform if it was causing issues */
+          /* Button will be covered by sidebar, so active state visual is less critical here */
+        }
+        #${TRIGGER_BUTTON_ID}::before { /* Tooltip */
+          display: none; /* Hide tooltip on touch devices */
+        }
+
+        /* Sidebar width for tablet */
+        #${SIDEBAR_ID} {
+          width: 360px; /* Or a percentage like 85vw */
+          max-width: 90vw; /* Ensure it doesn't exceed viewport too much if 360px is too large */
+        }
+      }
+      
+      /* Dark Mode Styles */
       @media (prefers-color-scheme: dark) {
         #${SIDEBAR_ID} { background: rgba(15,23,42,0.95); border-left-color: rgba(255,255,255,0.05); }
         #${SIDEBAR_ID} .dqsb-sidebar-title { color: #f8fafc; }
         #${SIDEBAR_ID} .dqsb-sidebar-close { background: #1e293b; border-color: #334155; color: #94a3b8; }
         #${SIDEBAR_ID} .dqsb-sidebar-close:hover { background: #334155; border-color: #475569; color: #e2e8f0; }
-        #${TRIGGER_BUTTON_ID} { background: rgba(30,41,59,0.8); color: #94a3b8; border-left: 1px solid rgba(255,255,255,0.05); }
-        #${TRIGGER_BUTTON_ID}:hover { background: rgba(30,41,59,0.95); color: #cbd5e1; }
-        #${TRIGGER_BUTTON_ID}.dqsb-active { background: #1e293b; color: #f8fafc; }
+        
+        /* Base Dark Mode for Trigger Button (Desktop) */
+        #${TRIGGER_BUTTON_ID} { 
+          background: rgba(30,41,59,0.8); 
+          color: #94a3b8; 
+          border-left: 1px solid rgba(255,255,255,0.05); /* Will be overridden by border:none on mobile */
+        }
+        #${TRIGGER_BUTTON_ID}:hover { 
+          background: rgba(30,41,59,0.95); 
+          color: #cbd5e1; 
+        }
+        #${TRIGGER_BUTTON_ID}.dqsb-active { 
+          background: #1e293b; 
+          color: #f8fafc; 
+        }
+
+        /* Dark Mode for Mobile FAB (when max-width: 768px is also active) */
+        @media (max-width: 768px) {
+          #${TRIGGER_BUTTON_ID} {
+            background: rgba(45,55,72,0.9); /* Darker FAB background */
+            color: #e2e8f0;
+            box-shadow: 0 6px 16px rgba(0,0,0,0.25); /* Adjusted shadow for dark bg */
+            border: none; /* Explicitly ensure no border */
+          }
+          #${TRIGGER_BUTTON_ID}:hover {
+            background: rgba(55,65,82,0.95); /* Slightly lighter on hover */
+          }
+          #${TRIGGER_BUTTON_ID}.dqsb-active {
+            background: #1e293b; /* Consistent active state */
+          }
+        }
+
         #${SIDEBAR_ID} .dqsb-quote-card:not(.dqsb-with-image) { background: #1e293b; border-color: rgba(255,255,255,0.05); color: #f8fafc; }
         #${SIDEBAR_ID} .dqsb-quote-card:not(.dqsb-with-image) .dqsb-quote-text { color: #f8fafc; }
         #${SIDEBAR_ID} .dqsb-quote-card:not(.dqsb-with-image) .dqsb-quote-translation { color: #cbd5e1; }
@@ -185,9 +250,21 @@
         #${SIDEBAR_ID} .dqsb-audio-btn:hover { background: rgba(71,85,105,0.8); color: #f1f5f9; }
         #${SIDEBAR_ID} .dqsb-nav-btn { background: rgba(51,65,85,0.8); border-color: rgba(71,85,105,0.8); color: #cbd5e1; }
         #${SIDEBAR_ID} .dqsb-nav-btn:hover { background: rgba(71,85,105,0.8); border-color: rgba(100,116,139,0.8); color: #f1f5f9; }
-        #${SIDEBAR_ID} .dqsb-loading-spinner { border-top-color: #94a3b8; }
+        #${SIDEBAR_ID} .dqsb-loading-spinner { border-top-color: #94a3b8; border-color: rgba(255,255,255,0.1); border-top-color: #94a3b8; }
+        #${SIDEBAR_ID} .dqsb-error-message { color: #94a3b8; }
+        #${SIDEBAR_ID} .dqsb-retry-btn { background: #5f2727; border-color: #7f1d1d; color: #fecaca; }
+        #${SIDEBAR_ID} .dqsb-retry-btn:hover { background: #7f1d1d; }
       }
-      @media (max-width: 480px) { #${SIDEBAR_ID} { width: 100vw; padding: 20px; border-left: none; } }
+
+      /* Smallest Screen Adjustments (up to 480px) */
+      @media (max-width: 480px) { 
+        #${SIDEBAR_ID} { 
+          width: 100vw; 
+          padding: 20px; 
+          border-left: none; 
+          max-width: 100vw; /* Override previous max-width from 768px block */
+        } 
+      }
     `;
     const styleElement = document.createElement('style');
     styleElement.id = STYLE_ELEMENT_ID;
@@ -233,7 +310,7 @@
       const triggerButton = document.createElement('button');
       triggerButton.id = TRIGGER_BUTTON_ID;
       triggerButton.setAttribute('data-label', '每日一句');
-      triggerButton.innerHTML = '✨';
+      triggerButton.innerHTML = '✨'; // You can use an SVG icon here too if preferred
       triggerButtonContainer.appendChild(triggerButton);
       
       const toggleSidebar = () => {
@@ -249,60 +326,106 @@
       return { sidebarPanel, overlay, triggerButton };
     }
 
-    const VolumeIcon = () => (React.createElement('svg', { className: 'dqsb-icon', viewBox: '0 0 24 24'}, React.createElement('path', { d: 'M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z' })));
-    const ChevronLeftIcon = () => (React.createElement('svg', { className: 'dqsb-icon', viewBox: '0 0 24 24'}, React.createElement('path', { d: 'M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z' })));
-    const ChevronRightIcon = () => (React.createElement('svg', { className: 'dqsb-icon', viewBox: '0 0 24 24'}, React.createElement('path', { d: 'M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z' })));
-    const RefreshIcon = () => (React.createElement('svg', { className: 'dqsb-icon', viewBox: '0 0 24 24'}, React.createElement('path', { d: 'M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z' })));
-    const CloseIconSvg = () => (React.createElement('svg', { className: 'dqsb-close-icon', viewBox: '0 0 24 24'}, React.createElement('path', { d: 'M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z' })));
+    const VolumeIcon = () => (React.createElement('svg', { className: 'dqsb-icon', viewBox: '0 0 24 24', fill:"currentColor"}, React.createElement('path', { d: 'M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z' })));
+    const ChevronLeftIcon = () => (React.createElement('svg', { className: 'dqsb-icon', viewBox: '0 0 24 24', fill:"currentColor"}, React.createElement('path', { d: 'M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z' })));
+    const ChevronRightIcon = () => (React.createElement('svg', { className: 'dqsb-icon', viewBox: '0 0 24 24', fill:"currentColor"}, React.createElement('path', { d: 'M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z' })));
+    const RefreshIcon = () => (React.createElement('svg', { className: 'dqsb-icon', viewBox: '0 0 24 24', fill:"currentColor"}, React.createElement('path', { d: 'M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z' })));
+    const CloseIconSvg = () => (React.createElement('svg', { className: 'dqsb-close-icon', viewBox: '0 0 24 24', fill:"currentColor"}, React.createElement('path', { d: 'M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z' })));
 
-    const DailyQuoteContent = () => { /* ... Same DailyQuoteContent logic as before ... */ 
+    const DailyQuoteContent = () => {
       const [quote, setQuote] = useState(null);
       const [loading, setLoading] = useState(true);
       const [error, setError] = useState(null);
       const [isPlaying, setIsPlaying] = useState(false);
-      const [currentDate, setCurrentDate] = useState(null);
-      const [isUpdating, setIsUpdating] = useState(false);
+      const [currentDate, setCurrentDate] = useState(null); // Stores the date of the currently displayed quote
+      const [isUpdating, setIsUpdating] = useState(false); // For loading state of next/prev/random after initial load
       const audioRef = useRef(null);
 
       const getYesterdayDate = () => { const yesterday = new Date(); yesterday.setDate(yesterday.getDate() - 1); return yesterday.toISOString().split("T")[0]; };
-      const getRandomHistoryDate = () => { const today = new Date(); const randomDaysAgo = Math.floor(Math.random() * 365 * 2) + 1; const randomDate = new Date(today); randomDate.setDate(today.getDate() - randomDaysAgo); return randomDate.toISOString().split("T")[0]; };
+      const getRandomHistoryDate = () => { const today = new Date(); const randomDaysAgo = Math.floor(Math.random() * 365 * 3) + 1; /* Up to 3 years back */ const randomDate = new Date(today); randomDate.setDate(today.getDate() - randomDaysAgo); return randomDate.toISOString().split("T")[0]; };
+      
       const fetchQuote = async (date, type) => { 
         try {
-          if (!loading) setIsUpdating(true); else setLoading(true);
+          if (!loading) setIsUpdating(true); else setLoading(true); // Differentiate initial load from updates
           setError(null);
-          const proxyUrls = ['https://api.allorigins.win/raw?url=', 'https://corsproxy.io/?'];
+          // const proxyUrls = ['https://api.allorigins.win/raw?url=', 'https://corsproxy.io/?', 'https://cors-anywhere.herokuapp.com/'];
+          const proxyUrls = [ // Using a couple of known proxies
+            'https://api.allorigins.win/raw?url=', 
+            'https://corsproxy.io/?'
+            // Add more reliable proxies if needed, or allow user configuration
+          ];
           let apiUrl = 'https://open.iciba.com/dsapi/';
+          
           if (date) apiUrl += `?date=${date}`;
           if (type) apiUrl += `${date ? '&' : '?'}type=${type}`; 
 
           let response = null;
+          let data = null;
+
           for (const proxyUrl of proxyUrls) {
             try {
               const fullUrl = proxyUrl + encodeURIComponent(apiUrl);
-              response = await fetch(fullUrl);
-              if (response.ok) break;
+              console.log(`Fetching from: ${fullUrl}`);
+              response = await fetch(fullUrl, {
+                // headers: { 'X-Requested-With': 'XMLHttpRequest' } // Some proxies might need this
+              });
+              if (response.ok) {
+                const responseText = await response.text();
+                try {
+                    data = JSON.parse(responseText);
+                } catch (jsonError) {
+                    console.error("JSON parsing error with proxy " + proxyUrl + ": ", jsonError, "Response text:", responseText);
+                    // If JSON parsing fails, try next proxy or treat as error
+                    continue; 
+                }
+                break; // Successful fetch and parse
+              } else {
+                console.warn(`Fetch failed with proxy ${proxyUrl}, status: ${response.status}`);
+              }
             } catch (e) { 
-              console.warn(`Fetch failed with proxy ${proxyUrl}:`, e);
-              continue; 
+              console.warn(`Network or other error with proxy ${proxyUrl}:`, e);
+              // Continue to next proxy
             }
           }
-          if (!response || !response.ok) throw new Error('Network request failed after trying all proxies');
-          const data = await response.json();
+
+          if (!data || !response || !response.ok) { // Check if data was successfully parsed
+            throw new Error('Network request failed after trying all proxies or API returned an error.');
+          }
+          
           if (!data.content || !data.note) throw new Error('Incomplete data from API');
+          
           setQuote(data);
-          if (data.dateline) setCurrentDate(data.dateline);
+          if (data.dateline) setCurrentDate(data.dateline); // Update current date from API response
+
         } catch (err) {
           console.error("Error fetching quote:", err);
           setError(err.message || 'Failed to fetch quote');
-          setQuote(null);
+          setQuote(null); // Clear previous quote on error
         } finally {
           setLoading(false);
           setIsUpdating(false);
         }
       };
-      const fetchNextQuote = () => fetchQuote(currentDate || new Date().toISOString().split("T")[0], "next");
-      const fetchPreviousQuote = () => fetchQuote(currentDate || getYesterdayDate(), "last");
-      const fetchRandomQuote = () => fetchQuote(getRandomHistoryDate());
+
+      // Handlers for navigation
+      const fetchNextQuote = () => {
+        const dateForApi = currentDate || new Date().toISOString().split("T")[0]; // Use current quote's date or today if not set
+        fetchQuote(dateForApi, "next");
+      };
+      const fetchPreviousQuote = () => {
+        const dateForApi = currentDate || getYesterdayDate(); // Use current quote's date or yesterday if not set
+        fetchQuote(dateForApi, "last");
+      };
+      const fetchRandomQuote = () => fetchQuote(getRandomHistoryDate()); // Type is not needed for specific date
+      const retryFetch = () => { // Retry with a random quote if initial load failed, or last known date
+          if (quote && currentDate) {
+            fetchQuote(currentDate); // Retry fetching the current date's quote
+          } else {
+            fetchRandomQuote(); // Default to a new random quote
+          }
+      };
+
+
       const playAudio = async () => { 
         if (!quote?.tts || isPlaying) return;
         try {
@@ -327,26 +450,64 @@
       };
 
       useEffect(() => {
-        fetchQuote(getYesterdayDate()); 
+        fetchRandomQuote(); // MODIFIED: Fetch a random quote on initial load
         return () => { if (audioRef.current) audioRef.current.pause(); };
-      }, []);
+      }, []); // Empty dependency array ensures this runs only once on mount
 
-      if (loading) { return React.createElement('div', { className: 'dqsb-quote-card' }, React.createElement('div', { className: 'dqsb-loading-card' }, React.createElement('div', { className: 'dqsb-loading-spinner' }), React.createElement('div', { className: 'dqsb-loading-text' }, '加载中...'))); }
-      if (error || !quote) { return React.createElement('div', { className: 'dqsb-quote-card' }, React.createElement('div', { className: 'dqsb-error-card' }, React.createElement('div', { className: 'dqsb-error-title' }, '加载失败'), React.createElement('div', { className: 'dqsb-error-message' }, error || '无法获取数据'), React.createElement('button', { className: 'dqsb-retry-btn', onClick: () => { fetchQuote(getYesterdayDate()); } }, '重试'))); }
+      // Visual loading state (full card skeleton)
+      if (loading) { 
+        return React.createElement('div', { className: 'dqsb-quote-card' }, 
+          React.createElement('div', { className: 'dqsb-loading-card' }, 
+            React.createElement('div', { className: 'dqsb-loading-spinner' }), 
+            React.createElement('div', { className: 'dqsb-loading-text' }, '加载中...')
+          )
+        ); 
+      }
       
+      // Error state
+      if (error || !quote) { 
+        return React.createElement('div', { className: 'dqsb-quote-card' }, 
+          React.createElement('div', { className: 'dqsb-error-card' }, 
+            React.createElement('div', { className: 'dqsb-error-title' }, '加载失败'), 
+            React.createElement('div', { className: 'dqsb-error-message' }, error || '无法获取数据，请检查网络或稍后再试。'), 
+            React.createElement('button', { className: 'dqsb-retry-btn', onClick: retryFetch }, '重试')
+          )
+        ); 
+      }
+      
+      // Successful load: Display quote
       const cardClass = `dqsb-quote-card ${quote.picture2 || quote.picture ? 'dqsb-with-image' : ''}`; 
       const cardStyle = (quote.picture2 || quote.picture) ? { backgroundImage: `url(${quote.picture2 || quote.picture})` } : {};
 
+      // Adding an updating overlay for non-initial loads
+      const updatingOverlay = isUpdating ? React.createElement('div', {
+        style: {
+          position: 'absolute', top: 0, left: 0, right: 0, bottom: 0,
+          backgroundColor: 'rgba(255,255,255,0.3)',
+          backdropFilter: 'blur(3px)', WebkitBackdropFilter: 'blur(3px)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          zIndex: 3, borderRadius: '16px' // Match card border radius
+        }
+      }, React.createElement('div', { className: 'dqsb-loading-spinner' })) : null;
+
+
       return React.createElement('div', { className: cardClass, style: cardStyle },
-        React.createElement('div', { className: `dqsb-quote-content ${isUpdating ? 'dqsb-updating' : ''}` }, // Add prefix if needed
-          React.createElement('div', { className: 'dqsb-quote-header' }, React.createElement('div', { className: 'dqsb-quote-brand' }, '每日一句')),
+        updatingOverlay, // Render updating overlay if isUpdating
+        React.createElement('div', { className: `dqsb-quote-content`},
+          React.createElement('div', { className: 'dqsb-quote-header' }, 
+            React.createElement('div', { className: 'dqsb-quote-brand' }, '每日一句'),
+            // Potentially add date display: React.createElement('div', { className: 'dqsb-quote-date' }, currentDate || quote.dateline)
+          ),
           React.createElement('div', { className: 'dqsb-quote-text' }, quote.content),
           React.createElement('div', { className: 'dqsb-quote-translation' }, quote.note),
           React.createElement('div', { className: 'dqsb-quote-controls' },
-            quote.tts && React.createElement('button', { className: 'dqsb-audio-btn', onClick: playAudio, disabled: isPlaying || isUpdating }, React.createElement(VolumeIcon), React.createElement('span', null, isPlaying ? '播放中...' : '朗读')),
+            quote.tts && React.createElement('button', { className: 'dqsb-audio-btn', onClick: playAudio, disabled: isPlaying || isUpdating }, 
+              React.createElement(VolumeIcon), 
+              React.createElement('span', null, isPlaying ? '播放中...' : '朗读')
+            ),
             React.createElement('div', { className: 'dqsb-nav-controls' },
               React.createElement('button', { className: 'dqsb-nav-btn', onClick: fetchPreviousQuote, title: '上一句', disabled: isUpdating }, React.createElement(ChevronLeftIcon)),
-              React.createElement('button', { className: 'dqsb-nav-btn', onClick: fetchRandomQuote, title: '随机', disabled: isUpdating }, React.createElement(RefreshIcon)),
+              React.createElement('button', { className: 'dqsb-nav-btn', onClick: fetchRandomQuote, title: '随机一句', disabled: isUpdating }, React.createElement(RefreshIcon)),
               React.createElement('button', { className: 'dqsb-nav-btn', onClick: fetchNextQuote, title: '下一句', disabled: isUpdating }, React.createElement(ChevronRightIcon))
             )
           )
@@ -367,7 +528,7 @@
       return React.createElement(React.Fragment, null,
         React.createElement('div', { className: 'dqsb-sidebar-header' },
           React.createElement('div', { className: 'dqsb-sidebar-title' }, '✨ 每日一句'),
-          React.createElement('button', { className: 'dqsb-sidebar-close', onClick: handleClose }, React.createElement(CloseIconSvg))
+          React.createElement('button', { className: 'dqsb-sidebar-close', onClick: handleClose, title: '关闭侧边栏' }, React.createElement(CloseIconSvg))
         ),
         React.createElement(DailyQuoteContent)
       );
@@ -398,6 +559,7 @@
       }
     } catch (error) {
       console.error("Failed to load dependencies or initialize DailyQuote sidebar:", error);
+      // Optionally, provide user feedback on the page itself if critical error
     }
   }
 
