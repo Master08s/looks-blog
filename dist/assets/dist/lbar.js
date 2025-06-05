@@ -1,4 +1,4 @@
-// lbar.js 
+// lbar.js v2 修复cors代理问题,后续有问题,替换代理即可
 
 (function() {
   // --- 配置 ---
@@ -382,8 +382,8 @@
         try {
           if (!loading) setIsUpdating(true); else setLoading(true); 
           setError(null);
-          // REMOVED allorigins proxy
-          const proxyUrls = ['https://corsproxy.io/?']; 
+          // UPDATED proxy: Using api.codetabs.com
+          const proxyUrls = ['https://api.codetabs.com/v1/proxy?quest=']; 
           let apiUrl = 'https://open.iciba.com/dsapi/';
           
           if (date) apiUrl += `?date=${date}`;
@@ -598,8 +598,8 @@
                 const monthPadded = (now.getMonth() + 1).toString().padStart(2, '0');
                 const dayPadded = now.getDate().toString().padStart(2, '0');
                 const apiUrl = `https://baike.baidu.com/cms/home/eventsOnHistory/${monthPadded}.json`;
-                // REMOVED allorigins proxy
-                const proxyUrls = ['https://corsproxy.io/?']; 
+                // UPDATED proxy: Using api.codetabs.com
+                const proxyUrls = ['https://api.codetabs.com/v1/proxy?quest=']; 
                 
                 let responseData = null;
                 for (const proxyUrl of proxyUrls) {
