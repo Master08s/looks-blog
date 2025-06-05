@@ -1,4 +1,4 @@
-// lbar.js
+// lbar.js 
 
 (function() {
   // --- 配置 ---
@@ -13,6 +13,7 @@
   const REACT_DOM_CDN_URL = 'https://unpkg.com/react-dom@18/umd/react-dom.production.min.js';
 
   let React, ReactDOM; // Will be assigned after loading
+
 
   function loadScript(src, callbackName) {
     return new Promise((resolve, reject) => {
@@ -41,6 +42,7 @@
       document.head.appendChild(script);
     });
   }
+
 
   function injectStyles() {
     if (document.getElementById(STYLE_ELEMENT_ID)) return;
@@ -205,9 +207,8 @@
       }
       #${SIDEBAR_ID} .dqsb-history-list {
         list-style: none; padding: 0; margin: 0; max-height: 250px; overflow-y: auto;
-        /* Thinner scrollbar for Webkit */
-        scrollbar-width: thin; /* For Firefox */
-        scrollbar-color: #cbd5e1 #f1f5f9; /* For Firefox: thumb track */
+        scrollbar-width: thin; 
+        scrollbar-color: #cbd5e1 #f1f5f9;
       }
       #${SIDEBAR_ID} .dqsb-history-list::-webkit-scrollbar { width: 6px; }
       #${SIDEBAR_ID} .dqsb-history-list::-webkit-scrollbar-track { background: #f1f5f9; border-radius:3px; }
@@ -285,7 +286,7 @@
         #${SIDEBAR_ID} .dqsb-info-card-content .dqsb-date-emphasis { color: #f8fafc; }
 
         /* Dark Mode for History List Scrollbar */
-        #${SIDEBAR_ID} .dqsb-history-list { scrollbar-color: #4b5563 #1e293b; } /* thumb track */
+        #${SIDEBAR_ID} .dqsb-history-list { scrollbar-color: #4b5563 #1e293b; }
         #${SIDEBAR_ID} .dqsb-history-list::-webkit-scrollbar-track { background: #1e293b; }
         #${SIDEBAR_ID} .dqsb-history-list::-webkit-scrollbar-thumb { background-color: #4b5563; border-color: #1e293b; }
         #${SIDEBAR_ID} .dqsb-history-list::-webkit-scrollbar-thumb:hover { background-color: #6b7280; }
@@ -317,7 +318,6 @@
     const { useState, useEffect, useRef } = React;
 
     function createSidebarDOMElements() {
-      // ... (createSidebarDOMElements function remains mostly the same)
       if (document.getElementById(SIDEBAR_ID)) {
         return { 
           sidebarPanel: document.getElementById(SIDEBAR_ID), 
@@ -340,7 +340,7 @@
       }
       const triggerButton = document.createElement('button');
       triggerButton.id = TRIGGER_BUTTON_ID;
-      triggerButton.setAttribute('data-label', '信息栏'); // Updated tooltip
+      triggerButton.setAttribute('data-label', '信息栏');
       triggerButton.innerHTML = '✨';
       triggerButtonContainer.appendChild(triggerButton);
       const toggleSidebar = () => {
@@ -364,9 +364,9 @@
     const TimerIcon = () => (React.createElement('svg', { className: 'dqsb-icon', viewBox: '0 0 24 24', fill:"currentColor"}, React.createElement('path', { d: 'M15 1H9v2h6V1zm-4 13h2V8h-2v6zm8.03-6.61l1.42-1.42c-.43-.51-.9-.99-1.41-1.41l-1.42 1.42C16.07 4.74 14.12 4 12 4c-4.97 0-9 4.03-9 9s4.02 9 9 9 9-4.03 9-9c0-2.12-.74-4.07-1.97-5.61zM12 20c-3.87 0-7-3.13-7-7s3.13-7 7-7 7 3.13 7 7-3.13 7-7 7z'})));
     const HistoryTimelineIcon = () => (React.createElement('svg', { className: 'dqsb-icon', viewBox: '0 0 24 24', fill:"currentColor"}, React.createElement('path', { d: 'M13 3a9 9 0 0 0-9 9H1l3.89 3.89.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42C8.27 19.99 10.51 21 13 21c4.97 0 9-4.03 9-9s-4.03-9-9-9zm-1 5v5l4.25 2.52.77-1.28-3.52-2.09V8H12z' })));
 
+
     // --- React Components ---
     const DailyQuoteContent = () => {
-      // ... (DailyQuoteContent component remains the same)
       const [quote, setQuote] = useState(null);
       const [loading, setLoading] = useState(true);
       const [error, setError] = useState(null);
@@ -382,7 +382,8 @@
         try {
           if (!loading) setIsUpdating(true); else setLoading(true); 
           setError(null);
-          const proxyUrls = ['https://api.allorigins.win/raw?url=', 'https://corsproxy.io/?'];
+          // REMOVED allorigins proxy
+          const proxyUrls = ['https://corsproxy.io/?']; 
           let apiUrl = 'https://open.iciba.com/dsapi/';
           
           if (date) apiUrl += `?date=${date}`;
@@ -400,23 +401,23 @@
                 try {
                     data = JSON.parse(responseText);
                 } catch (jsonError) {
-                    console.error("JSON parsing error with proxy " + proxyUrl + ": ", jsonError, "Response text:", responseText);
+                    console.error("JSON parsing error for quote with proxy " + proxyUrl + ": ", jsonError, "Response text:", responseText);
                     continue; 
                 }
                 break; 
               } else {
-                console.warn(`Fetch failed with proxy ${proxyUrl}, status: ${response.status}`);
+                console.warn(`Fetch quote failed with proxy ${proxyUrl}, status: ${response.status}`);
               }
             } catch (e) { 
-              console.warn(`Network or other error with proxy ${proxyUrl}:`, e);
+              console.warn(`Network or other error for quote with proxy ${proxyUrl}:`, e);
             }
           }
 
           if (!data || !response || !response.ok) { 
-            throw new Error('Network request failed after trying all proxies or API returned an error.');
+            throw new Error('Quote API: Network request failed after trying all proxies or API returned an error.');
           }
           
-          if (!data.content || !data.note) throw new Error('Incomplete data from API');
+          if (!data.content || !data.note) throw new Error('Quote API: Incomplete data from API');
           
           setQuote(data);
           if (data.dateline) setCurrentDate(data.dateline);
@@ -507,7 +508,6 @@
     };
     
     const TodaysDateCard = () => {
-      // ... (TodaysDateCard component remains the same)
       const [currentDateString, setCurrentDateString] = useState('');
       useEffect(() => {
         const updateDate = () => {
@@ -530,8 +530,8 @@
     const SiteUptimeCard = () => {
       const [startDate, setStartDate] = useState(null);
       const [uptime, setUptime] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
-      const [errorMsg, setErrorMsg] = useState(null);
-      const [shouldRender, setShouldRender] = useState(false); // New state to control rendering
+      // REMOVED errorMsg state as it's not directly used for rendering based on the new logic
+      const [shouldRender, setShouldRender] = useState(false);
 
       useEffect(() => {
         const siteStartDateElement = document.getElementById(SITE_START_DATE_ELEMENT_ID);
@@ -541,24 +541,23 @@
             const parsedDate = new Date(startDateString + "T00:00:00");
             if (!isNaN(parsedDate)) { 
               setStartDate(parsedDate);
-              setShouldRender(true); // Only render if date is valid and element exists
+              setShouldRender(true);
             } else {
-              setErrorMsg(`SiteUptimeCard: 无效的起始日期格式: "${startDateString}"`);
               console.error(`SiteUptimeCard: 无效的起始日期格式: "${startDateString}"`);
+              setShouldRender(false);
             }
           } else {
-            setErrorMsg(`SiteUptimeCard: 未在 class 中找到有效的起始日期 (应为 YYYY-MM-DD 格式)。元素class: "${startDateString}"`);
             console.error(`SiteUptimeCard: 未在 class 中找到有效的起始日期。Class: "${startDateString}"`);
+            setShouldRender(false);
           }
         } else {
-          // Element not found, do not render the component
           console.warn(`SiteUptimeCard: HTML 元素 #${SITE_START_DATE_ELEMENT_ID} 未找到，组件将不会渲染。`);
           setShouldRender(false);
         }
-      }, []); // Run only once on mount to check for the element
+      }, []);
 
       useEffect(() => {
-        if (!startDate || !shouldRender) return; // Don't run if no start date or shouldn't render
+        if (!startDate || !shouldRender) return;
 
         const calculateUptime = () => {
           const now = new Date(); let diff = now.getTime() - startDate.getTime();
@@ -573,7 +572,7 @@
         return () => clearInterval(intervalId);
       }, [startDate, shouldRender]);
 
-      if (!shouldRender) { // If element not found or date invalid, return null
+      if (!shouldRender) {
           return null; 
       }
 
@@ -594,11 +593,13 @@
             const fetchHistoryEvents = async () => {
                 setLoading(true);
                 setError(null);
+                setEvents([]); // Reset events on new fetch
                 const now = new Date();
                 const monthPadded = (now.getMonth() + 1).toString().padStart(2, '0');
                 const dayPadded = now.getDate().toString().padStart(2, '0');
                 const apiUrl = `https://baike.baidu.com/cms/home/eventsOnHistory/${monthPadded}.json`;
-                const proxyUrls = ['https://api.allorigins.win/raw?url=', 'https://corsproxy.io/?'];
+                // REMOVED allorigins proxy
+                const proxyUrls = ['https://corsproxy.io/?']; 
                 
                 let responseData = null;
                 for (const proxyUrl of proxyUrls) {
@@ -624,17 +625,15 @@
 
                 if (responseData) {
                     const todayKey = `${monthPadded}${dayPadded}`;
-                    const monthData = responseData[monthPadded]; // Access the current month's data
+                    const monthData = responseData[monthPadded];
                     if (monthData && monthData[todayKey] && Array.isArray(monthData[todayKey])) {
                         setEvents(monthData[todayKey].slice(0, MAX_EVENTS));
                     } else {
                         console.warn(`No events found for key: ${monthPadded}.${todayKey} in API response`, responseData);
                         setError('今天似乎没有历史事件记录。');
-                        setEvents([]);
                     }
                 } else {
                     setError('获取历史上的今天数据失败。');
-                    setEvents([]);
                 }
                 setLoading(false);
             };
@@ -655,7 +654,6 @@
                             events.map((event, index) => 
                                 React.createElement('li', { key: index, className: 'dqsb-history-item' },
                                     React.createElement('span', { className: 'dqsb-history-item-year' }, event.year + '年:'),
-                                    // Use dangerouslySetInnerHTML because Baidu API includes HTML tags in title
                                     React.createElement('span', { 
                                         className: 'dqsb-history-item-title',
                                         dangerouslySetInnerHTML: { __html: event.title } 
@@ -666,6 +664,7 @@
                         : React.createElement('div', { className: 'dqsb-history-error' }, '今天暂无历史事件数据。')
         );
     };
+
 
     const FullDailyQuoteSidebar = () => {
       const handleClose = () => {
@@ -696,6 +695,7 @@
       console.log('Full DailyQuote sidebar rendered.');
     }
   }
+
 
   async function start() {
     try {
